@@ -1,0 +1,145 @@
+<!-- Este template te permite crear discusiones ya sea de encuestas o preguntas -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Nueva Discusion</h2>
+                </div>
+                <div class="card-body card-padding">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon"></span>
+                        <div class="fg-line">
+                            <input type="text" class="form-control input-lg tituloIssue" placeholder="Titulo del issues">
+                        </div>
+                    </div>
+                    <div class="html-editor descripcionIssue"></div>
+                    <div class="mb-10">
+                        <button class="btn btn-success waves-effect GuardarIssue">Enviar nuevo issues</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header"></div>
+                <div class="card-body card-padding">
+                    <h4>Etiqueta</h4>
+                     <select class="chosen selectpicker" multiple data-placeholder="Seleccione una etiqueta" data-live-search="true" id="categoriasIssues">
+                        <option value="Error de contexto">
+                        <div class="pull-left">
+                            <span data-tag="palette-Teal bg" class="palette-Teal bg"></span>
+                        </div>
+                        <div class="media-body">
+                            <div class="lgi-heading">Error de contexto</div>
+                        </div>
+                        </option>
+                        <option value="Error Ortograficos">
+                            <div class="pull-left">
+                                <span data-tag="palette-Red bg" class="palette-Red bg"></span>
+                            </div>
+                            <div class="media-body">
+                                <div class="lgi-heading">Error ortograficos</div>
+                            </div>
+                        </option>
+                        <option value="Palabras Ambiguas">
+                            <div class="pull-left">
+                                <span data-tag="palette-Pink bg" class="palette-Pink bg"></span>
+                            </div>
+                            <div class="media-body">
+                                <div class="lgi-heading">palabras Ambiguas</div>
+                            </div>
+
+                        </option>
+                        <option value="Desconcordancia de Respuesta">
+                            <div class="pull-left">
+                                <span data-tag="palette-Blue bg" class="palette-Blue bg"></span>
+                            </div>
+                            <div class="media-body">
+                                <div class="lgi-heading">Desconcordancia de Respuestas</div>
+                            </div>
+                        </option>
+                        <option value="Duplicados">
+                            <div class="pull-left">
+                                <span data-tag="palette-Lime bg" class="palette-Lime bg"></span>
+                            </div>
+                            <div class="media-body">
+                                <div class="lgi-heading">duplicados</div>
+                            </div>
+                        </option>
+                        <option value="Pregunta">
+                            <div class="pull-left">
+                                <span data-tag="palette-Green bg" class="palette-Green bg"></span>
+                            </div>
+                            <div class="media-body">
+                                <div class="lgi-heading">pregunta</div>
+                            </div>
+
+                        </option>
+                         <option value="Mejora">
+                            <div class="pull-left">
+                                <span data-tag="palette-Purple bg" class="palette-Purple bg"></span>
+                            </div>
+                            <div class="media-body">
+                                <div class="lgi-heading">Mejora</div>
+                            </div>
+
+                        </option>
+
+                         <option value="Busca Ayuda">
+                            <div class="pull-left">
+                                <span data-tag="palette-Orange bg" class="palette-Orange bg"></span>
+                            </div>
+                            <div class="media-body">
+                                <div class="lgi-heading">Se busca ayuda</div>
+                            </div>
+
+                        </option>
+
+                         <option value="Ideas">
+                            <div class="pull-left">
+                                <span data-tag="palette-Gray bg" class="palette-Gray bg"></span>
+                            </div>
+                            <div class="media-body">
+                                <div class="lgi-heading">Ideas</div>
+                            </div>
+
+                        </option>
+                    </select>
+                    <br>
+                    <br>
+                    <h4>Asignar a un responsable la discusion</h4>
+                    <select class="selectpicker" multiple data-placeholder="Seleccione una etiqueta" data-live-search="true" id="Colaboradores">
+                        <option value="Kevin Ortiz">
+                        <div class="pull-left">
+                            <div class="avatar-char palette-Light-Blue bg">KO</div>
+                        </div>
+                        <div class="media-body">
+                            <div class="lgi-heading">Kevin Ortiz</div>
+                        </div>
+                        </option>
+                        <option value="Juan Jose">
+                            <div class="pull-left">
+                                <div class="avatar-char palette-Light-Blue bg">JS</div>
+                            </div>
+                            <div class="media-body">
+                                <div class="lgi-heading">Juan Jose</div>
+                            </div>
+                        </option>
+                        <option value="Pedro Enrique">
+                            <div class="pull-left">
+                                <div class="avatar-char palette-Light-Blue bg">PE</div>
+                            </div>
+                            <div class="media-body">
+                                <div class="lgi-heading">Pedro Enrique</div>
+                            </div>
+
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

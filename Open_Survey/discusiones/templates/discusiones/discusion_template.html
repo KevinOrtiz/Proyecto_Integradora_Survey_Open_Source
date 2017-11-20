@@ -1,0 +1,53 @@
+<!-- Este template es el esqueleto de las discusiones -->
+
+{% extends "app/index.html" %}
+
+{% block title %}Discusiones{% endblock %}
+
+
+{% block header %}
+    {% include "app/header.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "app/menu_lateral.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Discusiones</h2>
+        </div>
+        <div class="card-body card-padding">
+            <div role="tabpanel">
+                <ul class="tab-nav tn-justified" role="tablist" data-tab-color="green">
+                    <li  role="presentation" class="active"><a class="col-sx-4" href="#issuesAccepted" aria-controls="issuesAccepted" role="tab" data-toggle="tab">Aceptadas</a></li>
+                    <li  role="presentation"><a class="col-sx-4" href="#issuesRejected" aria-controls="issuesRejected" role="tab" data-toggle="tab">Rechazadas</a></li>
+                    <li  role="presentation"><a class="col-sx-4" href="#issuesRevision" aria-controls="issuesRevision" role="tab" data-toggle="tab">Revision</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane animated fadeIn in active" id="issuesAccepted">
+                        {% include "discusiones/issues_creados.html" %}
+
+                    </div>
+                    <div role="tabpanel" class="tab-pane animated fadeIn" id="issuesRejected">
+                        {% include "discusiones/issues_rechazados.html" %}
+
+                    </div>
+                    <div role="tabpanel" class="tab-pane animated fadeIn" id="issuesRevision">
+                        {% include "discusiones/issues_resueltos.html" %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script_portal %}
+<script src="{% static 'js/actions.js' %}"></script>
+<script src="{% static 'js/demo.js' %}"></script>
+{% endblock %}
