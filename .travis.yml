@@ -1,1 +1,7 @@
-https://outlook.office.com/webhook/3d4f591a-23d7-49ed-9292-e9483ac2717b@b7af8caf-83d8-4644-85ae-317c545223c1/TravisCI/cf6899f5cb224503a4cfad9e5ac30f6c/491d9738-17ca-4ba5-8029-51a18100aa93
+language: node_js,python
+node_js:
+  - "iojs"
+  - "7"
+python:
+  - "3.5"
+  
