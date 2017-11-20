@@ -5,7 +5,8 @@ matrix:
         - "7"
     - language: python
       python:
-        - 3.5
+        - 2.6
+        - 2.7
       env:
         - DJANGO=1.11
       before_install:
