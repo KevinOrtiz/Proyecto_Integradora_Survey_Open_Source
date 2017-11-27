@@ -1,0 +1,35 @@
+{
+  "name": "testing_frontend",
+  "version": "0.0.0",
+  "description": "pruebas de testing sobre las funciones javascripts que se ejecutan en el lado del cliente por cada modulo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinOrtiz/Proyecto_Integradora_Survey_Open_Source.git"
+  },
+  "keywords": [
+    "front_end",
+    "App"
+  ],
+  "author": "Kevin Ortiz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KevinOrtiz/Proyecto_Integradora_Survey_Open_Source/issues"
+  },
+  "homepage": "https://github.com/KevinOrtiz/Proyecto_Integradora_Survey_Open_Source#readme",
+  "devDependencies": {
+    "jasmine-ajax": "3.3.1",
+    "jasmine-core": "2.8.0",
+    "jasmine-fixture": "2.0.0",
+    "karma": "1.7.1",
+    "karma-cli": "1.0.1",
+    "karma-coverage": "1.1.1",
+    "karma-jasmine": "1.1.0",
+    "karma-jquery": "0.2.2",
+    "karma-phantomjs-launcher": "1.0.4",
+    "phantomjs-prebuilt": "2.1.15"
+  }
+}
