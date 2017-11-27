@@ -37,12 +37,14 @@ INSTALLED_APPS = [
     'encuestas',
     'login',
     'preguntas',
+    'usuarios',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +74,8 @@ TEMPLATES = [
         },
     },
 ]
+
+EMBEDLY_KEY = '<JKLIMNOPQRSTUBBBBBBBBBWEIEIII%%%>'
 
 WSGI_APPLICATION = 'Open_Survey.wsgi.application'
 

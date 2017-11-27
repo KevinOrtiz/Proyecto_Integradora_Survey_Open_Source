@@ -1,3 +1,7 @@
+services:
+  - redis
+  - mysql
+  - mongodb
 matrix:
   include:
     - language: node_js
