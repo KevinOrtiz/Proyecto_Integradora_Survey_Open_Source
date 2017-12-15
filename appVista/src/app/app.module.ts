@@ -21,7 +21,6 @@ import { LoaderComponent } from './components/loader/loader.component';
 import { EncuestasUsuarioComponent } from './components/home/profile/encuestas-usuario.component';
 import { PreguntasUsuarioComponent } from './components/home/profile/preguntas-usuario.component';
 import { PreguntasComponent } from './components/home/preguntas/preguntas.component';
-import { DomseguroPipe } from './pipes/domseguro.pipe';
 import { CasillaComponent } from './components/home/preguntas/respuesta/casilla/casilla.component';
 import { RadioComponent } from './components/home/preguntas/respuesta/radio/radio.component';
 import { SiNoComponent } from './components/home/preguntas/respuesta/si-no/si-no.component';
@@ -54,7 +53,6 @@ export const firebaseConfig = {
     EncuestasUsuarioComponent,
     PreguntasUsuarioComponent,
     PreguntasComponent,
-    DomseguroPipe,
     CasillaComponent,
     RadioComponent,
     SiNoComponent,

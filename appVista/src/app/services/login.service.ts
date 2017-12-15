@@ -58,7 +58,7 @@ export class LoginService {
   crearUsuario() {
     return this.http.post(this.urlServicio, {usuario: this.getUserInformation()})
                     .map((res: Response) => {
-                      this.setSessionTokenId(res.token, res._id);
+                      this.setSessionTokenId(res['token'], res['_id']);
                       return res;
                     });
   }
