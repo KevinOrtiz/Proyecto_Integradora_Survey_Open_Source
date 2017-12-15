@@ -1,6 +1,7 @@
 sudo: required
 dist: trusty
 language: node_js
+install: travis_wait mvn install
 services:
   - mongodb
 node_js:
