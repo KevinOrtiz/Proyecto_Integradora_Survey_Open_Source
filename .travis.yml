@@ -21,4 +21,4 @@ before_script:
 - npm install -g angular-cli
 - npm install -g karma
 
-script: cd appVista && npm install && karma start karma.conf.js --single-run && cd ../Core_App && npm install && npm test
+script: cd Core_App && npm install && npm test
