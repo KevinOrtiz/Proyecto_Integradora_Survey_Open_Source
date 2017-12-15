@@ -1,0 +1,131 @@
+<div class="row">
+  <div class="col-lg-5">
+    <div class="card mb30">
+      <div class="card-top">
+        <h4 class="card-title">Tipos de Respuestas</h4>
+      </div>
+      <div class="card-content">
+        <div class="form-group row">
+          <label class="col-12">Casilla de Verficacion</label>
+          <div class="col-md-9">
+            <button class="btn btn-success" (click)="addTipoRespuesta('2')">
+              <i class="far fa-check-square"></i>
+              opcion 1
+            </button>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-12">Opciones multiples</label>
+          <div class="col-md-9">
+            <button class="btn btn-success" (click)="addTipoRespuesta('1')">
+              <i class="far fa-check-circle"></i>
+              opcion 2
+            </button>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-12">Seleccionar Si/No</label>
+          <div class="col-md-9">
+            <button class="btn btn-success" (click)="addTipoRespuesta('3')">
+              <i class="fas fa-toggle-on"></i>
+              Si/No
+            </button>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-12">Puntaje</label>
+          <div class="col-md-9">
+            <button class="btn btn-success" (click)="addTipoRespuesta('4')">
+              <i class="far fa-star"></i>
+              <i class="far fa-star"></i>
+              <i class="far fa-star"></i>
+              <i class="far fa-star"></i>
+              <i class="far fa-star"></i>
+            </button>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-12">Texto</label>
+          <div class="col-md-9">
+            <button class="btn btn-success" (click)="addTipoRespuesta('6')">
+              <i class="fas fa-font"></i>
+              Texto de ejemplo
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12">Lista desplegable</label>
+          <div class="col-md-9">
+            <button class="btn btn-success" (click)="addTipoRespuesta('5')">
+              <i class="fas fa-list-ol"></i>
+              Seleccionar la respuesta de una lista
+            </button>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-7 smart-forms contenedor-resp">
+    <div class="card mb40">
+      <div class="card-top">
+        <h4 class="card-title">Descripcion de la pregunta</h4>
+      </div>
+      <div class="card-content">
+        <div class="section">
+          <label class="field prepend-icon">
+            <textarea id="DescripcionPregunta" class="gui-textarea" #textDescriptionPregunta placeholder="Ingrese la descripcion de una pregunta">
+            </textarea>
+            <span class="field-icon">
+              <i class="fas fa-font"></i>
+            </span>
+          </label>
+        </div>
+      </div>
+      <h4 class="card-title text-center">Seccion de Respuesta</h4>
+      <div class="card-content ">
+        <div class="section respuesta" *ngIf="!existePregunta">
+          <h3>Debe seleccionar un tipo de respuesta</h3>
+        </div>
+        <div class="section respuesta1" *ngIf="existePregunta &&  CHECKBOX" >
+          <button type="button" class="btn btn-outline-success mb5" (click)="addCasilla()">Añadir Respuesta</button>
+          <button type="button" class="btn btn-outline-danger mb5" (click)="removeComponentCasilla()">Eliminar Respuesta</button>
+          <hr>
+          <template #casillaComponent></template>
+        </div>
+        <div class="section respuesta1" *ngIf="existePregunta && RADIOBUTTON" >
+            <button type="button" class="btn btn-outline-success mb5" (click)="addRadio()">Añadir Respuesta</button>
+            <button type="button" class="btn btn-outline-danger mb5" (click)="removeComponentRadio()">Eliminar Respuesta</button>
+            <hr>
+            <template #radioComponent></template>
+        </div>
+        <div class="section respuesta1" *ngIf="existePregunta &&   SI_NO" >
+            <app-si-no></app-si-no>
+        </div>
+        <div class="section respuesta1" *ngIf="existePregunta &&  PUNTAJE" >
+            <app-puntaje></app-puntaje>
+        </div>
+        <div class="section respuesta1" *ngIf="existePregunta && DESCRIPCION" >
+            <app-descripcion></app-descripcion>
+        </div>
+        <div class="section respuesta1" *ngIf="existePregunta && LISTA_DESPLEGABLE" >
+            <button type="button" class="btn btn-outline-success mb5" (click)="addLista()">Añadir Respuesta</button>
+            <button type="button" class="btn btn-outline-danger mb5" (click)="removeComponentLista()">Eliminar Respuesta</button>
+            <hr>
+            <template #listaComponent></template>
+        </div>
+        <br>
+        <hr>
+        <button class="btn btn-icon  btn-outline-success mr-2 mb5 guardarbtn">
+          <i class="far fa-save tamanoGuardar"></i>
+        </button>
+
+        <button class="btn btn-icon btn-outline-success mr-2 mb5 guardarbtn">
+            <i class="fas fa-eye tamanoGuardar"></i>
+          </button>
+      </div>
+    </div>
+  </div>
+</div>

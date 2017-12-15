@@ -9,19 +9,39 @@ const EncuestaSchema = new Schema({
     fecha_creacion:String,
     fecha_edicion:String,
     colaboradores:[{
-        colaborador_ID:Number
+        colaborador_ID:{
+            type:Number
+        }
     }],
+    historial_cambios:[{
+        texto:{
+            type:String
+        }
+    }],
+    registroActual:Boolean,
     etiqueta:[{
-       texto:String,
-       color:String
+       texto:{
+           type:String
+       },
+       color:{
+           type:String
+       }
     }],
     topicos:[{
-       texto:String,
-       color:String
+       texto:{
+           type:String
+       },
+       color:{
+           type:String
+       }
     }],
     contenido_multimedia:[{
-       url:String,
-       tipo:String
+       url:{
+           type:String
+       },
+       tipo:{
+           type:String
+       }
     }],
     preguntas:[{
         type:Schema.Types.ObjectId,
@@ -36,6 +56,7 @@ const EncuestaSchema = new Schema({
         ref:'comentario'
     }]
 });
+
 
 
 EncuestaSchema.virtual('numeroPreguntasEncuesta').get(()=>{

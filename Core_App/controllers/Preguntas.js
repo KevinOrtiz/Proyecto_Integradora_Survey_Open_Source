@@ -1,5 +1,5 @@
 'use strict';
-let MODELENCUESTA = require('../models/Preguntas');
+let modelpregunta = require('../models/Preguntas');
 
 /**
  *Este metodo guarda una nueva pregunta en la base de datos local (MONGODB)

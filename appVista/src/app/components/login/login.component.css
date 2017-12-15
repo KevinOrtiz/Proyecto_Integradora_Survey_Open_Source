@@ -1,0 +1,16 @@
+.amplitud50{
+    width: 300px;
+    position: relative;
+    left: 90px;
+}
+
+a.button{
+    color:white;
+}
+a.googleplus{
+    background-color:#2f475f;
+}
+a.googleplus:hover{
+    background-color:#2f475f;
+    color:white;    
+}

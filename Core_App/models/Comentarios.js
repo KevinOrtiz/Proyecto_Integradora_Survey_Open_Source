@@ -4,8 +4,12 @@ const Schame = mongoose.Schema;
 const comentarioSchame = new Schame({
    identificador:String,
    creador:{
-       nombre:String,
-       ID:Number
+       nombre:{
+           type:String
+       },
+       ID:{
+           type:Number
+       }
    },
    contenido:String,
    fecha_creacion:String,

@@ -18,25 +18,70 @@ exports.guardarComentarioPregunta = (req,resp,next)=>{
          Pregunta.findOne({identificador:req.body.pregunta.identificador})
              .then((pregunta)=>{
              pregunta.comentarios.push(comentario);
-             return resp.json({status:'ok',codec:'200'});
+             return resp.json({status:'ok',codec:200});
 
              });
         });
 
 };
+/**
+ *
+ * Guardar un comentario de una encuesta
+ * @param req
+ * @param resp
+ * @param next
+ */
 
 exports.guardarComentarioEncuesta = (req,resp,next)=>{
     let comentario = new Comentario(req.body.comentario);
     comentario.save()
         .then(()=>{
-         Encuesta.findOne({identificador:req.body.pregunta.identificador})
+         Encuesta.findOne({identificador:req.body.encuesta.identificador})
              .then((encuesta)=>{
              encuesta.comentarios.push(comentario);
-             return resp.json({status:'ok',codec:'200'});
+             return resp.json({status:'ok',codec:200});
              });
         });
 
 
+};
+
+/**
+ *
+ * Guardar un comentario de una discusion de una pregunta en especifico
+ * @param req
+ * @param resp
+ * @param next
+ */
+exports.guardarComentarioDiscusionPregunta = (req,resp,next)=>{
+  let comentario = new Comentario(req.body.comentario);
+  comentario.save()
+      .then(()=>{
+        discusionPregunta.findOne({identificador:req.body.discusionPregunta.identificador})
+            .then((discusionPregunta)=>{
+                discusionPregunta.comentarios.push(comentario);
+                return resp.json({status:'ok',codec:200});
+            });
+      });
+};
+
+/**
+ *
+ * Guardar un comentario de una discusion de una encuesta en especifico
+ * @param req
+ * @param resp
+ * @param next
+ */
+exports.guardarComentarioDiscusionEncuesta = (req,resp,next)=>{
+  let comentario = new Comentario(req.body.comentario);
+  comentario.save()
+      .then(()=>{
+        discusionEncuesta.findOne({identificador:req.body.discusionEncuesta.identificador})
+            .then((discusionEncuesta)=>{
+                discusionEncuesta.comentarios.push(comentario);
+                return resp.json({status:'ok',codec:200});
+            });
+      });
 };
 
 /**
@@ -55,7 +100,7 @@ exports.guardarSubcomentario = (req,resp,next)=>{
             Comentario.findOne({identificador:req.body.idComentario})
                 .then((objcomentario)=>{
                     objcomentario.listaSubComentarios.push(comentario);
-                    resp.json({codec:200,status:ok});
+                    resp.json({codec:200,status:'ok'});
                 });
         });
 };
@@ -68,7 +113,7 @@ exports.guardarSubcomentario = (req,resp,next)=>{
  * @param next
  */
 exports.cargarComentarioPregunta = (req,resp,next)=>{
-    Pregunta.findOne({identificador:req.query.identificador})
+    Pregunta.findOne({identificador:req.query.pregunta.identificador})
         .populate({
             path:'comentarios',
             populate:{
@@ -92,8 +137,8 @@ exports.cargarComentarioPregunta = (req,resp,next)=>{
  * @param next
  */
 
-exports.cargarComentarioEncuesta = (req,resp,next)=>{
-    Encuesta.findOne({identificador:req.query.identificador})
+exports.cargarComentarioByEncuesta = (req,resp,next)=>{
+    Encuesta.findOne({identificador:req.query.encuesta.identificador})
         .populate({
             path:'comentarios',
             populate:{
@@ -116,7 +161,7 @@ exports.cargarComentarioEncuesta = (req,resp,next)=>{
  */
 
 exports.cargarComentarioDiscusionPregunta = (req,resp,next)=>{
-    discusionPregunta.findOne({identificador:req.query.identificador,titulo:req.query.titulo})
+    discusionPregunta.findOne({identificador:req.query.discusionPregunta.identificador,titulo:req.query.discusionPregunta.titulo})
         .populate({
             path:'comentarios',
             populate:{
@@ -134,13 +179,13 @@ exports.cargarComentarioDiscusionPregunta = (req,resp,next)=>{
 
 
 /**
- *Esta funcion lo que hace es cargar los comentarios referente a una encuesta
+ *Esta funcion lo que hace es cargar los comentarios referente a una discusion referente a una encuesta
  * @param req
  * @param resp
  * @param next
  */
 exports.cargarComentarioDiscusionEncuesta = (req,resp,next)=>{
- discusionEncuesta.findOne({identificador:req.query.identificador,titulo:req.query.titulo})
+ discusionEncuesta.findOne({identificador:req.query.discusionEncuesta.identificador,titulo:req.query.discusionEncuesta.titulo})
      .populate({
          path:'comentarios',
          populate:{
@@ -155,19 +200,32 @@ exports.cargarComentarioDiscusionEncuesta = (req,resp,next)=>{
 
 };
 
+/**
+ *Esta funcion lo que hace es cargar los subcomentarios referente a un comentario
+ * @param req
+ * @param resp
+ * @param next
+ */
 
 exports.cargarSubcomentarios = (req,resp,next)=>{
-  Comentario.findOne({identificador:req.query.identificador})
+  Comentario.findOne({identificador:req.query.comentario.identificador})
       .populate('listaSubComentarios')
       .then((Comentario)=>{
         return resp.json({listaSubcomentarios:Comentario.listaSubComentarios})
       })
 };
-
+/**
+ *Esta funcion lo que hace es editar un comentario especifico
+ * determinado por un identificador del comentario
+ *
+ * @param req
+ * @param resp
+ * @param next
+ */
 
 exports.editarComentario = (req,resp,next)=>{
-    let objComentario = req.body.comentarios;
-    Comentario.findOneAndUpdate({identificador:req.body.identificador},objComentario);
+    let objComentario = req.body.comentario;
+    Comentario.findOneAndUpdate({identificador:req.body.comentario.identificador},objComentario);
     return resp.json({codec:200,status:'ok'})
 };
 
@@ -177,16 +235,30 @@ exports.editarComentario = (req,resp,next)=>{
  *
  */
 
+/**
+ *
+ * Esta funcion lo que hace es guardar la cantidad de favoritos referente a un comentario
+ * @param req
+ * @param resp
+ * @param next
+ */
+
 exports.guardarFavoritos = (req,resp,next)=>{
-  Comentario.findOne({identificador:req.body.identificador})
+  Comentario.findOne({identificador:req.body.comentario.identificador})
       .then((comentario)=>{
-        let sumarFavoritos = comentario.favoritos + req.body.favoritos;
+        let sumarFavoritos = comentario.favoritos + req.body.comentario.favoritos;
         comentario.set('favoritos',sumarFavoritos);
         return resp.json({codec:200,status:'ok'})
       });
 };
 
-
+/**
+ *
+ * Esta funcion lo que hace es guardar la cantidad de likes referentes a un comentarios
+ * @param req
+ * @param resp
+ * @param next
+ */
 
 exports.guardarlikes = (req,resp,next)=>{
   Comentario.findOne({identificador:req.body.identificador})
@@ -197,7 +269,13 @@ exports.guardarlikes = (req,resp,next)=>{
       });
 };
 
-
+/**
+ *
+ * Esta funcion lo que hace es guardar la cantidad de dislikes referente a un comentario
+ * @param req
+ * @param resp
+ * @param next
+ */
 
 exports.guardarDislikes = (req,resp,next)=>{
   Comentario.findOne({identificador:req.body.identificador})

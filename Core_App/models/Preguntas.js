@@ -19,16 +19,33 @@ const PreguntaSchema = new Schema({
         },
         required:[true,'Es necesario conocer el ID del creador de la pregunta']
     },
+    historial_cambios:[{
+        texto:{
+            type:String
+        }
+    }],
+    registroActual:Boolean,
     etiquetas:[{
-        texto:String,
-        color:String
+        texto:{
+            type:String
+        },
+        color:{
+            type:String
+        }
     }],
     topicos:[{
-        texto:String
+        texto:{
+           type:String
+        }
     }],
     respuestas:[{
-        texto:String,
-        tipoRespuesta:String
+        id: Number,
+        texto:{
+            type:String
+        },
+        tipoRespuesta:{
+            type:String
+        }
     }],
     comentarios:[{
         type:Schema.Types.ObjectId,

@@ -5,12 +5,19 @@ const discusionPreguntaSchema = new schema({
     identificador:String,
     titulo:String,
     descripcion:String,
+    creador_ID:Number,
     etiquetas:[{
-        texto:String
+        texto:{
+            type:String
+        }
     }],
     estados:[{
-       usuario_ID:String,
-       texto:String
+       usuario_ID:{
+           type:String
+       },
+       texto:{
+           type:String
+       }
     }],
     fecha_creacion:String,
     fecha_cierre:String,

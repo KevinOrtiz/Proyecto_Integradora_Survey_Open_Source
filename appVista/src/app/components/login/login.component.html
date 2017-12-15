@@ -1,0 +1,29 @@
+
+<div *ngIf="activarCargadorPagina">
+    <app-loader></app-loader>
+</div>
+
+<div class = "layout-accounts">
+  <div class="account-wrap">
+      <div class="account-card">
+          <div class="account-content smart-forms">
+                <div class="text-center">
+                    <a href="#"><img src="" alt=""></a>
+                </div>
+                  <div class="form-body">
+
+                      <div class="spacer-b30">
+                          <div class="tagline"><span>Autenticate con Plataforma Sociales</span></div><!-- .tagline -->
+                      </div>                 
+
+                      <div class="section">
+                        <div class="col col-sm-10">
+                            <a  class="button btn-social googleplus span-left amplitud50" (click)="loginGoogle()"> <span><i class="fab fa-google-plus-g"></i></span> Google+ </a>                            
+                        </div>
+                      </div><!-- end section -->
+                                                 
+                  </div><!-- end .form-body section -->
+          </div>
+      </div>
+  </div>
+</div>

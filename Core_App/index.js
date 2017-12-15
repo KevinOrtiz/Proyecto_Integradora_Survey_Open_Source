@@ -1,7 +1,7 @@
 const express = require('express');
 const config = require('./config');
 const morgan = require('morgan');
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const bodyParser = require('body-parser');
 const connectorGithub = require('github');
 const app = express();
@@ -26,7 +26,7 @@ mongoose.connection
         .on('error',(error)=>{console.log("WARNING",error)});
 
 app.set('superSecret',config.secret);
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 app.use(morgan('dev'));
@@ -37,3 +37,4 @@ app.listen(port);
 
 
 console.log("Started Web service");
+

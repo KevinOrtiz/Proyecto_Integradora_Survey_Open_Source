@@ -1,3 +1,5 @@
-ENV
 Core_App/node_modules
-Open_Survey/test_frontEndApp/node_modules
+.vscode
+.idea
+appVista/node_modules
+.DS_Store
