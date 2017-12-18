@@ -76,7 +76,8 @@
       <div class="card-content">
         <div class="section">
           <label class="field prepend-icon">
-            <textarea id="DescripcionPregunta" class="gui-textarea" #textDescriptionPregunta placeholder="Ingrese la descripcion de una pregunta">
+            <textarea id="DescripcionPregunta" class="gui-textarea" #textDescriptionPregunta 
+            placeholder="Ingrese la descripcion de una pregunta" (keyup)="addDescripcion(textDescriptionPregunta.value)">
             </textarea>
             <span class="field-icon">
               <i class="fas fa-font"></i>
@@ -118,14 +119,41 @@
         </div>
         <br>
         <hr>
-        <button class="btn btn-icon  btn-outline-success mr-2 mb5 guardarbtn">
-          <i class="far fa-save tamanoGuardar"></i>
+        <button class="btn btn-outline-success mb5 btn-rounded" (click)="setCategoriaPregunta()">
+          Categoria y Tipo de Pregunta
         </button>
 
-        <button class="btn btn-icon btn-outline-success mr-2 mb5 guardarbtn">
-            <i class="fas fa-eye tamanoGuardar"></i>
+
+        <button class="btn btn-outline-success mb5 btn-rounded" (click)="visualizarPregunta()">
+          Visualizar Pregunta
           </button>
       </div>
     </div>
   </div>
 </div>
+
+<swal #errorGuardar title="Datos Incompletos" text="Existen campos vacios 
+                          y ademas debe elegir un tipo de respuesta"
+                    type="error"></swal>
+
+<swal #errorServidor
+      title="Error en el servidor"
+      text = "Existen problemas con el servidor, en estos momentos
+              intentelo mas tarde"
+      type = "warning"></swal>
+
+<swal #guardadoExitoso
+      title = "Envio Exitoso"
+      text = "La pregunta sera revisada por miembros del comite, donde posteriormente
+              se le notificara por correo si su pregunta ha sido aceptada, rechazada,
+              o necesitará que se les haga algunos cambios"
+      type = "success"></swal>
+<swal #guardarPregunta 
+      title = "Esta a punto de crear una nueva Pregunta!"
+      text =  "Verifique que la pregunta que va enviar tenga total coherencia con la 
+                categoria y etiqueta que usted definio, puede dar click en visualizar
+                pregunta, para pre-visualizar su pregunta creada!"
+      type = "warning"
+      [showCancelButton]="true"
+      [focusCancel]="true"
+      (confirm)="guardarpregunta()"></swal>

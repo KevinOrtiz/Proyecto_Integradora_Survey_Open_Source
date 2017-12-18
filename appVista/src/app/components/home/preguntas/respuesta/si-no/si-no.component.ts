@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RespuestasService } from '../../../../../services/respuestas.service';
 
 @Component({
   selector: 'app-si-no',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SiNoComponent implements OnInit {
 
-  constructor() { }
+  constructor(private respuestas: RespuestasService) { }
 
   ngOnInit() {
   }

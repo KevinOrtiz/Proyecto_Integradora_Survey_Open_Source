@@ -1,0 +1,26 @@
+
+<h4>Categoria de la Pregunta</h4>
+<mat-form-field>
+  <mat-select placeholder="Categoria de Pregunta"  (change)="guardarCategoria($event)">
+    <mat-option>Ninguna</mat-option>
+    <mat-optgroup *ngFor="let group of listaCategorias" [label]="group.principal">
+      <mat-option *ngFor="let categoria of group.subcategoria" [value]="categoria">
+        {{ categoria.viewValue }}
+      </mat-option>
+    </mat-optgroup>
+  </mat-select>
+</mat-form-field>
+<br>
+<h4>Etiqueta de la Pregunta</h4>
+<mat-form-field>
+  <mat-select placeholder="Etiqueta" (change)="guardarEtiqueta($event)" >
+    <mat-option>--</mat-option>
+    <mat-option *ngFor="let nodeEtiqueta of listaEtiquetas" [value]="nodeEtiqueta">
+      {{nodeEtiqueta.viewValue}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-dialog-actions>
+  <button class="btn btn-outline-success mb5 btn-rounded" (click)="cerrarVentana()">OK</button>
+</mat-dialog-actions>
+

@@ -1,8 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-
-
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
@@ -27,6 +29,18 @@ import { SiNoComponent } from './components/home/preguntas/respuesta/si-no/si-no
 import { PuntajeComponent } from './components/home/preguntas/respuesta/puntaje/puntaje.component';
 import { DescripcionComponent } from './components/home/preguntas/respuesta/descripcion/descripcion.component';
 import { ListaDesplegableComponent } from './components/home/preguntas/respuesta/lista-desplegable/lista-desplegable.component';
+import { RespuestasService } from './services/respuestas.service';
+import { PreguntasService } from './services/preguntas.service';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
+import { UploadImagesComponent } from './components/home/preguntas/upload-images/upload-images.component';
+import { AddLabelCategoriesComponent } from './components/home/preguntas/add-label-categories/add-label-categories.component';
+import { CategoriasEtiquetasService } from './services/categorias-etiquetas.service';
+import { SnackBarMensajesComponent } from './components/home/preguntas/snack-bar-mensajes/snack-bar-mensajes.component';
+// tslint:disable-next-line:max-line-length
+import { SnackBarEliminarPreguntaComponent } from './components/home/preguntas/snack-bar-eliminar-pregunta/snack-bar-eliminar-pregunta.component';
+import { SnackBarMensajesActualizadosComponent } from './components/home/preguntas/snack-bar-mensajes-actualizados/snack-bar-mensajes-actualizados.component';
+
+
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyC4WyYXEuKYdy2tUGzcCYi2HF7gs7_TxJc',
@@ -59,17 +73,34 @@ export const firebaseConfig = {
     PuntajeComponent,
     DescripcionComponent,
     ListaDesplegableComponent,
+    UploadImagesComponent,
+    AddLabelCategoriesComponent,
+    SnackBarMensajesComponent,
+    SnackBarEliminarPreguntaComponent,
+    SnackBarMensajesActualizadosComponent,
   ],
   imports: [
     BrowserModule,
     APP_ROUTING,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
-    HttpClientModule
+    HttpClientModule,
+    SweetAlert2Module.forRoot(),
+    BrowserAnimationsModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatSnackBarModule
+  ],
+  entryComponents: [
+    AddLabelCategoriesComponent, SnackBarMensajesComponent, SnackBarEliminarPreguntaComponent,
+    SnackBarMensajesActualizadosComponent
   ],
   providers: [
     LoginService,
-    ProfileService
+    ProfileService,
+    RespuestasService,
+    PreguntasService,
+    CategoriasEtiquetasService
   ],
   bootstrap: [AppComponent]
 })

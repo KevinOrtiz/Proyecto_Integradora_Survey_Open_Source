@@ -1,5 +1,10 @@
 import { Component, OnInit, ElementRef, AfterViewInit, ViewChild} from '@angular/core';
-import { RadioComponent } from '../radio/radio.component';
+import { RespuestasService } from '../../../../../services/respuestas.service';
+import {MatSnackBar} from '@angular/material';
+import { SnackBarMensajesComponent } from '../../snack-bar-mensajes/snack-bar-mensajes.component';
+import { SnackBarMensajesActualizadosComponent } from '../../snack-bar-mensajes-actualizados/snack-bar-mensajes-actualizados.component';
+
+
 
 @Component({
   selector: 'app-casilla',
@@ -7,17 +12,31 @@ import { RadioComponent } from '../radio/radio.component';
   styleUrls: ['./casilla.component.css']
 })
 export class CasillaComponent implements OnInit, AfterViewInit {
-  listaRespuestas: any[] = [ ];
   @ViewChild('valorInputRespuestaCasilla') input: ElementRef;
-  constructor() { }
+  private estaGuardado = false;
+  private oldValue = '';
+  constructor(private respuestas: RespuestasService,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit() {
   }
   ngAfterViewInit() {
     console.log(' hola esta es una prueba' + this.input.nativeElement.value);
   }
-  crearCasilla() {
-    console.log('entree');
+  addRespuesta() {
+    if (this.estaGuardado === false) {
+      console.log(this.input.nativeElement.value);
+      this.respuestas.setListasRespuestasCasillas(this.input.nativeElement.value);
+      console.log(this.respuestas.getListaRespuestasCasillas());
+      this.snackBar.openFromComponent(SnackBarMensajesComponent, { duration: 500});
+      this.estaGuardado = true;
+    }else {
+      this.respuestas.updateValueListaRespuestasCasillas(this.oldValue, this.input.nativeElement.value);
+      console.log(this.respuestas.getListaRespuestasCasillas());
+      this.snackBar.openFromComponent(SnackBarMensajesActualizadosComponent, { duration: 500});
+
+    }
+    this.oldValue = this.input.nativeElement.value;
   }
 
 }
