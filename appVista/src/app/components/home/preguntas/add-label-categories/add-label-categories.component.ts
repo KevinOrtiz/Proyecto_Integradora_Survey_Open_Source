@@ -16,15 +16,10 @@ export class AddLabelCategoriesComponent implements OnInit {
   constructor(private categoria: CategoriasEtiquetasService, public thisDialogRef: MatDialogRef<AddLabelCategoriesComponent>) { }
   ngOnInit() {
     this.listaCategorias = this.categoria.getCategorias();
-    this.listaEtiquetas = this.categoria.getEtiquetas();
   }
   guardarCategoria(objetoCategoria) {
     console.log(objetoCategoria.value);
     this.categoria.setCategoria(objetoCategoria.value.value);
-  }
-  guardarEtiqueta( objetoEtiqueta) {
-    console.log(objetoEtiqueta.value);
-    this.categoria.setEtiqueta(objetoEtiqueta.value.value);
   }
   cerrarVentana() {
     this.thisDialogRef.close('confirm');

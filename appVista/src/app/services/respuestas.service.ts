@@ -8,7 +8,7 @@ export class RespuestasService {
   private contadorRadios = 1;
   private contadorListaDesplegable = 1;
   private Puntaje = [];
-  private si_no = {id: 3, texto: 'si_no', tipoRespuesta: 'si/no'};
+  private si_no = [{id: 3, texto: 'si_no', tipoRespuesta: 'si/no'}];
   private descripcion ;
   private listaDeplegable = [];
   constructor() { }
@@ -82,7 +82,7 @@ export class RespuestasService {
     return false;
   }
   updateValueListaDesplegable (oldValue, newValue) {
-    const index = this.getListaRespuestasRadios().findIndex((item, i) => {
+    const index = this.getListaDesplegable().findIndex((item, i) => {
       return item.texto === oldValue;
     });
     this.listaDeplegable[index].texto = newValue;
@@ -113,7 +113,7 @@ export class RespuestasService {
   }
 
   setDescripcion () {
-    this.descripcion = {id: 2, texto: 'respuestas abierta', tipoRespuesta: 'abierta'};
+    this.descripcion = [{id: 2, texto: 'respuestas abierta', tipoRespuesta: 'abierta'}];
   }
   getDescripcion () {
     return this.descripcion;

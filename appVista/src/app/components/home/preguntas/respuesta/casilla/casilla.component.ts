@@ -3,6 +3,7 @@ import { RespuestasService } from '../../../../../services/respuestas.service';
 import {MatSnackBar} from '@angular/material';
 import { SnackBarMensajesComponent } from '../../snack-bar-mensajes/snack-bar-mensajes.component';
 import { SnackBarMensajesActualizadosComponent } from '../../snack-bar-mensajes-actualizados/snack-bar-mensajes-actualizados.component';
+import { PreguntasService } from '../../../../../services/preguntas.service';
 
 
 
@@ -16,7 +17,7 @@ export class CasillaComponent implements OnInit, AfterViewInit {
   private estaGuardado = false;
   private oldValue = '';
   constructor(private respuestas: RespuestasService,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar, private preguntaServicio: PreguntasService) { }
 
   ngOnInit() {
   }
@@ -36,6 +37,7 @@ export class CasillaComponent implements OnInit, AfterViewInit {
       this.snackBar.openFromComponent(SnackBarMensajesActualizadosComponent, { duration: 500});
 
     }
+    this.preguntaServicio.setEtiquetas('casilla');
     this.oldValue = this.input.nativeElement.value;
   }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RespuestasService } from '../../../../../services/respuestas.service';
+import { PreguntasService } from '../../../../../services/preguntas.service';
 
 @Component({
   selector: 'app-puntaje',
@@ -9,7 +10,7 @@ import { RespuestasService } from '../../../../../services/respuestas.service';
 export class PuntajeComponent implements OnInit {
    numberEstrellas ;
    arreglos: number []= [];
-  constructor(private respuestas: RespuestasService) { }
+  constructor(private respuestas: RespuestasService, private preguntaServicio: PreguntasService) { }
 
   ngOnInit() {
     this.numberEstrellas = 5;
@@ -17,6 +18,7 @@ export class PuntajeComponent implements OnInit {
      this.arreglos.push(i);
     }
     this.respuestas.setPuntaje(5);
+    this.preguntaServicio.setRespuesta(this.respuestas.getPuntaje());
   }
 
 }

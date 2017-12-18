@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 export class PreguntasService {
   private objetoPregunta: any;
   private contadorIdentificador = 1;
+  private vieneDatosServidor = false;
   constructor() {
     this.objetoPregunta = {
       identificador: '',
@@ -30,6 +31,9 @@ export class PreguntasService {
     };
   }
 
+  getFlagDatosServidor () {
+   return this.vieneDatosServidor;
+  }
   setIdentificador(idIdentificador) {
     this.objetoPregunta.identificador = this.contadorIdentificador;
     this.contadorIdentificador ++;
@@ -53,7 +57,7 @@ export class PreguntasService {
     this.objetoPregunta.topicos = valorTopicos;
   }
   setListaImagenes(urlImagen) {
-    this.objetoPregunta.listaImagen.push({ url: urlImagen });
+    this.objetoPregunta.listaImagen = { url: urlImagen };
   }
   setRespuesta(respuestas) {
     this.objetoPregunta.respuestas = respuestas;

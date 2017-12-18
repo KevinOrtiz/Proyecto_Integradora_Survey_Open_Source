@@ -39,6 +39,16 @@ import { SnackBarMensajesComponent } from './components/home/preguntas/snack-bar
 // tslint:disable-next-line:max-line-length
 import { SnackBarEliminarPreguntaComponent } from './components/home/preguntas/snack-bar-eliminar-pregunta/snack-bar-eliminar-pregunta.component';
 import { SnackBarMensajesActualizadosComponent } from './components/home/preguntas/snack-bar-mensajes-actualizados/snack-bar-mensajes-actualizados.component';
+import { UploadFormComponent } from './components/uploads/upload-form/upload-form.component';
+import { UploadService } from './uploads/shared/upload.service';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { VerPreguntaComponent } from './components/home/ver-pregunta/ver-pregunta.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import 'hammerjs';
 
 
 
@@ -78,6 +88,8 @@ export const firebaseConfig = {
     SnackBarMensajesComponent,
     SnackBarEliminarPreguntaComponent,
     SnackBarMensajesActualizadosComponent,
+    UploadFormComponent,
+    VerPreguntaComponent,
   ],
   imports: [
     BrowserModule,
@@ -89,18 +101,25 @@ export const firebaseConfig = {
     BrowserAnimationsModule,
     MatDialogModule,
     MatSelectModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatSlideToggleModule,
+    MatFormFieldModule
   ],
   entryComponents: [
     AddLabelCategoriesComponent, SnackBarMensajesComponent, SnackBarEliminarPreguntaComponent,
-    SnackBarMensajesActualizadosComponent
+    SnackBarMensajesActualizadosComponent, UploadFormComponent, VerPreguntaComponent, VerPreguntaComponent
   ],
   providers: [
     LoginService,
     ProfileService,
     RespuestasService,
     PreguntasService,
-    CategoriasEtiquetasService
+    CategoriasEtiquetasService,
+    UploadService,
+    AngularFireDatabase
   ],
   bootstrap: [AppComponent]
 })

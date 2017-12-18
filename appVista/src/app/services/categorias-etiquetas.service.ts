@@ -12,16 +12,8 @@ export class CategoriasEtiquetasService {
     return this.listaCategorias;
   }
 
-  getEtiquetas () {
-    return this.listaEtiquetas;
-  }
-
   setListaCategorias (listaCategorias) {
     this.listaCategorias = listaCategorias;
-  }
-
-  setListaEtiquetas (listaEtiquetas) {
-    this.listaEtiquetas = listaEtiquetas;
   }
 
   setCategoria (valorCategoria) {

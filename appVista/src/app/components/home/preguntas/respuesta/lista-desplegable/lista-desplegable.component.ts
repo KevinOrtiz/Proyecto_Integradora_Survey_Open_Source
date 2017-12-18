@@ -3,6 +3,7 @@ import { RespuestasService } from '../../../../../services/respuestas.service';
 import {MatSnackBar} from '@angular/material';
 import { SnackBarMensajesComponent } from '../../snack-bar-mensajes/snack-bar-mensajes.component';
 import { SnackBarMensajesActualizadosComponent } from '../../snack-bar-mensajes-actualizados/snack-bar-mensajes-actualizados.component';
+import { PreguntasService } from '../../../../../services/preguntas.service';
 
 
 @Component({
@@ -15,7 +16,7 @@ export class ListaDesplegableComponent implements OnInit, AfterViewInit {
   private estaGuardado = false;
   private oldValue = '';
   constructor(private respuestas: RespuestasService,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar, private preguntaService: PreguntasService) { }
 
   ngOnInit() {
   }
@@ -35,6 +36,7 @@ export class ListaDesplegableComponent implements OnInit, AfterViewInit {
       this.snackBar.openFromComponent(SnackBarMensajesActualizadosComponent, { duration: 500});
 
     }
+    this.preguntaService.setEtiquetas('lista-desplegable');
     this.oldValue = this.input.nativeElement.value;
   }
 

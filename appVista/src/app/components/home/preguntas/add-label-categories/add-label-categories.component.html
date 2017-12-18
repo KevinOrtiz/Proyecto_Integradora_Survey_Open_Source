@@ -11,15 +11,6 @@
   </mat-select>
 </mat-form-field>
 <br>
-<h4>Etiqueta de la Pregunta</h4>
-<mat-form-field>
-  <mat-select placeholder="Etiqueta" (change)="guardarEtiqueta($event)" >
-    <mat-option>--</mat-option>
-    <mat-option *ngFor="let nodeEtiqueta of listaEtiquetas" [value]="nodeEtiqueta">
-      {{nodeEtiqueta.viewValue}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
 <mat-dialog-actions>
   <button class="btn btn-outline-success mb5 btn-rounded" (click)="cerrarVentana()">OK</button>
 </mat-dialog-actions>

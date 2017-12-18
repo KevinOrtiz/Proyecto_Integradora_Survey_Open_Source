@@ -1,0 +1,18 @@
+<div *ngIf="currentUpload">
+  <div class="progress">
+      <div class="progress-bar progress-bar-animated" [ngStyle]="{ 'width': currentUpload?.progress + '%' }"></div>
+  </div>
+  Progress: {{currentUpload?.name}} | {{currentUpload?.progress}}% Complete
+</div>
+
+<label>
+    <input type="file" (change)="detectedFiles($event)">
+</label>
+
+<button class="btn btn-outline-success"
+  [disabled]="!selectedFiles"
+  (click)="uploadSingle()">
+  Subir Foto
+</button>
+
+<button class="btn btn-icon btn-outline-success" (click)="cerrarVentana()">Ok</button>

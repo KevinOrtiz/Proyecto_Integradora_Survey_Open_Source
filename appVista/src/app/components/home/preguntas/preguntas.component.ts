@@ -16,6 +16,8 @@ import { AddLabelCategoriesComponent } from './add-label-categories/add-label-ca
 import { PreguntasService } from '../../../services/preguntas.service';
 import { isFakeMousedownFromScreenReader } from '@angular/cdk/a11y';
 import { SnackBarEliminarPreguntaComponent } from './snack-bar-eliminar-pregunta/snack-bar-eliminar-pregunta.component';
+import { UploadFormComponent } from '../../uploads/upload-form/upload-form.component';
+import { VerPreguntaComponent } from '../ver-pregunta/ver-pregunta.component';
 
 
 @Component({
@@ -46,6 +48,8 @@ export class PreguntasComponent implements OnInit {
   private LISTA_DESPLEGABLE = false;
   private lacajaRespuestasEstaVacia = true;
   private descripcionPreguntaEstaVacia = true;
+  private showButton = false;
+  private fotoCargada = false;
   constructor(private resolver: ComponentFactoryResolver, private respuestas: RespuestasService,
               private categoria: CategoriasEtiquetasService, private dialog: MatDialog, private preguntaServicio: PreguntasService,
               private snackBar: MatSnackBar) { }
@@ -54,7 +58,10 @@ export class PreguntasComponent implements OnInit {
     const categoriasLista = new CategoriasPreguntas();
     const EtiquetasLista = new EtiquetasPreguntas();
     this.categoria.setListaCategorias(categoriasLista.getListaCategorias());
-    this.categoria.setListaEtiquetas(EtiquetasLista.getListaEtiqueta());
+    this.preguntaServicio.setHistorialCambios();
+    this.preguntaServicio.setRegistroActual();
+    this.preguntaServicio.setIdUsuario();
+    this.preguntaServicio.setIdentificador(sessionStorage.getItem('id') + 'PREG');
   }
 
   addTipoRespuesta(tipo_De_Respuesta) {
@@ -136,15 +143,6 @@ export class PreguntasComponent implements OnInit {
     }else if (this.LISTA_DESPLEGABLE) {
       this.preguntaServicio.setRespuesta(this.respuestas.getListaDesplegable());
 
-    }else if (this.SI_NO) {
-      this.preguntaServicio.setRespuesta(this.respuestas.getSi_No());
-
-    }else if (this.DESCRIPCION) {
-      this.preguntaServicio.setRespuesta(this.respuestas.getDescripcion());
-
-    }else if (this.PUNTAJE) {
-      this.preguntaServicio.setRespuesta(this.respuestas.getPuntaje());
-
     }
 
   }
@@ -153,6 +151,7 @@ export class PreguntasComponent implements OnInit {
     const componentCasilleroFactory = this.resolver.resolveComponentFactory(CasillaComponent);
     const componentCasillero = this.casillaComponent.createComponent(componentCasilleroFactory);
     this.listaRespuestasCasilla.push(componentCasillero);
+    this.addRespuesta();
     console.log(this.listaRespuestasCasilla);
     return componentCasillero;
   }
@@ -171,6 +170,7 @@ export class PreguntasComponent implements OnInit {
     const componentRadioFactory = this.resolver.resolveComponentFactory(RadioComponent);
     const componentRadio = this.radioComponent.createComponent(componentRadioFactory);
     this.listaRespuestasRadio.push(componentRadio);
+    this.addRespuesta();
     console.log(this.listaRespuestasRadio);
     return componentRadio;
 
@@ -190,6 +190,7 @@ export class PreguntasComponent implements OnInit {
     const componentListaFactory = this.resolver.resolveComponentFactory(ListaDesplegableComponent);
     const componentLista = this.listaComponent.createComponent(componentListaFactory);
     this.listaRespuestasLista.push(componentLista);
+    this.addRespuesta();
     console.log(this.listaRespuestasLista);
     return componentLista;
 
@@ -221,29 +222,40 @@ export class PreguntasComponent implements OnInit {
         width: '350px'
       });
       dialogCategorias.afterClosed().subscribe(result => {
-        this.guardarPregunta.show();
+        this.preguntaServicio.setTopico(this.categoria.getCategoria());
+        this.showButton = true;
       });
     }
   }
+
+  /**
+   * Aqui se se llamara a la funcion que guardara el objeto pregunta en la base de datos
+   */
   guardarpregunta() {
     console.log('este dialogo se ha cerrado');
     console.log(this.respuestas.getDescripcion());
-    this.preguntaServicio.setTopico(this.categoria.getCategoria());
-    this.preguntaServicio.setEtiquetas(this.categoria.getEtiqueta());
-    this.preguntaServicio.setHistorialCambios();
-    this.preguntaServicio.setIdUsuario();
-    this.preguntaServicio.setRegistroActual();
-    this.preguntaServicio.setIdentificador(sessionStorage.getItem('id') + 'PREG');
-    this.addRespuesta();
     console.log(this.preguntaServicio.getObjectRespuesta());
   }
+
+  HabilitarBotonGuardar() {
+    this.guardarPregunta.show();
+  }
+
+  anadirFoto() {
+    const dialogCategorias = this.dialog.open(UploadFormComponent, {
+      width: '450px'
+    });
+    dialogCategorias.afterClosed().subscribe(result => {
+      this.fotoCargada = true;
+    });
+  }
   visualizarPregunta() {
+    const dialogVerPregunta = this.dialog.open(VerPreguntaComponent, {
+      width: '800px'
+    });
+    dialogVerPregunta.afterClosed().subscribe(result => {
+    });
   }
-
-  getObjetoPregunta() {
-
-  }
-
 
 }
 

@@ -72,6 +72,8 @@
     <div class="card mb40">
       <div class="card-top">
         <h4 class="card-title">Descripcion de la pregunta</h4>
+        <br>
+        <button class="btn btn-icon btn-outline-success" (click)="anadirFoto()"><i class="fas fa-camera-retro"></i></button>
       </div>
       <div class="card-content">
         <div class="section">
@@ -83,6 +85,9 @@
               <i class="fas fa-font"></i>
             </span>
           </label>
+          <div class="alert alert-success" role="alert" *ngIf="fotoCargada">
+            Foto cargada Exitosamente !
+          </div>
         </div>
       </div>
       <h4 class="card-title text-center">Seccion de Respuesta</h4>
@@ -120,13 +125,16 @@
         <br>
         <hr>
         <button class="btn btn-outline-success mb5 btn-rounded" (click)="setCategoriaPregunta()">
-          Categoria y Tipo de Pregunta
+          Categoria de la Pregunta
         </button>
 
 
-        <button class="btn btn-outline-success mb5 btn-rounded" (click)="visualizarPregunta()">
+        <button class="btn btn-outline-success mb5 btn-rounded" (click)="visualizarPregunta()" *ngIf="showButton">
           Visualizar Pregunta
           </button>
+        <button class="btn btn-outline-success mb5 btn-rounded" (click)="HabilitarBotonGuardar()" *ngIf="showButton">
+          Guardar Pregunta
+        </button>
       </div>
     </div>
   </div>
