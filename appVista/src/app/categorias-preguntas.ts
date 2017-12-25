@@ -4,13 +4,13 @@ export class CategoriasPreguntas {
        const listaCategoria = [{
             principal: 'Ciencias Computacionales',
             subcategoria: [
-                { value: 'InteligenciaArtificial', viewValue: 'Inteligencia Artificial' },
-                { value: 'InteraccionHombreMaquina', viewValue: 'Interaccion Hombre Maquina' },
-                { value: 'AnalisisDatos', viewValue: 'Analisis de Datos' },
-                { value: 'Metodologias de Investigacion', viewValue: 'Interaccion Hombre Maquina' },
-                { value: 'ProgramacionBasica', viewValue: 'Programacion Basica' },
-                { value: 'SeguridadInformacion', viewValue: 'Seguridad de Informacion' },
-                { value: 'IngenieriaSoftware', viewValue: 'Ingenieria de Software' }
+                { value: 'Inteligencia_Artificial', viewValue: 'Inteligencia Artificial' },
+                { value: 'Interaccion_Hombre_Maquina', viewValue: 'Interaccion Hombre Maquina' },
+                { value: 'Analisis_Datos', viewValue: 'Analisis de Datos' },
+                { value: 'Metodologias_de_Investigacion', viewValue: 'Interaccion Hombre Maquina' },
+                { value: 'Programacion_Basica', viewValue: 'Programacion Basica' },
+                { value: 'Seguridad_Informacion', viewValue: 'Seguridad de Informacion' },
+                { value: 'Ingenieria_Software', viewValue: 'Ingenieria de Software' }
             ]
         },
         {
@@ -18,8 +18,8 @@ export class CategoriasPreguntas {
             subcategoria: [
                 { value: 'Calculo1 ', viewValue: 'Calculo 1' },
                 { value: 'Calculo2 ', viewValue: 'Calculo 2' },
-                { value: 'EcuacionesDiferenciales', viewValue: 'Ecuaciones Diferenciales' },
-                { value: 'Algebralineal', viewValue: 'Algebra Lineal' }
+                { value: 'Ecuaciones_Diferenciales', viewValue: 'Ecuaciones Diferenciales' },
+                { value: 'Algebra_lineal', viewValue: 'Algebra Lineal' }
             ]
         },
         {

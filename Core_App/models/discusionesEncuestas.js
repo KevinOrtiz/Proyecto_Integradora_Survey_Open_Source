@@ -5,7 +5,7 @@ const discusionEncuestaSchema = new schema({
     identificador:String,
     titulo:String,
     descripcion:String,
-    creador_ID:Number,
+    creador_ID:String,
     etiquetas:[{
         texto:{
             type:String

@@ -14,6 +14,7 @@ export class DescripcionComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.respuestas.setDescripcion();
+    this.preguntaServicio.setEtiquetas('libre');
     this.preguntaServicio.setRespuesta(this.respuestas.getDescripcion());
   }
   ngAfterViewInit() {

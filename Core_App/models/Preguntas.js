@@ -1,51 +1,28 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const pagination = require('mongoose-paginate');
 
 const PreguntaSchema = new Schema({
     identificador:String,
-    descripcion:{
-        type:String,
-        validate:{
-            validator:(descripcion)=>descripcion.length>5,
-            message: 'La descripcion debe tener mas de una palabra'
-        },
-        required:[true, 'La descripcion es necesaria,le da contexto a la pregunta']
-    },
-    usuario_ID:{
-        type:Number,
-        validate:{
-            validator:(usuario_ID)=>usuario_ID.length!=null,
-            message:'El ID del usuario debe ser numerico y diferente de cero'
-        },
-        required:[true,'Es necesario conocer el ID del creador de la pregunta']
-    },
+    descripcion:String,
+    usuario_ID: String,
     historial_cambios:[{
-        texto:{
-            type:String
-        }
+        texto:String
     }],
     registroActual:Boolean,
-    etiquetas:[{
-        texto:{
-            type:String
-        },
-        color:{
-            type:String
-        }
+    listaImagen:[{
+        url: String
     }],
-    topicos:[{
-        texto:{
-           type:String
-        }
-    }],
+    etiquetas:{
+        texto: String
+    },
+    topicos:{
+        texto: String
+    },
     respuestas:[{
-        id: Number,
-        texto:{
-            type:String
-        },
-        tipoRespuesta:{
-            type:String
-        }
+        id: String,
+        texto:String,
+        tipoRespuesta:String
     }],
     comentarios:[{
         type:Schema.Types.ObjectId,
@@ -84,6 +61,8 @@ PreguntaSchema.virtual('listaTopicosPreguntas').get(()=>{
 PreguntaSchema.virtual('listaEtiquetasPreguntas').get(()=>{
    return this.etiquetas;
 });
+PreguntaSchema.index({topicos:'text'});
+PreguntaSchema.plugin(pagination);
 
 const Pregunta = mongoose.model('pregunta',PreguntaSchema);
 

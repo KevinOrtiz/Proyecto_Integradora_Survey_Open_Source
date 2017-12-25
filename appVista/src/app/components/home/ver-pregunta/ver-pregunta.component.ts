@@ -20,6 +20,14 @@ export class VerPreguntaComponent implements OnInit {
       console.log(this.preguntaServicio.getObjectRespuesta());
       this.objetoPregunta = this.preguntaServicio.getObjectRespuesta();
       console.log(this.objetoPregunta.respuestas.tipoRespuesta);
+    }else {
+      this.preguntaServicio.loadPregunta().subscribe((res) => {
+        console.log('********');
+        console.log(res['pregunta'].listaImagen.url);
+        console.log('*********');
+        this.objetoPregunta = res['pregunta'];
+        console.log(this.objetoPregunta.listaImagen);
+      });
     }
   }
 

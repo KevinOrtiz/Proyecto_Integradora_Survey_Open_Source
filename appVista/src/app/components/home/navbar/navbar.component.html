@@ -9,7 +9,7 @@
           <li class="nav-heading">
               <span>Principal</span>
           </li>
-          <a href="#" style="color:black">
+          <a [routerLink]="['/home','tablero']" style="color:black">
               <i class="fas fa-home"></i>
               <span class="nav-text">Tablero de Actividades</span>
           </a>
@@ -20,7 +20,7 @@
               </a>
               <ul aria-expanded="false" class="metis-secondary">
                   <li class="active">
-                      <a href="#">Preguntas</a>
+                      <a [routerLink]="['/home','portalPregunta']">Preguntas</a>
                   </li>
                   <li>
                       <a href="#">Encuestas</a>

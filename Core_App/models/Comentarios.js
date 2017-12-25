@@ -8,12 +8,12 @@ const comentarioSchame = new Schame({
            type:String
        },
        ID:{
-           type:Number
+           type:String
        }
    },
    contenido:String,
-   fecha_creacion:String,
-   fecha_actualizacion:String,
+   fecha_creacion:{ type: Date, default: Date.now },
+   fecha_actualizacion:{ type: Date, default: Date.now },
    likes:Number,
    dislikes:Number,
    favoritos:Number,

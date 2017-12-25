@@ -14,6 +14,7 @@ export class SiNoComponent implements OnInit, AfterViewInit {
   constructor(private respuestas: RespuestasService, private preguntaServicio: PreguntasService) { }
 
   ngOnInit() {
+    this.preguntaServicio.setEtiquetas('si/no');
     this.preguntaServicio.setRespuesta(this.respuestas.getSi_No());
   }
   ngAfterViewInit() {

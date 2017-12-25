@@ -1,45 +1,47 @@
 <div class="container">
   <div class="content">
+    <h4 mat-dialog-title class="text-center">Vista Previa de la Pregunta</h4>
+    <mat-dialog-content>
     <div class="row">
       <div class="act-content">
         <div class="font400">
-          <h4>{{ objetoPregunta.descripcion }}</h4>
+          <p>{{ objetoPregunta?.descripcion }}</p>
         </div>
         <br>
         <div class="mb10">
-          <span class="label label-default">{{ objetoPregunta.topicos }}</span>
+          <span class="label label-default">{{ objetoPregunta?.topicos }}</span>
         </div>
         <br>
-      <div class = "imagen col col-md-12" *ngIf="objetoPregunta.listaImagen.url" >
-          <img [src]="objetoPregunta.listaImagen.url" >
+      <div class = "imagen col col-md-12" *ngIf="objetoPregunta?.listaImagen.url" >
+          <img [src]="objetoPregunta?.listaImagen.url" >
           <br>
         </div>
       </div>
       <div class= "respuestas col col-md-12">
-        <div *ngIf="objetoPregunta.respuestas[0].tipoRespuesta == 'casillas'">
-          <div *ngFor="let respuesta of objetoPregunta.respuestas; let i=index">
+        <div *ngIf="objetoPregunta?.respuestas[0].tipoRespuesta == 'casillas'">
+          <div *ngFor="let respuesta of objetoPregunta?.respuestas; let i=index">
             <mat-checkbox>{{ respuesta.texto }}</mat-checkbox>
           </div>
           <br>
         </div>
-        <div *ngIf="objetoPregunta.respuestas[0].tipoRespuesta == 'radios'">
-          <div *ngFor="let respuesta of objetoPregunta.respuestas; let i=index">
+        <div *ngIf="objetoPregunta?.respuestas[0].tipoRespuesta == 'radios'">
+          <div *ngFor="let respuesta of objetoPregunta?.respuestas; let i=index">
               <mat-radio-button value="i">{{ respuesta.texto }}</mat-radio-button>
           </div>
           <br>
         </div>
-        <div *ngIf="objetoPregunta.respuestas[0].tipoRespuesta == 'lista'">
+        <div *ngIf="objetoPregunta?.respuestas[0].tipoRespuesta == 'lista'">
             <mat-select placeholder="Respuestas">
-              <mat-option *ngFor="let respuesta of objetoPregunta.respuestas" [value]="respuesta.texto">
+              <mat-option *ngFor="let respuesta of objetoPregunta?.respuestas" [value]="respuesta.texto">
                   {{ respuesta.texto }}
               </mat-option>
             </mat-select>
             <br>
          </div>
-        <div *ngIf="objetoPregunta.respuestas[0].tipoRespuesta == 'puntaje'">
+        <div *ngIf="objetoPregunta?.respuestas[0].tipoRespuesta == 'puntaje'">
           <div class="smart-forms">
             <div class="section">
-                <div class="rating-wrapper centrar" *ngFor="let item of objetoPregunta.respuestas">
+                <div class="rating-wrapper centrar" *ngFor="let item of objetoPregunta?.respuestas">
                     <input class="rating-input" id="r{{ item }}" type="radio" name="custom" checked>
                     <label class="rating-star estilo" for="r{{ item }}"> 
                     <i class = "fas fa-star"> 
@@ -50,18 +52,19 @@
           </div>
           <br>
         </div>
-        <div *ngIf="objetoPregunta.respuestas[0].tipoRespuesta == 'abierta'">
+        <div *ngIf="objetoPregunta?.respuestas[0].tipoRespuesta == 'abierta'">
             <textarea matInput placeholder="Respuesta Abierta"></textarea>
             <br>
             <br>
         </div>
         
-        <div *ngIf="objetoPregunta.respuestas[0].tipoRespuesta == 'si/no'">
+        <div *ngIf="objetoPregunta?.respuestas[0].tipoRespuesta == 'si/no'">
           <mat-slide-toggle>Si/No</mat-slide-toggle>
           <br>
         </div>
       </div>
     </div>
+  </mat-dialog-content>
   </div>
 <button class="btn  btn-outline-success center" (click)="cerrarVentana()">
   Cerra Vista Previa

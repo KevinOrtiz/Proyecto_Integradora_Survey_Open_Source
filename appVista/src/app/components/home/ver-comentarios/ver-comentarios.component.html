@@ -1,0 +1,56 @@
+<div class="content">
+  <app-ingresar-comentarios></app-ingresar-comentarios>
+  <br>
+  <div class="container">
+    <div *ngIf="listaComentarios">
+      <div *ngFor="let item of listaComentarios">
+        <mat-card class="card">
+          <mat-card-header>
+            <img mat-card-avatar [src]="item?.urlUsuario">
+            <mat-card-title>{{ item?.creador }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            {{ item?.descripcion }}
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-icon-button class="favorite" (click)="addFavorite(item?.idComentario)">
+              <mat-icon>favorite</mat-icon>
+              <p> {{ item?.numeroFavorite }}</p>
+            </button>
+            <button mat-icon-button class="thumbsUp" (click)="addLikes(item?.idComentario)">
+              <mat-icon>thumb_up</mat-icon>
+              <p> {{ item?.numeroLike }}</p>
+            </button>
+            <button mat-icon-button class="thumbsDown" (click)="addDislike(item?.idComentario)">
+              <mat-icon>thumb_down</mat-icon>
+              <p>{{ item?.numeroDislike }}</p>
+
+            </button>
+            <button mat-icon-button class="comments" (click)="CargarSubcomentario(item?.idComentario)">
+              <mat-icon>comment</mat-icon>
+              <p> {{ item?.numeroComentarios }} </p>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+
+      </div>
+    </div>
+    <div class="col col-md-12">
+      <h3>Eres el primero en comentar!</h3>
+    </div>
+    <div infiniteScroll [infiniteScrollDistance]="0.1" [infiniteScrollThrottle]="1000" (scrolled)="onScroll()">
+    </div>
+    <br>
+    <br>
+    <div *ngIf="!finished" class="cargando">
+      <mat-spinner></mat-spinner>
+    </div>
+    <hr>
+    <div *ngIf="finished">
+      end of database
+    </div>
+
+
+  </div>
+
+</div>

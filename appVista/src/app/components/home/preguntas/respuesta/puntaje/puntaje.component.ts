@@ -18,6 +18,7 @@ export class PuntajeComponent implements OnInit {
      this.arreglos.push(i);
     }
     this.respuestas.setPuntaje(5);
+    this.preguntaServicio.setEtiquetas('puntaje');
     this.preguntaServicio.setRespuesta(this.respuestas.getPuntaje());
   }
 

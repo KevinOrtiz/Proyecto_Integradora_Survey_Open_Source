@@ -1,11 +1,19 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import 'rxjs/add/operator/map';
+import { Preguntas } from '../preguntas';
+
+
 
 @Injectable()
 export class PreguntasService {
   private objetoPregunta: any;
   private contadorIdentificador = 1;
   private vieneDatosServidor = false;
-  constructor() {
+  private idPregunta ;
+  private urlServicio = '/apiRest/guardarPregunta' ;
+  constructor(private http: HttpClient) {
     this.objetoPregunta = {
       identificador: '',
       descripcion: '',
@@ -29,6 +37,13 @@ export class PreguntasService {
         tipoRespuesta: ''
       }]
     };
+  }
+
+  private getHeaders(): HttpHeaders {
+    const headers = new HttpHeaders({
+      'x-access-token': '' +  sessionStorage.getItem('token')
+    });
+    return headers;
   }
 
   getFlagDatosServidor () {
@@ -66,5 +81,45 @@ export class PreguntasService {
   getObjectRespuesta() {
     return this.objetoPregunta;
   }
+
+  enviarPreguntaServidor () {
+    const headers = this.getHeaders();
+    return this.http.post(this.urlServicio, {pregunta: this.getObjectRespuesta()}, { headers})
+                    .map((res: Response) => {
+                    return res;
+    });
+  }
+
+  setFlagDatosServidor() {
+    this.vieneDatosServidor = true;
+  }
+  setIdPregunta (id) {
+    this.idPregunta = id;
+  }
+  loadPregunta() {
+    const headers = this.getHeaders();
+    const url = '/apiRest/verPregunta/?id=' + this.idPregunta;
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      return res;
+                    });
+  }
+  loadListaPregunta (page) {
+    const headers = this.getHeaders();
+    const url = '/apiRest/listPreguntas/?page=' + page;
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      return res;
+                    });
+  }
+  loadPreguntasByCategory (categoria, page) {
+    const headers = this.getHeaders();
+    const url = '/apiRest/queryPreguntas/?topico=' + categoria + '&page=' + page;
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      return res;
+                    });
+  }
+
 
 }

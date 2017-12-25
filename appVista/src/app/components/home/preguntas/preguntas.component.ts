@@ -50,6 +50,7 @@ export class PreguntasComponent implements OnInit {
   private descripcionPreguntaEstaVacia = true;
   private showButton = false;
   private fotoCargada = false;
+  private showLoading: boolean;
   constructor(private resolver: ComponentFactoryResolver, private respuestas: RespuestasService,
               private categoria: CategoriasEtiquetasService, private dialog: MatDialog, private preguntaServicio: PreguntasService,
               private snackBar: MatSnackBar) { }
@@ -235,6 +236,12 @@ export class PreguntasComponent implements OnInit {
     console.log('este dialogo se ha cerrado');
     console.log(this.respuestas.getDescripcion());
     console.log(this.preguntaServicio.getObjectRespuesta());
+    this.showLoading = true;
+    this.preguntaServicio.enviarPreguntaServidor().subscribe((response) => {
+    this.showLoading = false;
+    this.guardadoExitoso.show();
+      console.log(response);
+    });
   }
 
   HabilitarBotonGuardar() {

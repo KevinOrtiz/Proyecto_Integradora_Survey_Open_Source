@@ -30,7 +30,10 @@
     "mocha": "^4.0.1",
     "moment": "^2.19.4",
     "mongoose": "^4.13.4",
+    "mongoose-paginate": "^5.0.3",
     "morgan": "^1.9.0",
+    "node-async-loop": "^1.2.2",
+    "nodemailer": "^4.4.1",
     "nodemon": "^1.12.1",
     "redis": "^2.8.0"
   },

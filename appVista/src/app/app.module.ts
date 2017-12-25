@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatDialogModule} from '@angular/material/dialog';
+import {MatDialogModule} from '@angular/material';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
@@ -32,7 +32,6 @@ import { ListaDesplegableComponent } from './components/home/preguntas/respuesta
 import { RespuestasService } from './services/respuestas.service';
 import { PreguntasService } from './services/preguntas.service';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
-import { UploadImagesComponent } from './components/home/preguntas/upload-images/upload-images.component';
 import { AddLabelCategoriesComponent } from './components/home/preguntas/add-label-categories/add-label-categories.component';
 import { CategoriasEtiquetasService } from './services/categorias-etiquetas.service';
 import { SnackBarMensajesComponent } from './components/home/preguntas/snack-bar-mensajes/snack-bar-mensajes.component';
@@ -48,8 +47,19 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatButtonModule} from '@angular/material';
+import {MatCardModule} from '@angular/material/card';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatIconModule} from '@angular/material/icon';
+import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import 'hammerjs';
-
+import { PortalPreguntasComponent } from './components/home/portal-preguntas/portal-preguntas.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { ComentariosService } from './services/comentarios.service';
+import { VerComentariosComponent } from './components/home/ver-comentarios/ver-comentarios.component';
+import { IngresarComentariosComponent } from './components/home/ingresar-comentarios/ingresar-comentarios.component';
+import { ListaSubComentariosComponent } from './components/home/lista-sub-comentarios/lista-sub-comentarios.component';
 
 
 export const firebaseConfig = {
@@ -83,13 +93,16 @@ export const firebaseConfig = {
     PuntajeComponent,
     DescripcionComponent,
     ListaDesplegableComponent,
-    UploadImagesComponent,
     AddLabelCategoriesComponent,
     SnackBarMensajesComponent,
     SnackBarEliminarPreguntaComponent,
     SnackBarMensajesActualizadosComponent,
     UploadFormComponent,
     VerPreguntaComponent,
+    PortalPreguntasComponent,
+    VerComentariosComponent,
+    IngresarComentariosComponent,
+    ListaSubComentariosComponent,
   ],
   imports: [
     BrowserModule,
@@ -100,17 +113,25 @@ export const firebaseConfig = {
     SweetAlert2Module.forRoot(),
     BrowserAnimationsModule,
     MatDialogModule,
+    InfiniteScrollModule,
     MatSelectModule,
     MatSnackBarModule,
+    FormsModule,
+    ReactiveFormsModule,
     MatInputModule,
     MatCheckboxModule,
     MatRadioModule,
     MatSlideToggleModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatButtonModule,
+    MatCardModule,
+    MatMenuModule,
+    MatIconModule,
+    MatProgressSpinnerModule
   ],
   entryComponents: [
     AddLabelCategoriesComponent, SnackBarMensajesComponent, SnackBarEliminarPreguntaComponent,
-    SnackBarMensajesActualizadosComponent, UploadFormComponent, VerPreguntaComponent, VerPreguntaComponent
+    SnackBarMensajesActualizadosComponent, UploadFormComponent, VerPreguntaComponent, VerComentariosComponent
   ],
   providers: [
     LoginService,
@@ -119,7 +140,8 @@ export const firebaseConfig = {
     PreguntasService,
     CategoriasEtiquetasService,
     UploadService,
-    AngularFireDatabase
+    AngularFireDatabase,
+    ComentariosService
   ],
   bootstrap: [AppComponent]
 })

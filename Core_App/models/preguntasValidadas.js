@@ -12,7 +12,7 @@ const PreguntaValidadasSchema = new Schema({
         required:[true, 'La descripcion es necesaria,le da contexto a la pregunta']
     },
     usuario_ID:{
-        type:Number,
+        type:String,
         validate:{
             validator:(usuario_ID)=>usuario_ID.length!=null,
             message:'El ID del usuario debe ser numerico y diferente de cero'

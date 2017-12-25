@@ -5,7 +5,7 @@ const EncuestaSchema = new Schema({
     identificador:String,
     titulo:String,
     descripcion:String,
-    usuario_ID:Number,
+    usuario_ID:String,
     fecha_creacion:String,
     fecha_edicion:String,
     colaboradores:[{

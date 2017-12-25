@@ -1,0 +1,96 @@
+
+<div class="form-container">
+    <mat-form-field>
+      <input matInput placeholder="Busqueda por categoria de la pregunta"
+         [(ngModel)]="textoBusqueda"
+        [formControl]="searchField">
+    </mat-form-field>
+  </div>
+
+<div *ngFor="let pregunta of preguntas">
+    <mat-card class="example-card">
+        <mat-card-header>
+          <img mat-card-avatar [src]="pregunta?.urlUsuario" >
+          <mat-card-title>{{ pregunta?.creador }}</mat-card-title>
+          <mat-card-subtitle>categoria: {{ pregunta?.topicos.texto }}</mat-card-subtitle>
+          <hr>
+          <hr>
+          <div *ngIf="pregunta?.etiquetas.texto === 'radio' || pregunta?.etiquetas.texto === 'casilla' || pregunta?.etiquetas.texto === 'lista-desplegable'" >
+          <mat-card-subtitle>Tipo De pregunta:Opciones Multiples</mat-card-subtitle>
+          </div>
+          <div *ngIf="pregunta?.etiquetas.texto === 'si/no'" >
+            <mat-card-subtitle>Tipo De pregunta:Si/No</mat-card-subtitle>
+          </div>
+          <div *ngIf="pregunta?.etiquetas.texto === 'libre'" >
+            <mat-card-subtitle>Tipo De pregunta:Libre</mat-card-subtitle>
+          </div>
+          <div *ngIf="pregunta?.etiquetas.texto === 'puntaje'">
+              <mat-card-subtitle>Tipo De pregunta:Rating de 5 estrella</mat-card-subtitle>
+          </div>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="verPregunta(pregunta?._id)">
+                <mat-icon>remove_red_eye</mat-icon>
+                <span>Ver pregunta</span>
+            </button>
+            <button mat-menu-item (click)="crearDiscusion(pregunta?._id)">
+                <mat-icon>open_in_new</mat-icon>
+                <span>Crear Discusion</span>
+            </button>
+          </mat-menu>
+        </mat-card-header>
+        <mat-card-content>
+          {{  pregunta?.descripcion  }}
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-icon-button (click)="verListaDiscusiones(pregunta?._id)" class="btndiscusiones">
+                <mat-icon>report_problem {{ pregunta?.numeroDiscusiones }} </mat-icon>
+                <p>{{ pregunta?.numeroDiscusiones }}</p>
+            </button>
+            <button mat-icon-button (click)="verListadoComentarios(pregunta?._id)" class="btncomentarios">
+                <mat-icon>comment</mat-icon>
+                <p> {{ pregunta?.numeroComentarios}}</p>
+            </button>
+        </mat-card-actions>
+         <mat-card-footer>
+            <mat-form-field class="width-comment">
+                <textarea  matInput #valueComentario placeholder="Dejanos tu comentario"></textarea>
+            </mat-form-field>
+            <mat-card-actions>
+              <button mat-icon-button (click)="addLikes()">
+                <mat-icon>thumb_up</mat-icon>
+              </button>
+              <button mat-icon-button (click)="addDislikes()">
+                <mat-icon>thumb_down</mat-icon>
+              </button>
+              <button mat-icon-button (click)="addFavourite()">
+                <mat-icon>favorite</mat-icon>
+              </button>
+              <button mat-icon-button (click)="sendComment(pregunta?._id,valueComentario.value)">
+                <mat-icon>send</mat-icon>
+              </button>
+            </mat-card-actions>
+        </mat-card-footer>
+      </mat-card>
+</div>
+
+<hr>
+
+<div
+  infiniteScroll
+  [infiniteScrollDistance]="0.1"
+  [infiniteScrollThrottle]="1000"
+  (scrolled)="onScroll()">
+</div>
+<br>
+<br>
+<div *ngIf="!finished" class="cargando">
+    <mat-spinner></mat-spinner>
+</div>
+<hr>
+<div *ngIf="finished" >
+  end of database
+</div>
+
