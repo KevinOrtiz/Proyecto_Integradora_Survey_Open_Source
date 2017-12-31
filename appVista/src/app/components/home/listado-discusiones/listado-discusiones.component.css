@@ -1,0 +1,26 @@
+.card{
+    width: 600px;
+    position: relative;
+    left: 180px;
+}
+
+.btncomentarios{
+    position: relative;
+    left: 400px;
+
+}
+
+p{
+    position: absolute;
+    top: 8px;
+}
+
+mat-icon{
+    color:gray;
+}
+
+.cargando{
+    position: relative;
+    left: 390px;
+    font-size: 10px;
+}

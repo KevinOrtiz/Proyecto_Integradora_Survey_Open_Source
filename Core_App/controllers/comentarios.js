@@ -1,292 +1,383 @@
 const Comentario = require('../models/Comentarios');
 const Pregunta = require('../models/Preguntas');
-const Encuesta = require('../models/Encuesta');
-const discusionPregunta = require('../models/discusionesPregutas');
-const discusionEncuesta = require('../models/discusionesEncuestas');
-
-/**
- * Guardar un comentario principal
- * @param req
- * @param resp
- * @param next
- */
-
-exports.guardarComentarioPregunta = (req,resp,next)=>{
-    let comentario = new Comentario(req.body.comentario);
-    comentario.save()
-        .then(()=>{
-         Pregunta.findOne({identificador:req.body.pregunta.identificador})
-             .then((pregunta)=>{
-             pregunta.comentarios.push(comentario);
-             return resp.json({status:'ok',codec:200});
-
-             });
-        });
-
-};
-/**
- *
- * Guardar un comentario de una encuesta
- * @param req
- * @param resp
- * @param next
- */
-
-exports.guardarComentarioEncuesta = (req,resp,next)=>{
-    let comentario = new Comentario(req.body.comentario);
-    comentario.save()
-        .then(()=>{
-         Encuesta.findOne({identificador:req.body.encuesta.identificador})
-             .then((encuesta)=>{
-             encuesta.comentarios.push(comentario);
-             return resp.json({status:'ok',codec:200});
-             });
-        });
+const Usuario = require('../models/Usuarios');
+const correo = require('../correo');
+let asyncloop = require('node-async-loop');
 
 
-};
+exports.guardarComentario = (req, resp, next) => {
+    var responseComentario = {
+        creador: '',
+        urlUsuario: '',
+        descripcion: req.body.comentario.contenido,
+        numeroFavorite: 0,
+        numeroLike: 0,
+        numeroDislike: 0,
+        numeroComentarios: 0,
+        idComentario:''
+    };
+    console.log(req.body.comentario);
+    console.log(req.body.idCategoria);
+    if (req.body.tipo === 'comentario') {
+        Usuario.findOne({
+                '_id': req.body.comentario.creador.ID
+            })
+            .then((usuario) => {
+                req.body.comentario.creador.nombre = usuario.nombre + usuario.apellido;
+                responseComentario.creador = usuario.nombre + usuario.apellido;
+                responseComentario.urlUsuario = usuario.urlImage;
+                var comentario = new Comentario(req.body.comentario);
+                console.log(comentario);
+                responseComentario.idComentario = comentario._id;
+                comentario.save()
+                    .then(() => {
+                        Comentario.findByIdAndUpdate({
+                            '_id': req.body.idCategoria
+                        }, {
+                            $push: {
+                                'listaSubComentarios': comentario
+                            }
+                        }, {
+                            'new': true,
+                            'upsert': true
+                        }).then((comentario, error) => {
+                            if (error) {
+                                console.log("HAY UN ERROR EN LA ACTUALIZACION");
+                                console.log(error);
+                            } else {
+                                console.log(comentario);
+                                Usuario.findOne({
+                                        '_id': comentario.creador.ID
+                                    })
+                                    .then((usuario) => {
+                                        correo.sendComentarioCreado(usuario.correo,req.body.comentario.contenido);
+                                    });
+                            }
+                            return resp.json({'comentarios':responseComentario});
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+                    }).catch((error) => {
+                        console.log(error);
+                    });
 
-/**
- *
- * Guardar un comentario de una discusion de una pregunta en especifico
- * @param req
- * @param resp
- * @param next
- */
-exports.guardarComentarioDiscusionPregunta = (req,resp,next)=>{
-  let comentario = new Comentario(req.body.comentario);
-  comentario.save()
-      .then(()=>{
-        discusionPregunta.findOne({identificador:req.body.discusionPregunta.identificador})
-            .then((discusionPregunta)=>{
-                discusionPregunta.comentarios.push(comentario);
-                return resp.json({status:'ok',codec:200});
+            }).catch((error) => {
+                console.log(error);
             });
-      });
-};
 
-/**
- *
- * Guardar un comentario de una discusion de una encuesta en especifico
- * @param req
- * @param resp
- * @param next
- */
-exports.guardarComentarioDiscusionEncuesta = (req,resp,next)=>{
-  let comentario = new Comentario(req.body.comentario);
-  comentario.save()
-      .then(()=>{
-        discusionEncuesta.findOne({identificador:req.body.discusionEncuesta.identificador})
-            .then((discusionEncuesta)=>{
-                discusionEncuesta.comentarios.push(comentario);
-                return resp.json({status:'ok',codec:200});
+    } else if (req.body.tipo === 'pregunta') {
+        Usuario.findOne({
+                '_id': req.body.comentario.creador.ID
+            })
+            .then((usuario) => {
+                req.body.comentario.creador.nombre = usuario.nombre + usuario.apellido;
+                responseComentario.creador = usuario.nombre + usuario.apellido;
+                responseComentario.urlUsuario = usuario.urlImage;
+                console.log(req.body.comentario);
+                var comentario = new Comentario(req.body.comentario);
+                responseComentario.idComentario = comentario._id;
+                comentario.save()
+                    .then(() => {
+                        Pregunta.findByIdAndUpdate({
+                            '_id': req.body.idCategoria
+                        }, {
+                            $push: {
+                                'comentarios': comentario
+                            }
+                        }, {
+                            'new': true,
+                            'upsert': true
+                        }).then((pregunta, error) => {
+                            if (error) {
+                                console.log("HAY UN ERROR EN LA ACTUALIZACION");
+                                console.log(error);
+                            } else {
+                                console.log(pregunta);
+                                Usuario.findOne({
+                                        '_id': pregunta.usuario_ID
+                                    })
+                                    .then((usuario) => {
+                                        correo.sendComentarioCreado(usuario.correo, req.body.comentario.contenido);
+                                    }).catch((error) => {
+                                        console.log(error);
+                                    });
+                            }
+                            return resp.json({
+                                'comentarios': responseComentario
+                            })
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+
+            }).catch((error) => {
+                console.log(error);
             });
-      });
-};
 
-/**
- *
- * Guardar un comentario y que este se referencie al comentario padre
- * Este guardado se da cuando un usuario guarda un comentario dentro de otro comentario
- * @param req
- * @param resp
- * @param next
- */
+    }
+}
 
-exports.guardarSubcomentario = (req,resp,next)=>{
-    let comentario = new Comentario(req.body.comentario);
-    comentario.save()
-        .then(()=>{
-            Comentario.findOne({identificador:req.body.idComentario})
-                .then((objcomentario)=>{
-                    objcomentario.listaSubComentarios.push(comentario);
-                    resp.json({codec:200,status:'ok'});
+
+exports.addPost = (req, resp, next) => {
+    console.log(req.body)
+    var tipoPost = req.body.comentario.tipo;
+    var valor;
+    console.log(tipoPost);
+    Comentario.findByIdAndUpdate({
+            '_id': req.body.comentario.ID
+        }, {
+            $inc: {
+                [tipoPost]: req.body.comentario.Posts
+            }
+        }, {
+            'new': true,
+            'upsert': true
+        })
+        .then((comentario, error) => {
+            if (error) {
+                console.log("existe un error en la actualizacion");
+                console.log(error);
+            } else {
+                console.log("se actualizo el like");
+                console.log(comentario);
+                if (tipoPost == 'likes'){
+                    valor = comentario.likes;
+                }else{
+                    valor = comentario.dislikes;
+                }
+                return resp.json({
+                    "status": 200,
+                    "messaje": 'se actualizo',
+                    'idComentario':comentario._id,
+                    'valor':valor
                 });
+            }
         });
-};
+}
 
-
-/**
- * Esta funcion lo que hace es cargar todos los comentarios referente a una pregunta
- * @param req
- * @param resp
- * @param next
- */
-exports.cargarComentarioPregunta = (req,resp,next)=>{
-    Pregunta.findOne({identificador:req.query.pregunta.identificador})
-        .populate({
-            path:'comentarios',
-            populate:{
-              path:'listaSubComentarios',
-              model:'comentario'
+exports.addFavoritos = (req, resp, next) => {
+    Comentario.findByIdAndUpdate({
+            '_id': req.body.comentario.ID
+        }, {
+            $inc: {
+                'favoritos': req.body.comentario.favoritos
             }
+        }, {
+            'new': true,
+            'upsert': true
         })
-        .then((pregunta)=>{
-            let comentariosPreguntas = pregunta.comentarios;
-            return resp.json({comentarios:comentariosPreguntas});
+        .then((comentario, error) => {
+            if (error) {
+                console.log("existe un error en la actualizacion");
+                console.log(error);
+            } else {
+                console.log("se anadio el favoritos");
+                console.log(comentario);
+                return resp.json({
+                    "status": 200,
+                    "messaje": 'se actualizo',
+                    'idComentario':comentario._id,
+                    'valor':comentario.favoritos
+                });
 
-        })
-
-
-};
-
-/**
- * Esta funcion lo que hace es cargar todos los comentarios referente a una encuesta
- * @param req
- * @param resp
- * @param next
- */
-
-exports.cargarComentarioByEncuesta = (req,resp,next)=>{
-    Encuesta.findOne({identificador:req.query.encuesta.identificador})
-        .populate({
-            path:'comentarios',
-            populate:{
-              path:'listaSubComentarios',
-              model:'comentario'
             }
-        })
-        .then((encuesta)=>{
-            let comentariosEncuestas = encuesta.comentarios;
-            return resp.json({comentarios:comentariosEncuestas});
-        })
+        });
+}
 
-};
+exports.loadListaComentario = (req, resp, next) => {
+    var skip = req.query.page * 5;
+    var listaComentarios;
+    console.log(skip);
 
-/**
- * Esta funcion lo que hace es cargar los comentarios referente a una discusion de una pregunta
- * @param req
- * @param resp
- * @param next
- */
+    if (req.query.tipocategoria === 'pregunta') {
+        // primero obtenemos la longitud de los comentarios referente a una pregunta
+        const comentarios = [];
+        Pregunta.findOne({
+                '_id': req.query.idcategoria
+            })
+            .then((pregunta, error) => {
+                if (pregunta.comentarios.length > skip) {
+                    Pregunta.findOne({
+                            "_id": req.query.idcategoria
+                        }, {
+                            'comentarios': {
+                                $slice: [skip, 5]
+                            }
+                        })
+                        .populate('comentarios')
+                        .then((pregunta, error) => {
+                            if (error) {
+                                console.log("error en la actualizacion ");
+                                console.log(error);
+                            } else {
+                                let contador = 0;
+                                let limiteDocumento = pregunta.comentarios.length;
+                                asyncloop(pregunta.comentarios, (item, next) => {
+                                    Usuario.findOne({
+                                            '_id': item.creador.ID
+                                        })
+                                        .then((usuario, error) => {
+                                            var comentario = {
+                                                creador: usuario.nombre + usuario.apellido,
+                                                urlUsuario: usuario.urlImage,
+                                                descripcion: item.contenido,
+                                                fecha_creacion: item.fecha_creacion,
+                                                numeroFavorite: item.favoritos,
+                                                numeroLike: item.likes,
+                                                numeroDislike: item.dislikes,
+                                                numeroComentarios: item.listaSubComentarios.length,
+                                                idComentario: item._id
+                                            }
+                                            comentarios.push(comentario);
+                                            next();
+                                            contador++;
+                                            if (contador === limiteDocumento) {
+                                                console.log("*************");
+                                                console.log(req.query.page);
+                                                console.log("*************");
+                                                if (req.query.page == 0) {
+                                                    return resp.json({
+                                                        "comentarios": comentarios,
+                                                        'isDoneComentarios': true
+                                                    });
+                                                } else {
+                                                    return resp.json({
+                                                        "comentarios": comentarios,
+                                                        'isDoneComentarios': false
+                                                    });
 
-exports.cargarComentarioDiscusionPregunta = (req,resp,next)=>{
-    discusionPregunta.findOne({identificador:req.query.discusionPregunta.identificador,titulo:req.query.discusionPregunta.titulo})
-        .populate({
-            path:'comentarios',
-            populate:{
-                path:'listaSubComentarios',
-                model:'comentario'
-            }
-        })
-        .then((discusion)=>{
-            let listacomentarios = discusion.comentarios;
-            return resp.json({comentarios:listacomentarios});
+                                                }
 
-        })
-
-};
-
-
-/**
- *Esta funcion lo que hace es cargar los comentarios referente a una discusion referente a una encuesta
- * @param req
- * @param resp
- * @param next
- */
-exports.cargarComentarioDiscusionEncuesta = (req,resp,next)=>{
- discusionEncuesta.findOne({identificador:req.query.discusionEncuesta.identificador,titulo:req.query.discusionEncuesta.titulo})
-     .populate({
-         path:'comentarios',
-         populate:{
-             path:'listaSubComentarios',
-             model:'comentario'
-         }
-     })
-     .then((discusion)=>{
-         let listaComentario = discusion.comentarios;
-         return resp.json({comentarios:listaComentario});
-     });
-
-};
-
-/**
- *Esta funcion lo que hace es cargar los subcomentarios referente a un comentario
- * @param req
- * @param resp
- * @param next
- */
-
-exports.cargarSubcomentarios = (req,resp,next)=>{
-  Comentario.findOne({identificador:req.query.comentario.identificador})
-      .populate('listaSubComentarios')
-      .then((Comentario)=>{
-        return resp.json({listaSubcomentarios:Comentario.listaSubComentarios})
-      })
-};
-/**
- *Esta funcion lo que hace es editar un comentario especifico
- * determinado por un identificador del comentario
- *
- * @param req
- * @param resp
- * @param next
- */
-
-exports.editarComentario = (req,resp,next)=>{
-    let objComentario = req.body.comentario;
-    Comentario.findOneAndUpdate({identificador:req.body.comentario.identificador},objComentario);
-    return resp.json({codec:200,status:'ok'})
-};
-
-/**
- *
- * Operaciones para guardar likes, dislikes, favoritos
- *
- */
-
-/**
- *
- * Esta funcion lo que hace es guardar la cantidad de favoritos referente a un comentario
- * @param req
- * @param resp
- * @param next
- */
-
-exports.guardarFavoritos = (req,resp,next)=>{
-  Comentario.findOne({identificador:req.body.comentario.identificador})
-      .then((comentario)=>{
-        let sumarFavoritos = comentario.favoritos + req.body.comentario.favoritos;
-        comentario.set('favoritos',sumarFavoritos);
-        return resp.json({codec:200,status:'ok'})
-      });
-};
-
-/**
- *
- * Esta funcion lo que hace es guardar la cantidad de likes referentes a un comentarios
- * @param req
- * @param resp
- * @param next
- */
-
-exports.guardarlikes = (req,resp,next)=>{
-  Comentario.findOne({identificador:req.body.identificador})
-      .then((comentario)=>{
-        let sumarlikes = comentario.likes + req.body.likes;
-        comentario.set('favoritos',sumarlikes);
-        return resp.json({codec:200,status:'ok'})
-      });
-};
-
-/**
- *
- * Esta funcion lo que hace es guardar la cantidad de dislikes referente a un comentario
- * @param req
- * @param resp
- * @param next
- */
-
-exports.guardarDislikes = (req,resp,next)=>{
-  Comentario.findOne({identificador:req.body.identificador})
-      .then((comentario)=>{
-        let sumarDislikes = comentario.dislikes + req.body.dislikes;
-        comentario.set('favoritos',sumarDislikes);
-        return resp.json({codec:200,status:'ok'})
-      });
-};
+                                            }
 
 
+                                        }).catch((error) => {
+                                            console.log(error);
+                                        });
+                                });
 
 
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                        });
 
+                } else {
+                    Pregunta.findOne({
+                            "_id": req.query.idcategoria
+                        })
+                        .populate('comentarios')
+                        .then((pregunta, error) => {
+                            if (error) {
+                                console.log("error en la actualizacion ");
+                                console.log(error);
+                            } else {
+                                let contador = 0;
+                                let limiteDocumento = pregunta.comentarios.length;
+                                if (limiteDocumento === 0) {
+                                    return resp.json({
+                                        "comentarios": null
+                                    })
+                                } else {
+                                    asyncloop(pregunta.comentarios, (item, next) => {
+                                        Usuario.findOne({
+                                                '_id': item.creador.ID
+                                            })
+                                            .then((usuario, error) => {
+                                                var comentario = {
+                                                    creador: usuario.nombre + usuario.apellido,
+                                                    urlUsuario: usuario.urlImage,
+                                                    descripcion: item.contenido,
+                                                    fecha_creacion: item.fecha_creacion,
+                                                    numeroFavorite: item.favoritos,
+                                                    numeroLike: item.likes,
+                                                    numeroDislike: item.dislikes,
+                                                    numeroComentarios: item.listaSubComentarios.length,
+                                                    idComentario:item._id
+                                                }
+                                                comentarios.push(comentario);
+                                                next();
+                                                contador++;
+                                                if (contador === limiteDocumento) {
+                                                    return resp.json({
+                                                        "comentarios": comentarios,
+                                                        'isDoneComentarios': true
+                                                    });
+                                                }
+
+
+                                            }).catch((error) => {
+                                                console.log(error);
+                                            });
+                                    });
+                                }
+
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+
+
+    } else if (req.query.tipocategoria === 'comentario') {
+        const Arraycomentarios = []
+        Comentario.findOne({
+                "_id": req.query.idcategoria
+            })
+            .populate('listaSubComentarios')
+            .then((comentarios, error) => {
+                if (error) {
+                    console.log("error en la actualizacion ");
+                    console.log(error);
+                } else {
+                    let contador = 0;
+                    let limiteDocumento = comentarios.listaSubComentarios.length;
+                    if (limiteDocumento == 0) {
+                        return resp.json({
+                            "comentarios": null
+                        });
+                    }
+                    asyncloop(comentarios.listaSubComentarios, (item, next) => {
+                        Usuario.findOne({
+                                '_id': item.creador.ID
+                            })
+                            .then((usuario, error) => {
+                                var comentario = {
+                                    creador: usuario.nombre + usuario.apellido,
+                                    urlUsuario: usuario.urlImage,
+                                    descripcion: item.contenido,
+                                    fecha_creacion: item.fecha_creacion,
+                                    numeroFavorite: item.favoritos,
+                                    numeroLike: item.likes,
+                                    numeroDislike: item.dislikes,
+                                    idComentario:item._id
+                                }
+                                Arraycomentarios.push(comentario);
+                                next();
+                                contador++;
+                                if (contador === limiteDocumento) {
+                                    return resp.json({
+                                        "comentarios": Arraycomentarios
+                                    });
+                                }
+
+
+                            }).catch((error) => {
+                                console.log(error);
+                            });
+                    });
+
+
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+
+    }
+}

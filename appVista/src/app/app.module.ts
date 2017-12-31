@@ -58,8 +58,14 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { ComentariosService } from './services/comentarios.service';
 import { VerComentariosComponent } from './components/home/ver-comentarios/ver-comentarios.component';
-import { IngresarComentariosComponent } from './components/home/ingresar-comentarios/ingresar-comentarios.component';
 import { ListaSubComentariosComponent } from './components/home/lista-sub-comentarios/lista-sub-comentarios.component';
+import { DiscusionesService } from './services/discusiones.service';
+import { CrearDiscusionComponent } from './components/home/crear-discusion/crear-discusion.component';
+import { QuillModule } from 'ngx-quill';
+import {MatTabsModule} from '@angular/material/tabs';
+import { SaniarHtmlPipe } from './saniar-html.pipe';
+import { ListadoDiscusionesComponent } from './components/home/listado-discusiones/listado-discusiones.component';
+
 
 
 export const firebaseConfig = {
@@ -101,8 +107,10 @@ export const firebaseConfig = {
     VerPreguntaComponent,
     PortalPreguntasComponent,
     VerComentariosComponent,
-    IngresarComentariosComponent,
     ListaSubComentariosComponent,
+    CrearDiscusionComponent,
+    SaniarHtmlPipe,
+    ListadoDiscusionesComponent,
   ],
   imports: [
     BrowserModule,
@@ -127,11 +135,14 @@ export const firebaseConfig = {
     MatCardModule,
     MatMenuModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    QuillModule,
+    MatTabsModule
   ],
   entryComponents: [
     AddLabelCategoriesComponent, SnackBarMensajesComponent, SnackBarEliminarPreguntaComponent,
-    SnackBarMensajesActualizadosComponent, UploadFormComponent, VerPreguntaComponent, VerComentariosComponent
+    SnackBarMensajesActualizadosComponent, UploadFormComponent,  ListaSubComentariosComponent, VerPreguntaComponent,
+    CrearDiscusionComponent
   ],
   providers: [
     LoginService,
@@ -141,7 +152,8 @@ export const firebaseConfig = {
     CategoriasEtiquetasService,
     UploadService,
     AngularFireDatabase,
-    ComentariosService
+    ComentariosService,
+    DiscusionesService
   ],
   bootstrap: [AppComponent]
 })

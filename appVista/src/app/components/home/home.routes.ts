@@ -5,12 +5,16 @@ import { MensajesComponent } from './profile/mensajes.component';
 import { NotificacionesComponent } from './profile/notificaciones.component';
 import { PreguntasComponent } from './preguntas/preguntas.component';
 import { PortalPreguntasComponent } from './portal-preguntas/portal-preguntas.component';
+import { VerComentariosComponent } from './ver-comentarios/ver-comentarios.component';
+import { ListadoDiscusionesComponent } from './listado-discusiones/listado-discusiones.component';
 
 
 export const HOME_ROUTES: Routes = [
     {path: 'tablero', component: TableroComponent},
     {path: 'portalPregunta', component: PortalPreguntasComponent},
     {path: 'agregarPregunta', component: PreguntasComponent},
+    {path: 'verComentarios', component: VerComentariosComponent},
+    {path: 'listadoDiscusiones', component: ListadoDiscusionesComponent},
     {path: 'profile/:id', component: ProfileComponent},
     {path: 'mensajes', component: MensajesComponent},
     {path: 'notificaciones', component: NotificacionesComponent},

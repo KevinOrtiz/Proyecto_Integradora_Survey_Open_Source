@@ -1,3 +1,61 @@
-<p>
-  lista-sub-comentarios works!
-</p>
+<mat-dialog-content>
+<div class="content">
+  <div class="content">
+    <mat-card-header>
+      <img mat-card-avatar [src]="imagen">
+      <mat-card-title> {{ usuario }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field class="full-width">
+        <textarea matInput placeholder="Dejanos tu comentario" [(ngModel)]="contenido"></textarea>
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <div class="button-row">
+        <button mat-raised-button (click)="limpiarComentario()">Cancelar</button>
+        <button mat-raised-button color="primary" (click)="enviarComentario()">Enviar Comentario</button>
+      </div>
+    </mat-card-actions>
+  </div>
+  <br>
+  <div class="container">
+    <div *ngIf="listaSubComentarios">
+      <div *ngFor="let item of listaSubComentarios">
+        <mat-card class="card">
+          <mat-card-header>
+            <img mat-card-avatar [src]="item?.urlUsuario">
+            <mat-card-title>{{ item?.creador }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            {{ item?.descripcion }}
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-icon-button class="favorite" (click)="addFavorite(item?.idComentario)">
+              <mat-icon>favorite</mat-icon>
+              <p> {{ item?.numeroFavorite }}</p>
+            </button>
+            <button mat-icon-button class="thumbsUp" (click)="addLikes(item?.idComentario)">
+              <mat-icon>thumb_up</mat-icon>
+              <p> {{ item?.numeroLike }}</p>
+            </button>
+            <button mat-icon-button class="thumbsDown" (click)="addDislike(item?.idComentario)">
+              <mat-icon>thumb_down</mat-icon>
+              <p>{{ item?.numeroDislike }}</p>
+
+            </button>
+          </mat-card-actions>
+        </mat-card>
+        <hr>
+        <hr>
+      </div>
+    </div>
+    <div *ngIf="!listaSubComentarios" class="col col-md-12">
+      <h3>Eres el primero en comentar!</h3>
+    </div>
+    <br>
+
+
+  </div>
+
+</div>
+</mat-dialog-content>

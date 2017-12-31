@@ -73,7 +73,7 @@ exports.sendEmailEstadoPregunta=(receptor,estado,topico,textoCambio)=>{
     let mailOptions = {
         from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
         to: receptor,
-        subject: 'Creacion de Pregunta',
+        subject: 'Actualizacion del estado de la pregunta',
         text: 'Hola con todos',
         html: contenido
     };
@@ -86,17 +86,17 @@ exports.sendEmailEstadoPregunta=(receptor,estado,topico,textoCambio)=>{
     });
 };
 
-exports.sendComentarioCreado=(receptor,topico)=>{
-    const contenido = `<h4>Comentario Creado</h4>
-    <p>Se ha creado un comentario en una pregunta en la categoria
-    ${topico}</p>
+exports.sendComentarioCreado=(receptor,contenido)=>{
+    const contenidoComentario = `<h4>Comentario Creado</h4>
+    <p>Se ha creado un comentario en una pregunta elaborada por usted,
+    el contenido de la pregunta indica lo siguiente: ${contenido}</p>
     <p>Saludos Open Source Survey</p>`;
     let mailOptions = {
         from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
         to: receptor,
-        subject: 'Creacion de Pregunta',
+        subject: 'Comentario Creado en una Pregunta',
         text: 'Hola con todos',
-        html: contenido
+        html: contenidoComentario
     };
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -106,4 +106,26 @@ exports.sendComentarioCreado=(receptor,topico)=>{
         console.log(info);
     });
 
+}
+
+exports.sendCorreoDiscusionCreada =(receptor,nombre,titulo)=>{
+    const contenidoDiscusion = `<h4>Discusion Creada</h4>
+    Estimado ${nombre} han creado una discusion de una pregunta que usted desarrollo
+    este es el titulo del mensaje: ${titulo}, para mas informacion visite su portal 
+    de actividades
+    <p>Saludos Open Source Survey</p>`;
+    let mailOptions = {
+        from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
+        to: receptor,
+        subject: 'Creacion de Discusion de una pregunta',
+        text: 'Hola con todos',
+        html: contenidoDiscusion
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('mensaje enviando');
+        console.log(info);
+    });
 }

@@ -2,14 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const discusionPreguntaSchema = new Schema({
-    identificador:String,
     titulo:String,
     descripcion:String,
     creador_ID:String,
     etiquetas:[{
-        texto:{
-            type:String
-        }
+        type: String
     }],
     estados:[{
        usuario_ID:{

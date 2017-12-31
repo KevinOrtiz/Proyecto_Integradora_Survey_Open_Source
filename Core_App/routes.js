@@ -1,6 +1,8 @@
 'use strict';
 const usuarios = require("./controllers/usuarios");
 const preguntas = require("./controllers/Preguntas");
+const comentarios = require("./controllers/comentarios");
+const discusion = require('./controllers/discusiones');
 /**
  * definir un middleware de rutas
  * Cuando un usuario quiera comunicarse con el servicio rest debera estar previamente autenticado en la aplicacion
@@ -66,7 +68,12 @@ module.exports = (app)=> {
     apiRoute.get('/verPregunta',preguntas.verPregunta);
     apiRoute.get('/listPreguntas',preguntas.listPreguntas);
     apiRoute.get('/queryPreguntas',preguntas.QueryPreguntas);
-
+    apiRoute.post('/guardarComentario',comentarios.guardarComentario);
+    apiRoute.post('/addPosts',comentarios.addPost);
+    apiRoute.post('/addFavoritos',comentarios.addFavoritos);
+    apiRoute.get('/loadListComentario',comentarios.loadListaComentario);
+    apiRoute.post('/guardarDiscusion',discusion.guardarDiscusion);
+    apiRoute.get('/loadListaDiscusion',discusion.loadListaDiscusiones);
    app.use('/apiRest',apiRoute);
 
 

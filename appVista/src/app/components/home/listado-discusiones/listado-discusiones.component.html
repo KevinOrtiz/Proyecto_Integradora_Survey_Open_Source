@@ -1,0 +1,38 @@
+<div *ngFor="let discusion of listadoDiscusiones" >
+  <mat-card class="card">
+      <mat-card-header>
+        <img mat-card-avatar [src]="discusion?.urlUsuario">
+        <mat-card-title>{{ discusion?.titulo}}</mat-card-title>
+        <mat-card-subtitle>{{ discusion?.creador }}</mat-card-subtitle>
+        <mat-card-subtitle>etiquetas:<p *ngFor="let etiqueta of discusion?.etiquetas">{{ etiqueta }}</p></mat-card-subtitle>
+      </mat-card-header>
+      <hr>
+      <mat-card-content>
+        <div [innerHtml]="discusion?.descripcion"></div>
+      </mat-card-content>
+      <mat-card-actions>
+          <button mat-icon-button (click)="verListadoComentarios(discusion?._id)" class="btncomentarios">
+              <mat-icon>comment</mat-icon>
+              <p> {{ discusion?.numeroComentarios}}</p>
+          </button>
+      </mat-card-actions>
+  </mat-card>
+</div>
+
+<hr>
+
+<div
+  infiniteScroll
+  [infiniteScrollDistance]="0.1"
+  [infiniteScrollThrottle]="1000"
+  (scrolled)="onScroll()">
+</div>
+<br>
+<br>
+<div *ngIf="!finished" class="cargando">
+    <mat-spinner></mat-spinner>
+</div>
+<hr>
+<div *ngIf="finished" >
+    end of database
+</div>

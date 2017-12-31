@@ -54,25 +54,6 @@
                 <p> {{ pregunta?.numeroComentarios}}</p>
             </button>
         </mat-card-actions>
-         <mat-card-footer>
-            <mat-form-field class="width-comment">
-                <textarea  matInput #valueComentario placeholder="Dejanos tu comentario"></textarea>
-            </mat-form-field>
-            <mat-card-actions>
-              <button mat-icon-button (click)="addLikes()">
-                <mat-icon>thumb_up</mat-icon>
-              </button>
-              <button mat-icon-button (click)="addDislikes()">
-                <mat-icon>thumb_down</mat-icon>
-              </button>
-              <button mat-icon-button (click)="addFavourite()">
-                <mat-icon>favorite</mat-icon>
-              </button>
-              <button mat-icon-button (click)="sendComment(pregunta?._id,valueComentario.value)">
-                <mat-icon>send</mat-icon>
-              </button>
-            </mat-card-actions>
-        </mat-card-footer>
       </mat-card>
 </div>
 

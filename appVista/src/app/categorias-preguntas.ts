@@ -7,7 +7,7 @@ export class CategoriasPreguntas {
                 { value: 'Inteligencia_Artificial', viewValue: 'Inteligencia Artificial' },
                 { value: 'Interaccion_Hombre_Maquina', viewValue: 'Interaccion Hombre Maquina' },
                 { value: 'Analisis_Datos', viewValue: 'Analisis de Datos' },
-                { value: 'Metodologias_de_Investigacion', viewValue: 'Interaccion Hombre Maquina' },
+                { value: 'Metodologias_de_Investigacion', viewValue: 'Metodologias de Investigacion' },
                 { value: 'Programacion_Basica', viewValue: 'Programacion Basica' },
                 { value: 'Seguridad_Informacion', viewValue: 'Seguridad de Informacion' },
                 { value: 'Ingenieria_Software', viewValue: 'Ingenieria de Software' }

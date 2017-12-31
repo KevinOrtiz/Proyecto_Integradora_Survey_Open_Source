@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
 
 
 @Injectable()
@@ -11,10 +10,7 @@ export class ComentariosService {
   // que va cargar los comentarios respectivos
   private idCategoria: string;
   private tipoComentario: string;
-  private Listacomentarios = new BehaviorSubject([]);
-  private comentarios;
   constructor(private http: HttpClient) {
-    this.comentarios = this.Listacomentarios.asObservable();
    }
 
   private getHeaders(): HttpHeaders {
@@ -23,11 +19,6 @@ export class ComentariosService {
     });
     return headers;
   }
-
-  getComentarios () {
-    return this.comentarios;
-  }
-
 
   /**
    * tipo de comentario, se refiere si va guardar un comentario de
@@ -38,7 +29,6 @@ export class ComentariosService {
     const headers = this.getHeaders();
     const url = '/apiRest/guardarComentario';
     const objetoComentario = {
-      identificador: '',
       creador: {
         nombre: '',
         ID: sessionStorage.getItem('id')
@@ -54,11 +44,14 @@ export class ComentariosService {
                           tipo: this.getTipoComentario(),
                           idCategoria: this.getidCategoria()},
                           {headers})
-                    .map((res: any) => {
-                      console.log(res.json());
-                      this.Listacomentarios.next(res.json());
+                    .map((res: Response) => {
+                      console.log(res);
                       return res;
                     });
+  }
+
+  errorHandler(error) {
+    console.log(error);
   }
 
   /**
@@ -79,7 +72,7 @@ export class ComentariosService {
     return this.http.post(url, { comentario: ObjetoComentario},
                           {headers})
                     .map((res: Response) => {
-                      return res.json();
+                      return res;
                     });
   }
 
@@ -93,24 +86,24 @@ export class ComentariosService {
     };
     return this.http.post(url, {comentario: objetoComentario}, {headers})
                     .map((res: Response) => {
-                      return res.json();
-                    });
-  }
-
-  listComentarios() {
-    const headers = this.getHeaders();
-    const url = 'apiRest/loadListComentario/?idcategoria=' + this.getidCategoria() + '&tipocategoria=' + this.getTipoComentario();
-    return this.http.get(url, {headers})
-                    .map((res: any) => {
-                      console.log(res.json());
-                      this.Listacomentarios.next(res.json());
                       return res;
                     });
   }
 
-  getListaComentarios () {
-    return this.Listacomentarios;
+  listComentarios(pagina) {
+    const headers = this.getHeaders();
+    console.log(this.getTipoComentario());
+    // tslint:disable-next-line:max-line-length
+    const url = 'apiRest/loadListComentario/?idcategoria=' + this.getidCategoria()
+    + '&tipocategoria=' + this.getTipoComentario() + '&page=' + pagina;
+    console.log(url);
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      console.log(res);
+                      return res;
+                    });
   }
+
 
 
   setidCategoria( idCategoria: string) {

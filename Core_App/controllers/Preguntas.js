@@ -252,67 +252,6 @@ exports.QueryPreguntas = (req, res, next) => {
         });
 };
 
-/**
- *
- *Este metodo crea un issue de una pregunta dado un identificador y recibe un json con la informacion de referencia
- * a que encuesta se refiere , las categorias del issues,titulo del issue de la preguntas, descripcion de la pregunta
- * estado de la pregunta
- * @param req
- * @param res
- * @param next
- */
-
-exports.crearIssue = (req, res, next) => {
-
-};
-/**
- *Este metodo edita el estado de un issues dado un identificador, este identificador ayuda setear los diferentes
- * estados del issues como son : discusion,resuelto,cerrado
- * Nota si el issues es resuelto, la pregunta debe subirse al repositorio determinado aplicando los cambios respectivos
- * y eliminando esa pregunta en la base de datos Local(Mongo DB)
- * @param req
- * @param res
- * @param next
- */
-
-exports.editarStateIssue = (req, res, next) => {
-
-};
-/**
- *Este metodo elimina un issue de la base de dato dado un identificador de una pregunta
- *
- * @param req
- * @param res
- * @param next
- */
-
-exports.deleteIssue = (req, res, next) => {
-
-};
-/**
- *Este metodo lo que hace es cargar la lista de issues dado un identificador de la pregunta y un estado del issues, lo que devuelve
- * es un json con la lista de todos los issues respectivo de una pregunta
- *
- * @param req
- * @param res
- * @param next
- * @constructor
- */
-
-exports.LoadIssuebyState = (req, res, next) => {
-
-};
-/**
- *Este metodo lo que hace es retornar la lista de todos las preguntas y cada una estara asociada la cantidad de issues
- * por estado : ej pregunta 1 issues 12 estado revision
- * @param req
- * @param res
- * @param next
- */
-
-exports.loadListaIssuesByState = (req, res, next) => {
-
-};
 
 /**
  * Este metodo lo que hace es cargar la lista de cambios que ha sufrido una pregunta desde el repositorio

@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Schame = mongoose.Schema;
 
 const comentarioSchame = new Schame({
-   identificador:String,
    creador:{
        nombre:{
            type:String
@@ -14,9 +13,9 @@ const comentarioSchame = new Schame({
    contenido:String,
    fecha_creacion:{ type: Date, default: Date.now },
    fecha_actualizacion:{ type: Date, default: Date.now },
-   likes:Number,
-   dislikes:Number,
-   favoritos:Number,
+   likes:{type: Number, default: 0},
+   dislikes:{type: Number, default: 0},
+   favoritos:{type: Number, default: 0},
    listaSubComentarios:[{
         type:Schame.Types.ObjectId,
         ref:'comentario'

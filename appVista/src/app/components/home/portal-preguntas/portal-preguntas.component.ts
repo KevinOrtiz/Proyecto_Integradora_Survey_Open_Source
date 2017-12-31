@@ -10,6 +10,9 @@ import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/do';
 import { ComentariosService } from '../../../services/comentarios.service';
 import { VerComentariosComponent } from '../ver-comentarios/ver-comentarios.component';
+import { Router } from '@angular/router';
+import { DiscusionesService } from '../../../services/discusiones.service';
+import { CrearDiscusionComponent } from '../crear-discusion/crear-discusion.component';
 
 @Component({
   selector: 'app-portal-preguntas',
@@ -24,12 +27,8 @@ export class PortalPreguntasComponent implements OnInit {
   textoBusqueda = '';
   searchField: FormControl;
   constructor(private servicioPregunta: PreguntasService,
-    private dialog: MatDialog, private comentarios: ComentariosService) {
-    this.servicioPregunta.loadListaPregunta(this.page)
-      .subscribe((res) => {
-        console.log(res);
-        this.preguntas = res['preguntas'];
-      });
+              private dialog: MatDialog, private comentarios: ComentariosService,
+              private router: Router, private discusiones: DiscusionesService) {
   }
 
   ngOnInit() {
@@ -66,6 +65,7 @@ export class PortalPreguntasComponent implements OnInit {
 
 
   onScroll() {
+    console.log('entro');
     if (!this.esSearch) {
       this.servicioPregunta.loadListaPregunta(this.page)
         .take(20)
@@ -95,9 +95,22 @@ export class PortalPreguntasComponent implements OnInit {
     }
   }
 
-  crearDiscusion(idPregunta) { }
+  crearDiscusion(idPregunta) {
+    this.discusiones.setTipoDiscusion('pregunta');
+    this.discusiones.setIdCuerpoDiscusion(idPregunta);
+    const dialogoDiscusion = this.dialog.open(CrearDiscusionComponent, {
+      width: '960px',
+      height: '683px'
+    });
+    dialogoDiscusion.afterClosed().subscribe(res => console.log(res));
+  }
 
-  verListaDiscusiones(idPregunta) { }
+  verListaDiscusiones(idPregunta) {
+    console.log(idPregunta);
+    this.discusiones.setTipoDiscusion('pregunta');
+    this.discusiones.setIdCuerpoDiscusion(idPregunta);
+    this.router.navigate(['/home', 'listadoDiscusiones']);
+  }
 
   /**
    * Aqui se abrira un modal donde se pasara el idPregunta y el IdComentario
@@ -106,14 +119,7 @@ export class PortalPreguntasComponent implements OnInit {
   verListadoComentarios(idPregunta) {
     this.comentarios.setidCategoria(idPregunta);
     this.comentarios.setTipoComentario('pregunta');
-    this.comentarios.listComentarios().subscribe(res => console.log(res));
-    const modal = this.dialog.open(VerComentariosComponent, {
-      width: '900px',
-      height: '900px'
-    });
-    modal.afterClosed().subscribe(result => {
-      console.log(result);
-    });
+    this.router.navigate(['/home', 'verComentarios']);
    }
 
 
