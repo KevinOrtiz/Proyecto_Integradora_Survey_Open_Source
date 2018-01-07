@@ -74,6 +74,15 @@ module.exports = (app)=> {
     apiRoute.get('/loadListComentario',comentarios.loadListaComentario);
     apiRoute.post('/guardarDiscusion',discusion.guardarDiscusion);
     apiRoute.get('/loadListaDiscusion',discusion.loadListaDiscusiones);
+    apiRoute.get('/loadListaMisDiscusiones',discusion.loadListaMisDiscusiones);
+    apiRoute.get('/verDiscusionPregunta',discusion.loadMyDiscusion);
+    apiRoute.post('/editarDiscusion',discusion.editMyDiscusion);
+    apiRoute.get('/eliminarDiscusion',discusion.removeMyDiscusion);
+    apiRoute.get('/loadListaMisPreguntas',preguntas.loadListaMisPreguntas);
+    apiRoute.get('/listaDiscusionesByPregunta',discusion.loadListaDiscusionByPregunta);
+    apiRoute.get('/eliminarPregunta', preguntas.removePregunta);
+    apiRoute.get('/cerrarDiscusionPregunta',discusion.cerrarDiscusionPregunta);
+    apiRoute.post('/validarPregunta',discusion.validarPregunta);
    app.use('/apiRest',apiRoute);
 
 

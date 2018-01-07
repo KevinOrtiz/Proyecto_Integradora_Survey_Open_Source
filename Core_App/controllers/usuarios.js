@@ -27,12 +27,12 @@ exports.crearUsuario = (req,resp,next)=>{
                         return resp.json({"messaje":"existe un error en la BD en guardar la informacion","status":400});
                     }
                     else{
-                        return resp.json({"messaje":"Nuevo usuario registrado en la aplicacion","token":token,"status":200,"_id":nuevoUsuario._id});                         
+                        return resp.json({"messaje":"Nuevo usuario registrado en la aplicacion","token":token,"status":200,"_id":nuevoUsuario._id,"roles":nuevoUsuario.roles});                         
                     }
                 });    
             }
             else{
-                return resp.json({"messaje":"Usuario ya registrado en la aplicacion","token":token,"status":200,"_id":response._id});                
+                return resp.json({"messaje":"Usuario ya registrado en la aplicacion","token":token,"status":200,"_id":response._id,"roles":response.roles});                
             }
 
         }).catch((rejection)=>{

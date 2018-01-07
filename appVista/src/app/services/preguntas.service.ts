@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Preguntas } from '../preguntas';
-
+import { TablePreguntas } from '../models/table-preguntas';
 
 
 @Injectable()
@@ -93,8 +93,14 @@ export class PreguntasService {
   setFlagDatosServidor() {
     this.vieneDatosServidor = true;
   }
+  setDefaultFlagDatos() {
+    this.vieneDatosServidor = false;
+  }
   setIdPregunta (id) {
     this.idPregunta = id;
+  }
+  getIdPregunta() {
+    return this.idPregunta;
   }
   loadPregunta() {
     const headers = this.getHeaders();
@@ -120,6 +126,30 @@ export class PreguntasService {
                       return res;
                     });
   }
-
+  loadListaMisPreguntas (): Observable<TablePreguntas[]> {
+    const headers = this.getHeaders();
+    const id = sessionStorage.getItem('id');
+    const url = 'apiRest/loadListaMisPreguntas/?id=' + id;
+    return this.http.get<TablePreguntas[]>(url, {headers})
+                    .map((res) => {
+                      return res['listaPreguntas'];
+                    });
+  }
+  loadDiscusionesByPreguntas (): Observable<Object[]> {
+    const headers = this.getHeaders();
+    const url = 'apiRest/listaDiscusionesByPregunta/?id=' + this.getIdPregunta();
+    return this.http.get<Object[]>(url, {headers})
+                    .map((res) => {
+                      return res['listaDiscusiones'];
+                    });
+  }
+  eliminarPregunta (idPregunta) {
+    const headers = this.getHeaders();
+    const url = 'apiRest/eliminarPregunta/?id=' + idPregunta;
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      return res['status'];
+                    });
+  }
 
 }

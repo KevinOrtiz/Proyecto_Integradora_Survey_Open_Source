@@ -45,7 +45,7 @@
                       <a href="#">lista de Encuestas</a>
                   </li>
                   <li>
-                      <a href="#">lista de Discusiones</a>
+                      <a >lista de Discusiones</a>
                   </li>
               </ul>
           </li>
@@ -56,14 +56,14 @@
               </a>
               <ul aria-expanded="false" class="metis-secondary">
                   <li>
-                      <a href="#">Nueva Pregunta
+                      <a [routerLink]="['/home','agregarPregunta']">Nueva Pregunta
                       </a>
                   </li>
                   <li>
-                      <a href="#">lista de Encuesta</a>
+                      <a [routerLink]="['/home','misPreguntas']">lista de Preguntas</a>
                   </li>
                   <li>
-                      <a href="#">lista de Discusiones</a>
+                      <a [routerLink]="['/home','misDiscusionesPreguntas']">lista de Discusiones</a>
                   </li>
               </ul>
           </li>

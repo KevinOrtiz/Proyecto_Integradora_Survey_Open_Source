@@ -13,6 +13,7 @@ import { VerComentariosComponent } from '../ver-comentarios/ver-comentarios.comp
 import { Router } from '@angular/router';
 import { DiscusionesService } from '../../../services/discusiones.service';
 import { CrearDiscusionComponent } from '../crear-discusion/crear-discusion.component';
+import { ValidarPreguntasComponent } from '../validar-preguntas/validar-preguntas.component';
 
 @Component({
   selector: 'app-portal-preguntas',
@@ -25,6 +26,7 @@ export class PortalPreguntasComponent implements OnInit {
   page = 1;
   esSearch = false;
   textoBusqueda = '';
+  rol = sessionStorage.getItem('rol');
   searchField: FormControl;
   constructor(private servicioPregunta: PreguntasService,
               private dialog: MatDialog, private comentarios: ComentariosService,
@@ -103,6 +105,16 @@ export class PortalPreguntasComponent implements OnInit {
       height: '683px'
     });
     dialogoDiscusion.afterClosed().subscribe(res => console.log(res));
+  }
+  validarPregunta(idPregunta) {
+    this.discusiones.setTipoDiscusion('pregunta');
+    this.discusiones.setIdCuerpoDiscusion(idPregunta);
+    const validarPregunta = this.dialog.open(ValidarPreguntasComponent, {
+      width: '960px',
+      height: '683px'
+    });
+    validarPregunta.afterClosed().subscribe(res => console.log(res));
+
   }
 
   verListaDiscusiones(idPregunta) {

@@ -1,0 +1,64 @@
+<div class="container mat-elevation-z8">
+    <div class="example-header">
+      <mat-form-field>
+        <input matInput (keyup)="filtrarDatos($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+    </div>
+    <mat-table #table [dataSource]="dataSource" matSort>
+  
+      <ng-container matColumnDef="etiquetas">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Etiquetas</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.etiquetas}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="descripcion">
+        <mat-header-cell *matHeaderCellDef>Descripcion</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.descripcion}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="opciones">
+        <mat-header-cell *matHeaderCellDef>Opciones</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+  
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="verPregunta(row)">
+              <mat-icon>remove_red_eye</mat-icon>
+              <span>Ver pregunta</span>
+            </button>
+            <button mat-menu-item (click)="verDiscusion(row)">
+              <mat-icon>open_in_new</mat-icon>
+              <span>Ver Discusion</span>
+            </button>
+            <button mat-menu-item (click)="editarDiscusion(row)">
+              <mat-icon>open_in_new</mat-icon>
+              <span>Editar Pregunta</span>
+            </button>
+            <button mat-menu-item (click)="verComentarios(row)">
+              <mat-icon>open_in_new</mat-icon>
+              <span>Ver Comentarios</span>
+            </button>
+            <button mat-menu-item (click)="eliminarPregunta(row)">
+              <mat-icon>open_in_new</mat-icon>
+              <span>Eliminar Pregunta</span>
+            </button>
+          </mat-menu>
+        </mat-cell>
+      </ng-container>
+  
+      <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
+  
+    </mat-table>
+    <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]">
+    </mat-paginator>
+  </div>
+  <swal #eliminado title="Discusion eliminada con exito" text="Se ha eliminado de forma exitosa determinada discusion"
+    type="success" [showConfirmButton]="true">
+  </swal>
+  
+  <swal #error title="Error en la eliminacion de la discusion" text="Existe un problema en la eliminacion de la discusion
+          de la pregunta que usted ha seleccionado" type="error" [showConfirmButton]="true">
+  
+  </swal>
+  

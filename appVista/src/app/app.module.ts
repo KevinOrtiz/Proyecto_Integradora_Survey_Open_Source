@@ -65,8 +65,15 @@ import { QuillModule } from 'ngx-quill';
 import {MatTabsModule} from '@angular/material/tabs';
 import { SaniarHtmlPipe } from './saniar-html.pipe';
 import { ListadoDiscusionesComponent } from './components/home/listado-discusiones/listado-discusiones.component';
-
-
+import { AdminDiscusionesPreguntasComponent } from './components/home/admin-discusiones-preguntas/admin-discusiones-preguntas.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule, MatSortModule } from '@angular/material';
+import { VistaPreviaDiscusionComponent } from './components/home/vista-previa-discusion/vista-previa-discusion.component';
+import {MatChipsModule} from '@angular/material/chips';
+import { EditarDiscusionComponent } from './components/home/editar-discusion/editar-discusion.component';
+import { AdminPreguntasComponent } from './components/home/admin-preguntas/admin-preguntas.component';
+import { ListadoDiscusionesPreguntaComponent } from './components/home/listado-discusiones-pregunta/listado-discusiones-pregunta.component';
+import { ValidarPreguntasComponent } from './components/home/validar-preguntas/validar-preguntas.component';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyC4WyYXEuKYdy2tUGzcCYi2HF7gs7_TxJc',
@@ -111,6 +118,12 @@ export const firebaseConfig = {
     CrearDiscusionComponent,
     SaniarHtmlPipe,
     ListadoDiscusionesComponent,
+    AdminDiscusionesPreguntasComponent,
+    VistaPreviaDiscusionComponent,
+    EditarDiscusionComponent,
+    AdminPreguntasComponent,
+    ListadoDiscusionesPreguntaComponent,
+    ValidarPreguntasComponent,
   ],
   imports: [
     BrowserModule,
@@ -137,12 +150,17 @@ export const firebaseConfig = {
     MatIconModule,
     MatProgressSpinnerModule,
     QuillModule,
-    MatTabsModule
+    MatTabsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatChipsModule
   ],
   entryComponents: [
     AddLabelCategoriesComponent, SnackBarMensajesComponent, SnackBarEliminarPreguntaComponent,
     SnackBarMensajesActualizadosComponent, UploadFormComponent,  ListaSubComentariosComponent, VerPreguntaComponent,
-    CrearDiscusionComponent
+    CrearDiscusionComponent, VistaPreviaDiscusionComponent, EditarDiscusionComponent, ListadoDiscusionesPreguntaComponent,
+    ValidarPreguntasComponent
   ],
   providers: [
     LoginService,

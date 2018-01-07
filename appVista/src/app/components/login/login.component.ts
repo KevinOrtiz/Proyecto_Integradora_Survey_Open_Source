@@ -31,7 +31,11 @@ export class LoginComponent implements OnInit {
               actividad: 'usuario autenticado en la aplicacion',
               fecha_entrada: user.metadata.creationTime,
               fecha_salida: user.metadata.lastSignInTime
-            }
+            },
+            roles: [{
+              rol: 'usuario',
+              Acciones: ['crearPregunta', 'comentarPregunta', 'crearDiscusiones']
+            }]
           };
           this.activarCargadorPagina = false;
           this.autenticacion.setUserInformation(usuario);
@@ -58,5 +62,9 @@ interface Usuario {
     fecha_entrada: string,
     fecha_salida: string
   };
+  roles: [{
+    rol: string,
+    Acciones: string[]
+  }];
 }
 

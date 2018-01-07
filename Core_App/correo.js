@@ -61,7 +61,7 @@ exports.sendEmailEstadoPregunta=(receptor,estado,topico,textoCambio)=>{
         ${textoCambio}</p>
         <p>Saludos Open Source Survey</p>`;
 
-    }else if(estado === 'estable'){
+    }else if(estado === 'aceptada'){
         contenido = `<h4>Estado de la pregunta creada</h4>
         <p>Estimado ${receptor} felicidades su pregunta ha sido aceptada por los miembros
         del comite y ahora esta disponible para que otros usuarios puedan usarlo en sus encuestas,

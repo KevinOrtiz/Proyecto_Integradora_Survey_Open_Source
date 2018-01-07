@@ -39,6 +39,10 @@
                 <mat-icon>open_in_new</mat-icon>
                 <span>Crear Discusion</span>
             </button>
+            <button mat-menu-item (click)="validarPregunta(pregunta?._id)" *ngIf="rol == 'comite'" >
+                <mat-icon>open_in_new</mat-icon>
+                <span>Validar Pregunta</span>
+            </button>
           </mat-menu>
         </mat-card-header>
         <mat-card-content>

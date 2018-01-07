@@ -2,6 +2,7 @@ const Comentario = require('../models/Comentarios');
 const Pregunta = require('../models/Preguntas');
 const Usuario = require('../models/Usuarios');
 const correo = require('../correo');
+const discusionPregunta = require('../models/discusionesPregutas');
 let asyncloop = require('node-async-loop');
 
 
@@ -14,7 +15,7 @@ exports.guardarComentario = (req, resp, next) => {
         numeroLike: 0,
         numeroDislike: 0,
         numeroComentarios: 0,
-        idComentario:''
+        idComentario: ''
     };
     console.log(req.body.comentario);
     console.log(req.body.idCategoria);
@@ -50,10 +51,12 @@ exports.guardarComentario = (req, resp, next) => {
                                         '_id': comentario.creador.ID
                                     })
                                     .then((usuario) => {
-                                        correo.sendComentarioCreado(usuario.correo,req.body.comentario.contenido);
+                                        correo.sendComentarioCreado(usuario.correo, req.body.comentario.contenido);
                                     });
                             }
-                            return resp.json({'comentarios':responseComentario});
+                            return resp.json({
+                                'comentarios': responseComentario
+                            });
                         }).catch((error) => {
                             console.log(error);
                         });
@@ -116,6 +119,67 @@ exports.guardarComentario = (req, resp, next) => {
                 console.log(error);
             });
 
+    } else if (req.body.tipo === 'discusionPregunta') {
+        Usuario.findOne({
+                '_id': req.body.comentario.creador.ID
+            })
+            .then((usuario) => {
+                req.body.comentario.creador.nombre = usuario.nombre + usuario.apellido;
+                responseComentario.creador = usuario.nombre + usuario.apellido;
+                responseComentario.urlUsuario = usuario.urlImage;
+                var comentario = new Comentario(req.body.comentario);
+                responseComentario.idComentario = comentario._id;
+                comentario.save()
+                    .then(() => {
+                        discusionPregunta.findByIdAndUpdate({
+                            '_id': req.body.idCategoria
+                        }, {
+                            $push: {
+                                'comentarios': comentario
+                            }
+                        }, {
+                            'new': true,
+                            'upsert': true
+                        }).then((discusionPregunta, error) => {
+                            if (error) {
+                                console.log("HAY UN ERROR EN LA ACTUALIZACION");
+                                console.log(error);
+                                return resp.json({
+                                    "status": 500,
+                                    "comentarios": null
+                                })
+                            } else {
+                                return resp.json({
+                                    'comentarios': responseComentario,
+                                    "status": 200
+                                })
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                            return resp.json({
+                                "status": 500,
+                                "comentarios": null,
+                                "error": error
+                            })
+                        });
+                    }).catch((error) => {
+                        console.log(error);
+                        return resp.json({
+                            "status": 500,
+                            "comentarios": null,
+                            "error": error
+                        })
+                    });
+
+            }).catch((error) => {
+                console.log(error);
+                return resp.json({
+                    "status": 500,
+                    "comentarios": null,
+                    "error": error
+                })
+            });
+
     }
 }
 
@@ -142,16 +206,16 @@ exports.addPost = (req, resp, next) => {
             } else {
                 console.log("se actualizo el like");
                 console.log(comentario);
-                if (tipoPost == 'likes'){
+                if (tipoPost == 'likes') {
                     valor = comentario.likes;
-                }else{
+                } else {
                     valor = comentario.dislikes;
                 }
                 return resp.json({
                     "status": 200,
                     "messaje": 'se actualizo',
-                    'idComentario':comentario._id,
-                    'valor':valor
+                    'idComentario': comentario._id,
+                    'valor': valor
                 });
             }
         });
@@ -178,8 +242,8 @@ exports.addFavoritos = (req, resp, next) => {
                 return resp.json({
                     "status": 200,
                     "messaje": 'se actualizo',
-                    'idComentario':comentario._id,
-                    'valor':comentario.favoritos
+                    'idComentario': comentario._id,
+                    'valor': comentario.favoritos
                 });
 
             }
@@ -295,7 +359,7 @@ exports.loadListaComentario = (req, resp, next) => {
                                                     numeroLike: item.likes,
                                                     numeroDislike: item.dislikes,
                                                     numeroComentarios: item.listaSubComentarios.length,
-                                                    idComentario:item._id
+                                                    idComentario: item._id
                                                 }
                                                 comentarios.push(comentario);
                                                 next();
@@ -324,6 +388,154 @@ exports.loadListaComentario = (req, resp, next) => {
                 console.log(error);
             });
 
+
+    } else if (req.query.tipocategoria === 'discusionPregunta') {
+        const comentariosDiscusionPreguntas = [];
+        discusionPregunta.findOne({
+                '_id': req.query.idcategoria
+            })
+            .then((discusion, error) => {
+                if (discusion.comentarios.length > skip) {
+                    discusionPregunta.findOne({
+                            "_id": req.query.idcategoria
+                        }, {
+                            'comentarios': {
+                                $slice: [skip, 5]
+                            }
+                        })
+                        .populate('comentarios')
+                        .then((discusionPregunta, error) => {
+                            if (error) {
+                                console.log("error en la actualizacion ");
+                                console.log(error);
+                                return resp.json({
+                                    "status": 500,
+                                    "comentarios": null
+                                })
+                            } else {
+                                let contadorDiscusionesPregunta = 0;
+                                let limiteDocumentoDiscusionesPregunta = discusionPregunta.comentarios.length;
+                                asyncloop(discusionPregunta.comentarios, (item, next) => {
+                                    Usuario.findOne({
+                                            '_id': item.creador.ID
+                                        })
+                                        .then((usuario, error) => {
+                                            var comentario = {
+                                                creador: usuario.nombre + usuario.apellido,
+                                                urlUsuario: usuario.urlImage,
+                                                descripcion: item.contenido,
+                                                fecha_creacion: item.fecha_creacion,
+                                                numeroFavorite: item.favoritos,
+                                                numeroLike: item.likes,
+                                                numeroDislike: item.dislikes,
+                                                numeroComentarios: item.listaSubComentarios.length,
+                                                idComentario: item._id
+                                            }
+                                            comentariosDiscusionPreguntas.push(comentario);
+                                            next();
+                                            contadorDiscusionesPregunta++;
+                                            if (contadorDiscusionesPregunta === limiteDocumentoDiscusionesPregunta) {
+                                                if (req.query.page == 0) {
+                                                    return resp.json({
+                                                        "comentarios": comentariosDiscusionPreguntas,
+                                                        'isDoneComentarios': true,
+                                                        "status": 200
+                                                    });
+                                                } else {
+                                                    return resp.json({
+                                                        "comentarios": comentariosDiscusionPreguntas,
+                                                        'isDoneComentarios': false,
+                                                        "status": 200
+                                                    });
+
+                                                }
+
+                                            }
+
+
+                                        }).catch((error) => {
+                                            console.log(error);
+                                            return resp.json({
+                                                "comentarios": null,
+                                                "status": 500
+                                            })
+                                        });
+                                });
+
+
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                            return resp.json({
+                                "comentarios": null,
+                                "status": 500
+                            })
+                        });
+
+                } else {
+                    discusionPregunta.findOne({
+                            "_id": req.query.idcategoria
+                        })
+                        .populate('comentarios')
+                        .then((discusion, error) => {
+                            if (error) {
+                                console.log("error en la actualizacion ");
+                                console.log(error);
+                                return resp.json({
+                                    "status": 500,
+                                    "comentarios": null
+                                })
+                            } else {
+                                let contadorDiscusion = 0;
+                                let limiteDocumento = discusion.comentarios.length;
+                                if (limiteDocumento === 0) {
+                                    return resp.json({
+                                        "comentarios": null,
+                                        "status": 200
+                                    })
+                                } else {
+                                    asyncloop(discusion.comentarios, (item, next) => {
+                                        Usuario.findOne({
+                                                '_id': item.creador.ID
+                                            })
+                                            .then((usuario, error) => {
+                                                var comentario = {
+                                                    creador: usuario.nombre + usuario.apellido,
+                                                    urlUsuario: usuario.urlImage,
+                                                    descripcion: item.contenido,
+                                                    fecha_creacion: item.fecha_creacion,
+                                                    numeroFavorite: item.favoritos,
+                                                    numeroLike: item.likes,
+                                                    numeroDislike: item.dislikes,
+                                                    numeroComentarios: item.listaSubComentarios.length,
+                                                    idComentario: item._id
+                                                }
+                                                comentariosDiscusionPreguntas.push(comentario);
+                                                next();
+                                                contadorDiscusion++;
+                                                if (contadorDiscusion === limiteDocumento) {
+                                                    return resp.json({
+                                                        "comentarios": comentariosDiscusionPreguntas,
+                                                        'isDoneComentarios': true
+                                                    });
+                                                }
+
+
+                                            }).catch((error) => {
+                                                console.log(error);
+                                            });
+                                    });
+                                }
+
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
 
     } else if (req.query.tipocategoria === 'comentario') {
         const Arraycomentarios = []
@@ -356,7 +568,7 @@ exports.loadListaComentario = (req, resp, next) => {
                                     numeroFavorite: item.favoritos,
                                     numeroLike: item.likes,
                                     numeroDislike: item.dislikes,
-                                    idComentario:item._id
+                                    idComentario: item._id
                                 }
                                 Arraycomentarios.push(comentario);
                                 next();

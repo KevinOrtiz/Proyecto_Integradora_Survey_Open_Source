@@ -1,0 +1,40 @@
+<div class="container">
+    <h4>{{ discusionPregunta?.titulo }}</h4>
+    <p> Creado : {{ discusionPregunta?.fecha_creacion | date: 'fullDate'}}</p>
+    <p *ngIf="discusionPregunta?.fecha_cierre !== ''">
+      Discusion cerrada: {{ discusionPregunta?.fecha_cierre | date: 'fullDate' }}
+    </p>
+    <p *ngIf="discusionPregunta?.fecha_cierre !== ''">
+        estado : {{ estadoDiscusion }}
+    </p>
+    <div [innerHtml]="discusionPregunta?.descripcion | saniarHtml"></div>
+      <mat-chip-list class="tag">
+        <mat-chip color="primary" selected="true" *ngFor="let item of discusionPregunta?.etiquetas">{{item}}</mat-chip>
+      </mat-chip-list>
+      <hr>
+      <p>Comentarios: {{ discusionPregunta?.numeroComentarios}}</p>
+      <hr>
+      <button mat-raised-button color="accent" (click)="cerrarDiscusion.show()" *ngIf="discusionPregunta?.fecha_cierre === '' && discusionPregunta?.estado === 'revision'" >
+        Cerrar Discusion
+      </button>
+</div>
+
+
+<swal #cerrarDiscusion title="Cerrar Discusion" text="Desea cerrar la discusion?, se le notificara al creador de la pregunta acerca
+de dicha accion" type="question" [showCancelButton]="true" [focusCancel]="true" (confirm)="cerrarIssue()">
+
+</swal>
+<swal #actualizacionExitosa
+      title="actualizacion correcta"
+      text="se ha actualizado de forma correcta su discusion"
+      type="success"
+      [showConfirmButton]="true">
+
+</swal>
+<swal #actualizacionErronea
+      title="no se actualizo"
+      text = "Ocurrio un problema en el servidor y no se actualizo correctamente el registro"
+      type="error"
+      [showConfirmButton]="true">
+
+</swal>

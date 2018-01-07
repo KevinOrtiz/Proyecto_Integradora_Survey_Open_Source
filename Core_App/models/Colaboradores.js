@@ -1,15 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const usuarios = require("./Usuarios");
-const encuestas = require("./Encuestas");
 
 const colaboradorSchema = new Schema({
     identificador:String,
     mensajes:String,
-    listaUsuarios: [{
+    Usuario:{
         type:Schema.Types.ObjectId,
         ref:'usuario'
-    }],
+    },
     listaEncuestas: [{
         type:Schema.Types.ObjectId,
         ref:'encuesta'

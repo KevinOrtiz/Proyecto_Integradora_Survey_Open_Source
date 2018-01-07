@@ -24,3 +24,8 @@ mat-icon{
     left: 390px;
     font-size: 10px;
 }
+
+.tag{
+    line-height: 29px;
+    float: left;
+}

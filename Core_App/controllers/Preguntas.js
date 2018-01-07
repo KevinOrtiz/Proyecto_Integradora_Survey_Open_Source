@@ -264,3 +264,66 @@ exports.QueryPreguntas = (req, res, next) => {
 exports.loadHistoryChange = (req, res, next) => {
 
 };
+
+exports.loadListaMisPreguntas = (req, resp, next) => {
+    modelpregunta.find({
+        'usuario_ID':req.query.id,
+        "registroActual": true
+    })
+    .then((preguntas, error) => {
+        if (error) {
+            return resp.json({
+                "status": 500
+            })
+        }else {
+            let listaPreguntas = [];
+            let numeroElementosPreguntas = preguntas.length;
+            let contador = 0;
+            asyncloop(preguntas, (item, next)=> {
+                var objetoPregunta = {
+                    _id: item._id,
+                    etiquetas: item.topicos.texto,
+                    descripcion: item.descripcion,
+                    identificador: item.identificador
+                }
+                listaPreguntas.push(objetoPregunta);
+                next();
+                contador ++;
+                if (contador == numeroElementosPreguntas){
+                    return resp.json({
+                        "listaPreguntas":listaPreguntas,
+                        "status": 200
+                    })
+                }
+            });
+
+        }
+    }).catch((error) =>{
+
+    });
+}
+
+exports.removePregunta = (req, resp, next) => {
+    modelpregunta.findByIdAndRemove({
+        '_id': req.query.id
+    })
+    .then((pregunta, error) => {
+        if (error) {
+            return resp.json({
+                "status": 500,
+                "messaje": error
+            })
+        }else {
+            return resp.json({
+                "status": 200,
+                "messaje": "registro eliminado con exito"
+            })
+        }
+    }).catch((error) => {
+        console.log(error);
+        return resp.json({
+            "status":500,
+            "messaje": error
+        })
+    });
+}

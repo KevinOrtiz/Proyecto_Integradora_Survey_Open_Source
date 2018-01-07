@@ -59,8 +59,13 @@ export class LoginService {
     return this.http.post(this.urlServicio, {usuario: this.getUserInformation()})
                     .map((res: Response) => {
                       this.setSessionTokenId(res['token'], res['_id']);
+                      this.setRolesUsuario(res['roles'][0]['rol'], res['roles'][0]['Acciones'][0]);
                       return res;
                     });
+  }
+  setRolesUsuario (rol, acciones) {
+    sessionStorage.setItem('rol', rol);
+    sessionStorage.setItem('Acciones', acciones);
   }
 
 }
@@ -74,4 +79,8 @@ interface Usuario {
     fecha_entrada: string,
     fecha_salida: string
   };
+  roles: [{
+    rol: string,
+    Acciones: string[]
+  }];
 }

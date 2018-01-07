@@ -4,41 +4,25 @@ const Schema = mongoose.Schema;
 const PreguntaValidadasSchema = new Schema({
     identificador:String,
     descripcion:{
-        type:String,
-        validate:{
-            validator:(descripcion)=>descripcion.length>5,
-            message: 'La descripcion debe tener mas de una palabra'
-        },
-        required:[true, 'La descripcion es necesaria,le da contexto a la pregunta']
+        type:String
     },
     usuario_ID:{
-        type:String,
-        validate:{
-            validator:(usuario_ID)=>usuario_ID.length!=null,
-            message:'El ID del usuario debe ser numerico y diferente de cero'
-        },
-        required:[true,'Es necesario conocer el ID del creador de la pregunta']
+        type:String
     },
-    etiquetas:[{
+    etiquetas:{
         texto:{
             type:String
-        },
-        color:{
-            type:String
         }
-    }],
-    topicos:[{
+    },
+    topicos:{
         texto:{
            type:String
         }
-    }],
+    },
     respuestas:[{
-        texto:{
-            type:String
-        },
-        tipoRespuesta:{
-            type:String
-        }
+        id: String,
+        texto:String,
+        tipoRespuesta:String
     }],
     comentarios:[{
         type:Schema.Types.ObjectId,

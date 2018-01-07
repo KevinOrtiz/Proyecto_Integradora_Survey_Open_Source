@@ -1,0 +1,31 @@
+.formulario{
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.titulo-discusion{
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+.cuerpo-discusion{
+    width: 76%;
+    position: absolute;
+    height: 56%;
+    bottom: 9em;
+}
+
+.tab-content{
+    position: relative;
+    height: 400px;
+}
+
+.botonGuardar{
+    position: relative;
+    top: 29em;
+}
+.opciones{
+    width: 342px;
+    margin-bottom: 78px;
+}

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Observable';
+import { DiscusionPregunta } from '../models/discusion-pregunta';
 
 @Injectable()
 export class DiscusionesService {
@@ -33,26 +35,29 @@ export class DiscusionesService {
     return this.idCuerpoDiscusion;
   }
 
-  loadListaDiscusiones (page: number) {
+  loadListaDiscusiones (): Observable<Object[]> {
     const headers = this.getHeaders();
     const url = 'apiRest/loadListaDiscusion/?idcuerpodiscusion=' +
                  this.getIdCuerpoDiscusion() + '&tipoDiscusion=' +
-                 this.getTipoDiscusion() + '&pagina=' + page;
-    return this.http.get(url, {headers})
-                    .map((res: Response) => {
+                 this.getTipoDiscusion();
+    return this.http.get<Object[]>(url, {headers})
+                    .map((res) => {
                       console.log(res);
-                      return res;
+                      return res['discusiones'];
                     });
   }
 
-  loadListaMisDiscusiones () {
+  loadListaMisDiscusiones (): Observable<DiscusionPregunta[]> {
     const  headers = this.getHeaders();
     const id = sessionStorage.getItem('id');
     const url = 'apiRest/loadListaMisDiscusiones/?tipoDiscusion=' + this.getTipoDiscusion() +
                 '&id=' + id;
-  return this.http.get(url, {headers})
-                  .map((res: Response) => {
-                    return res;
+  return this.http.get<DiscusionPregunta[]>(url, {headers})
+                  .map((res) => {
+                    console.log('********');
+                    console.log(res);
+                    console.log('**********');
+                    return res['listadiscusionPregunta'];
                   });
   }
 
@@ -81,17 +86,45 @@ export class DiscusionesService {
                               return res;
                            });
   }
-  eliminarDiscusion (idDiscusion) {
-    const parametros = new HttpParams();
-    parametros.set('id', idDiscusion);
-    parametros.set('tipoDiscusion', this.getTipoDiscusion());
+  eliminarDiscusion (idDiscusion, idPregunta) {
     const headers = this.getHeaders();
-    const url = 'apiRest/eliminarDiscusion';
-    return this.http.delete(url, { headers , params: parametros})
+    const url = 'apiRest/eliminarDiscusion/?tipoDiscusion=' + this.getTipoDiscusion() + '&id=' + idDiscusion + '&pregunta_ID=' + idPregunta;
+    return this.http.get(url, { headers})
                     .map((res: Response) => {
                       return res;
                     });
 
+  }
+
+  loadMiDiscusionPregunta (idDiscusion) {
+    const headers = this.getHeaders();
+    const url = 'apiRest/verDiscusionPregunta/?tipoDiscusion=pregunta&id=' + idDiscusion;
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      return res['discusion'];
+                    });
+  }
+
+  cerrarDiscusion () {
+    const headers = this.getHeaders();
+    const url = 'apiRest/cerrarDiscusionPregunta/?id=' + this.getIdCuerpoDiscusion();
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      return res;
+                    });
+  }
+  guardaDiscusionMiembroComite (discusion) {
+    console.log('entre');
+    const headers = this.getHeaders();
+    const url = 'apiRest/validarPregunta/';
+    return this.http.post(url,
+                          {respuestaDiscusion: discusion,
+                          tipoDiscusion: this.getTipoDiscusion(),
+                          idCuerpoDiscusion: this.getIdCuerpoDiscusion()}, {headers})
+                    .map((res: Response) => {
+                      console.log(res);
+                      return res;
+                    });
   }
 
 }
