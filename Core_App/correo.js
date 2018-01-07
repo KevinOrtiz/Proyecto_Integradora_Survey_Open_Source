@@ -44,7 +44,7 @@ exports.sendEmailPreguntaCreada= (receptor,topico) => {
 };
 
 exports.sendEmailEstadoPregunta=(receptor,estado,topico,textoCambio)=>{
-    var contenido = '';
+    let contenido = '';
     if (estado === 'revision'){
         contenido = `<h4>Estado de la pregunta creada</h4>
         <p>La pregunta del Sr ${receptor} con categoria ${topico}
@@ -70,11 +70,11 @@ exports.sendEmailEstadoPregunta=(receptor,estado,topico,textoCambio)=>{
         <p>Saludos Open Source Survey</p>`;
 
     }
+    console.log(estado);
     let mailOptions = {
         from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
         to: receptor,
         subject: 'Actualizacion del estado de la pregunta',
-        text: 'Hola con todos',
         html: contenido
     };
     transporter.sendMail(mailOptions, (error, info) => {
