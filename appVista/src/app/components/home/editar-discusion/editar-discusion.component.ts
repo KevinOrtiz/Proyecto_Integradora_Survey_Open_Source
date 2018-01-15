@@ -7,7 +7,7 @@ import { DiscusionesService } from '../../../services/discusiones.service';
 @Component({
   selector: 'app-editar-discusion',
   templateUrl: './editar-discusion.component.html',
-  styleUrls: ['./editar-discusion.component.css']
+  styleUrls: ['./editar-discusion.component.scss']
 })
 export class EditarDiscusionComponent implements OnInit {
   @ViewChild('actualizado') private actualizado: SwalComponent;

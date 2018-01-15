@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-admin-discusiones-preguntas',
   templateUrl: './admin-discusiones-preguntas.component.html',
-  styleUrls: ['./admin-discusiones-preguntas.component.css']
+  styleUrls: ['./admin-discusiones-preguntas.component.scss']
 })
 export class AdminDiscusionesPreguntasComponent implements OnInit, AfterViewInit {
   listaDiscusionesPreguntas: DiscusionPregunta[] = [];

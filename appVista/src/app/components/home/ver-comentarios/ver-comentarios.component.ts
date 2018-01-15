@@ -8,7 +8,7 @@ import { ListaSubComentariosComponent } from '../lista-sub-comentarios/lista-sub
 @Component({
   selector: 'app-ver-comentarios',
   templateUrl: './ver-comentarios.component.html',
-  styleUrls: ['./ver-comentarios.component.css']
+  styleUrls: ['./ver-comentarios.component.scss']
 })
 export class VerComentariosComponent implements OnInit {
   contenido: string;
@@ -30,11 +30,11 @@ export class VerComentariosComponent implements OnInit {
     console.log(this.imagen);
     console.log(this.usuario);
     this.servicioComentario.listComentarios(this.page).subscribe((res) => {
-      console.log(res);
       if (res['comentarios'] ) {
         this.existeDatos = true;
       }
       this.listaComentarios = res['comentarios'];
+      console.log(this.listaComentarios);
     });
    }
 
@@ -58,6 +58,7 @@ export class VerComentariosComponent implements OnInit {
       }else {
         this.listaComentarios.unshift( res['comentarios']);
       }
+      this.contenido = '';
     });
   }
 
@@ -148,6 +149,7 @@ export class VerComentariosComponent implements OnInit {
                            .subscribe((res) => {
                             console.log(res);
                             this.updatePost(res['idComentario'], res['valor'], 'numeroFavorite');
+                            console.log('******');
                            });
   }
 
@@ -180,15 +182,16 @@ export class VerComentariosComponent implements OnInit {
     });
   }
 
-  updatePost(idCreadoComentario , newValue, tipoPost) {
-    const item = this.listaComentarios.find(this.findIndexUpdate, idCreadoComentario);
-    const index = this.listaComentarios.indexOf(item);
-    this.listaComentarios[index][tipoPost] = newValue;
+  updatePost(idComentario , newValue, tipoPost) {
+    this.listaComentarios.filter(comentario => comentario['idComentario'] === idComentario)
+                          .map((resultados) => {
+                            console.log('*******');
+                            console.log(resultados);
+                            console.log('**********');
+                            resultados[tipoPost] = newValue;
+                          });
   }
 
-  findIndexUpdate(value) {
-    return value === this;
-  }
 
 
 

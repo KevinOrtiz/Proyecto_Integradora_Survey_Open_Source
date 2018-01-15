@@ -19,9 +19,20 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "styles.css"
+        "styles.scss",
+        "../node_modules/materialize-css/dist/css/materialize.min.css",
+        "../node_modules/mdi/scss/materialdesignicons.scss"
       ],
+      "stylePreprocessorOptions": {
+        "includePaths": [
+          "styles/"
+        ]
+      },
       "scripts": [
+        "../node_modules/countup.js/dist/countUp.js",
+        "../node_modules/highlight.js/lib/highlight.js",
+        "../node_modules/jquery/dist/jquery.min.js",
+        "../node_modules/materialize-css/dist/js/materialize.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
@@ -55,7 +66,8 @@
     }
   },
   "defaults": {
-    "styleExt": "css",
-    "component": {}
+    "styleExt": "scss",
+    "component": {
+    }
   }
 }

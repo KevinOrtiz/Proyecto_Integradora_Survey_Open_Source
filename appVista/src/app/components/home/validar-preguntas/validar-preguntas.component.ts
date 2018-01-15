@@ -7,7 +7,7 @@ import { DiscusionesService } from '../../../services/discusiones.service';
 @Component({
   selector: 'app-validar-preguntas',
   templateUrl: './validar-preguntas.component.html',
-  styleUrls: ['./validar-preguntas.component.css']
+  styleUrls: ['./validar-preguntas.component.scss']
 })
 export class ValidarPreguntasComponent implements OnInit {
   @ViewChild('guardado') private guardado: SwalComponent;
@@ -52,8 +52,8 @@ export class ValidarPreguntasComponent implements OnInit {
 
   ngOnInit() {
     this.formularioDiscusion = new FormGroup({
-      titulo: new FormControl('', [ Validators.required, Validators.minLength(10)]),
-      descripcion: new FormControl('', [Validators.required, Validators.minLength(20), Validators.maxLength(900)]),
+      titulo: new FormControl('', [ Validators.required]),
+      descripcion: new FormControl('', [Validators.required]),
       etiquetas: new FormControl('', [Validators.required]),
       estado: new FormControl('', [Validators.required])
     });

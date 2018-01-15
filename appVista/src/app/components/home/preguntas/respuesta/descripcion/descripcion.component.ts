@@ -6,7 +6,7 @@ import { PreguntasService } from '../../../../../services/preguntas.service';
 @Component({
   selector: 'app-descripcion',
   templateUrl: './descripcion.component.html',
-  styleUrls: ['./descripcion.component.css']
+  styleUrls: ['./descripcion.component.scss']
 })
 export class DescripcionComponent implements OnInit, AfterViewInit {
   constructor(private respuestas: RespuestasService,

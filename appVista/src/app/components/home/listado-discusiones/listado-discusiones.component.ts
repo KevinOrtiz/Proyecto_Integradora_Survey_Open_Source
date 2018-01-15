@@ -8,7 +8,7 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
 @Component({
   selector: 'app-listado-discusiones',
   templateUrl: './listado-discusiones.component.html',
-  styleUrls: ['./listado-discusiones.component.css']
+  styleUrls: ['./listado-discusiones.component.scss']
 })
 export class ListadoDiscusionesComponent implements OnInit {
   listadoDiscusiones: Object[];

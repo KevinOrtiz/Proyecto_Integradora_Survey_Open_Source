@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { PreguntasService } from '../../../services/preguntas.service';
 import { MatDialog } from '@angular/material';
 import { VerPreguntaComponent } from '../ver-pregunta/ver-pregunta.component';
@@ -18,9 +18,10 @@ import { ValidarPreguntasComponent } from '../validar-preguntas/validar-pregunta
 @Component({
   selector: 'app-portal-preguntas',
   templateUrl: './portal-preguntas.component.html',
-  styleUrls: ['./portal-preguntas.component.css']
+  styleUrls: ['./portal-preguntas.component.scss']
 })
 export class PortalPreguntasComponent implements OnInit {
+  isOpen: boolean;
   preguntas: any[] = [];
   finished = false;
   page = 1;
@@ -28,9 +29,11 @@ export class PortalPreguntasComponent implements OnInit {
   textoBusqueda = '';
   rol = sessionStorage.getItem('rol');
   searchField: FormControl;
+  @ViewChild('input')
+  input: ElementRef;
   constructor(private servicioPregunta: PreguntasService,
               private dialog: MatDialog, private comentarios: ComentariosService,
-              private router: Router, private discusiones: DiscusionesService) {
+              private router: Router, private discusiones: DiscusionesService, public renderer: Renderer) {
   }
 
   ngOnInit() {
@@ -52,6 +55,19 @@ export class PortalPreguntasComponent implements OnInit {
         console.log(res);
         this.preguntas = res['preguntas'];
       });
+  }
+
+  open() {
+    this.isOpen = true;
+
+    setTimeout(() => {
+      this.renderer.invokeElementMethod(
+        this.input.nativeElement, 'focus', []);
+    }, 100);
+
+  }
+  close() {
+    this.isOpen = false;
   }
   verPregunta(idPregunta) {
     console.log(idPregunta);

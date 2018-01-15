@@ -7,7 +7,7 @@ import { MatDialogRef } from '@angular/material';
 @Component({
   selector: 'app-ver-pregunta',
   templateUrl: './ver-pregunta.component.html',
-  styleUrls: ['./ver-pregunta.component.css']
+  styleUrls: ['./ver-pregunta.component.scss']
 })
 export class VerPreguntaComponent implements OnInit {
   objetoPregunta: any ;

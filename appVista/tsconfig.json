@@ -16,7 +16,9 @@
       "dom"
     ],
     "types": [
-      "hammerjs"
+      "hammerjs",
+      "jquery",
+      "materialize-css"
     ]
   }
 }

@@ -178,7 +178,7 @@ exports.listPreguntas = (req, res, next) => {
                             numeroDiscusiones: item.discusiones.length,
                             numeroComentarios: item.comentarios.length
                         }
-                        preguntas.push(pregunta);
+                        preguntas.unshift(pregunta);
                         next();
                         contador++;
                         if (contador === limiteDocumento) {
@@ -233,7 +233,7 @@ exports.QueryPreguntas = (req, res, next) => {
                             numeroDiscusiones: item.discusiones.length,
                             numeroComentarios: item.comentarios.length
                         }
-                        preguntas.push(pregunta);
+                        preguntas.unshift(pregunta);
                         console.log(preguntas);
                         next();
                         contador++;
@@ -286,7 +286,7 @@ exports.loadListaMisPreguntas = (req, resp, next) => {
                     descripcion: item.descripcion,
                     identificador: item.identificador
                 }
-                listaPreguntas.push(objetoPregunta);
+                listaPreguntas.unshift(objetoPregunta);
                 next();
                 contador ++;
                 if (contador == numeroElementosPreguntas){

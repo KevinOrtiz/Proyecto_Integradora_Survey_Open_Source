@@ -9,7 +9,7 @@ import { PreguntasService } from '../../../../../services/preguntas.service';
 @Component({
   selector: 'app-lista-desplegable',
   templateUrl: './lista-desplegable.component.html',
-  styleUrls: ['./lista-desplegable.component.css']
+  styleUrls: ['./lista-desplegable.component.scss']
 })
 export class ListaDesplegableComponent implements OnInit, AfterViewInit {
   @ViewChild('valorInputListaDesplegable') input: ElementRef;

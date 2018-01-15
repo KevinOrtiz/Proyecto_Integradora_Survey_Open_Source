@@ -294,7 +294,7 @@ exports.loadListaComentario = (req, resp, next) => {
                                                 numeroComentarios: item.listaSubComentarios.length,
                                                 idComentario: item._id
                                             }
-                                            comentarios.push(comentario);
+                                            comentarios.unshift(comentario);
                                             next();
                                             contador++;
                                             if (contador === limiteDocumento) {

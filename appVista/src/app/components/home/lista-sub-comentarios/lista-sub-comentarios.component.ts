@@ -4,7 +4,7 @@ import { ComentariosService } from '../../../services/comentarios.service';
 @Component({
   selector: 'app-lista-sub-comentarios',
   templateUrl: './lista-sub-comentarios.component.html',
-  styleUrls: ['./lista-sub-comentarios.component.css']
+  styleUrls: ['./lista-sub-comentarios.component.scss']
 })
 export class ListaSubComentariosComponent implements OnInit {
   contenido: string;

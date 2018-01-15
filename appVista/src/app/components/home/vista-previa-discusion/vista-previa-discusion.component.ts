@@ -5,7 +5,7 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
 @Component({
   selector: 'app-vista-previa-discusion',
   templateUrl: './vista-previa-discusion.component.html',
-  styleUrls: ['./vista-previa-discusion.component.css']
+  styleUrls: ['./vista-previa-discusion.component.scss']
 })
 export class VistaPreviaDiscusionComponent implements OnInit {
   discusionPregunta: Object;

@@ -5,7 +5,7 @@ import { PreguntasService } from '../../../../../services/preguntas.service';
 @Component({
   selector: 'app-puntaje',
   templateUrl: './puntaje.component.html',
-  styleUrls: ['./puntaje.component.css']
+  styleUrls: ['./puntaje.component.scss']
 })
 export class PuntajeComponent implements OnInit {
    numberEstrellas ;

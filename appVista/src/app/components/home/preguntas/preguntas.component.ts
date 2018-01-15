@@ -12,7 +12,6 @@ import { EtiquetasPreguntas } from '../../../etiquetas-preguntas';
 import { CategoriasEtiquetasService } from '../../../services/categorias-etiquetas.service';
 import {MatSnackBar} from '@angular/material';
 import {MatDialog} from '@angular/material';
-import { AddLabelCategoriesComponent } from './add-label-categories/add-label-categories.component';
 import { PreguntasService } from '../../../services/preguntas.service';
 import { isFakeMousedownFromScreenReader } from '@angular/cdk/a11y';
 import { SnackBarEliminarPreguntaComponent } from './snack-bar-eliminar-pregunta/snack-bar-eliminar-pregunta.component';
@@ -24,7 +23,7 @@ import { VerPreguntaComponent } from '../ver-pregunta/ver-pregunta.component';
   selector: 'app-preguntas',
   entryComponents: [CasillaComponent, RadioComponent, ListaDesplegableComponent],
   templateUrl: './preguntas.component.html',
-  styleUrls: ['./preguntas.component.css']
+  styleUrls: ['./preguntas.component.scss']
 })
 export class PreguntasComponent implements OnInit {
   @ViewChild('casillaComponent', { read: ViewContainerRef }) casillaComponent: ViewContainerRef;
@@ -63,6 +62,7 @@ export class PreguntasComponent implements OnInit {
     this.preguntaServicio.setRegistroActual();
     this.preguntaServicio.setIdUsuario();
     this.preguntaServicio.setIdentificador(sessionStorage.getItem('id') + 'PREG');
+    this.preguntaServicio.setDefaultFlagDatos();
   }
 
   addTipoRespuesta(tipo_De_Respuesta) {
@@ -214,19 +214,6 @@ export class PreguntasComponent implements OnInit {
   addDescripcion(descripcion: string) {
     this.descripcionPreguntaEstaVacia = false;
     this.preguntaServicio.setDescripcion(descripcion);
-  }
-  setCategoriaPregunta() {
-    if (this.lacajaRespuestasEstaVacia === true || this.descripcionPreguntaEstaVacia === true) {
-      this.errorGuardar.show();
-    }else {
-      const dialogCategorias = this.dialog.open(AddLabelCategoriesComponent, {
-        width: '350px'
-      });
-      dialogCategorias.afterClosed().subscribe(result => {
-        this.preguntaServicio.setTopico(this.categoria.getCategoria());
-        this.showButton = true;
-      });
-    }
   }
 
   /**

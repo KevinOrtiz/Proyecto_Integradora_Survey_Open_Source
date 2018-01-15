@@ -1,167 +1,102 @@
-<div class="row">
-  <div class="col-lg-5">
-    <div class="card mb30">
-      <div class="card-top">
-        <h4 class="card-title">Tipos de Respuestas</h4>
+<div  fxLayoutAlign="center center" style="margin: 24px 0;">
+    <div class="fixed-action-btn toolbar">
+        <a class="btn-floating btn-large red">
+          <i class="large material-icons">done</i>
+        </a>
+        <ul>
+          <li class="waves-effect waves-light"><a (click)="visualizarPregunta()" ><i class="material-icons">pageview</i>Visualizar Pregunta</a></li>
+          <li class="waves-effect waves-light"><a (click)="HabilitarBotonGuardar()" ><i class="material-icons">save</i>Guardar Pregunta</a></li>
+        </ul>
       </div>
-      <div class="card-content">
-        <div class="form-group row">
-          <label class="col-12">Casilla de Verficacion</label>
-          <div class="col-md-9">
-            <button class="btn btn-success" (click)="addTipoRespuesta('2')">
-              <i class="far fa-check-square"></i>
-              opcion 1
-            </button>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-12">Opciones multiples</label>
-          <div class="col-md-9">
-            <button class="btn btn-success" (click)="addTipoRespuesta('1')">
-              <i class="far fa-check-circle"></i>
-              opcion 2
-            </button>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-12">Seleccionar Si/No</label>
-          <div class="col-md-9">
-            <button class="btn btn-success" (click)="addTipoRespuesta('3')">
-              <i class="fas fa-toggle-on"></i>
-              Si/No
-            </button>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-12">Puntaje</label>
-          <div class="col-md-9">
-            <button class="btn btn-success" (click)="addTipoRespuesta('4')">
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-            </button>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-12">Texto</label>
-          <div class="col-md-9">
-            <button class="btn btn-success" (click)="addTipoRespuesta('6')">
-              <i class="fas fa-font"></i>
-              Texto de ejemplo
-            </button>
-          </div>
-        </div>
 
-        <div class="form-group row">
-          <label class="col-12">Lista desplegable</label>
-          <div class="col-md-9">
-            <button class="btn btn-success" (click)="addTipoRespuesta('5')">
-              <i class="fas fa-list-ol"></i>
-              Seleccionar la respuesta de una lista
-            </button>
-          </div>
-        </div>
-
-
+  <mat-card fxFlex="80%">
+    <mat-card-header>
+      <mat-card-title>Opciones de Preguntas</mat-card-title>
+      <div fxLayout="row">
+          <br>
+          <div class="fixed-action-btn horizontal opcionesPregunta">
+              <a class="btn-floating btn-large red">
+                <i class="large material-icons">mode_edit</i>
+              </a>
+      
+              <ul>
+                <li><a matTooltip="Casilla de Verificacion.-
+                                   Permite que los encuestados elijan todas las opciones
+                                   que corresponden a un rango o limite de opciones especificas que pueden seleccionar" 
+                                   (click)="addTipoRespuesta('2')" class="btn-floating red"><i mz-icon-mdi [icon]="'checkbox-marked-outline'"></i></a></li>
+                <li><a matTooltip="Opcion Multiple.-
+                                  Elige solo una respuesta de la lista de opciones" (click)="addTipoRespuesta('1')" class="btn-floating yellow darken-1"><i mz-icon-mdi [icon]="'radiobox-marked'"></i></a></li>
+                <li><a matTooltip="Menu Desplegable.-
+                                  Incluye un menu desplegable con opciones de respuestas que los encuestados pueden elegir" (click)="addTipoRespuesta('5')" class="btn-floating green"><i mz-icon-mdi [icon]="'format-list-bulleted'"></i></a></li>
+                <li><a matTooltip="Puntaje por rating.-
+                                  Cuando deseas que un encuestado indique que piensa sobre algo,
+                                  seleccionando un icono en una escala" (click)="addTipoRespuesta('4')" class="btn-floating blue"><i mz-icon-mdi [icon]="'star'"></i></a></li>
+                <li><a matTooltip="Cuadro de texto simple.- Agrega un cuadro de texto
+                                  simple a tu encuesta cuando quieras que los encuestados responda a esta pregunta con
+                                  texto breve" (click)="addTipoRespuesta('6')" class="btn-floating green"><i mz-icon-mdi [icon]="'format-text'"></i></a></li>
+                <li><a matTooltip="Opciones Si/No.- Es una opcion de respuesta simple, donde permite al encuestado elegir si o no con respecto a una pregunta" (click)="addTipoRespuesta('3')" class="btn-floating blue"><i mz-icon-mdi [icon]="'toggle-switch'"></i></a></li>
+              </ul>
+        </div>      
       </div>
-    </div>
-  </div>
-  <div class="col-lg-7 smart-forms contenedor-resp">
-    <div class="card mb40">
-      <div class="card-top">
-        <h4 class="card-title">Descripcion de la pregunta</h4>
-        <br>
-        <button class="btn btn-icon btn-outline-success" (click)="anadirFoto()"><i class="fas fa-camera-retro"></i></button>
-      </div>
-      <div class="card-content">
-        <div class="section">
-          <label class="field prepend-icon">
-            <textarea id="DescripcionPregunta" class="gui-textarea" #textDescriptionPregunta 
-            placeholder="Ingrese la descripcion de una pregunta" (keyup)="addDescripcion(textDescriptionPregunta.value)">
-            </textarea>
-            <span class="field-icon">
-              <i class="fas fa-font"></i>
-            </span>
-          </label>
-          <div class="alert alert-success" role="alert" *ngIf="fotoCargada">
-            Foto cargada Exitosamente !
-          </div>
+    </mat-card-header>
+    <app-add-label-categories></app-add-label-categories>
+    <mat-divider></mat-divider>
+    <br>
+    <mat-card-content fxLayout="column">
+      <mat-form-field class="full-width">
+        <textarea matInput placeholder="Ingresa tu pregunta..." #textDescriptionPregunta (keyup)="addDescripcion(textDescriptionPregunta.value)"></textarea>
+      </mat-form-field>
+      <button mat-fab color="primary" (click)="anadirFoto()">
+        <mat-icon>insert_photo</mat-icon>
+      </button>
+    </mat-card-content>
+    <mat-card-actions>
+      <div fxLayout="row">
+        <div *ngIf="!existePregunta">
         </div>
-      </div>
-      <h4 class="card-title text-center">Seccion de Respuesta</h4>
-      <div class="card-content ">
-        <div class="section respuesta" *ngIf="!existePregunta">
-          <h3>Debe seleccionar un tipo de respuesta</h3>
-        </div>
-        <div class="section respuesta1" *ngIf="existePregunta &&  CHECKBOX" >
-          <button type="button" class="btn btn-outline-success mb5" (click)="addCasilla()">Añadir Respuesta</button>
-          <button type="button" class="btn btn-outline-danger mb5" (click)="removeComponentCasilla()">Eliminar Respuesta</button>
+        <div class="section respuesta1" *ngIf="existePregunta &&  CHECKBOX">
+          <button type="button" mat-raised-button color="primary" (click)="addCasilla()">Añadir Respuesta</button>
+          <button type="button" mat-raised-button color="accent" (click)="removeComponentCasilla()">Eliminar Respuesta</button>
           <hr>
           <template #casillaComponent></template>
         </div>
-        <div class="section respuesta1" *ngIf="existePregunta && RADIOBUTTON" >
-            <button type="button" class="btn btn-outline-success mb5" (click)="addRadio()">Añadir Respuesta</button>
-            <button type="button" class="btn btn-outline-danger mb5" (click)="removeComponentRadio()">Eliminar Respuesta</button>
-            <hr>
-            <template #radioComponent></template>
+        <div class="section respuesta1" *ngIf="existePregunta && RADIOBUTTON">
+          <button type="button"  mat-raised-button color="primary" (click)="addRadio()">Añadir Respuesta</button>
+          <button type="button"  mat-raised-button color="accent" (click)="removeComponentRadio()">Eliminar Respuesta</button>
+          <hr>
+          <template #radioComponent></template>
         </div>
-        <div class="section respuesta1" *ngIf="existePregunta &&   SI_NO" >
-            <app-si-no></app-si-no>
+        <div class="section respuesta1" *ngIf="existePregunta &&   SI_NO">
+          <app-si-no></app-si-no>
         </div>
-        <div class="section respuesta1" *ngIf="existePregunta &&  PUNTAJE" >
-            <app-puntaje></app-puntaje>
+        <div class="section respuesta1" *ngIf="existePregunta &&  PUNTAJE">
+          <app-puntaje></app-puntaje>
         </div>
-        <div class="section respuesta1" *ngIf="existePregunta && DESCRIPCION" >
-            <app-descripcion></app-descripcion>
+        <div class="section respuesta1" *ngIf="existePregunta && DESCRIPCION">
+          <app-descripcion></app-descripcion>
         </div>
-        <div class="section respuesta1" *ngIf="existePregunta && LISTA_DESPLEGABLE" >
-            <button type="button" class="btn btn-outline-success mb5" (click)="addLista()">Añadir Respuesta</button>
-            <button type="button" class="btn btn-outline-danger mb5" (click)="removeComponentLista()">Eliminar Respuesta</button>
-            <hr>
-            <template #listaComponent></template>
+        <div class="section respuesta1" *ngIf="existePregunta && LISTA_DESPLEGABLE">
+          <button type="button" mat-raised-button color="primary" (click)="addLista()">Añadir Respuesta</button>
+          <button type="button" mat-raised-button color="accent" (click)="removeComponentLista()">Eliminar Respuesta</button>
+          <hr>
+          <template #listaComponent></template>
         </div>
-        <br>
-        <hr>
-        <button class="btn btn-outline-success mb5 btn-rounded" (click)="setCategoriaPregunta()">
-          Categoria de la Pregunta
-        </button>
 
-
-        <button class="btn btn-outline-success mb5 btn-rounded" (click)="visualizarPregunta()" *ngIf="showButton">
-          Visualizar Pregunta
-          </button>
-        <button class="btn btn-outline-success mb5 btn-rounded" (click)="HabilitarBotonGuardar()" *ngIf="showButton">
-          Guardar Pregunta
-        </button>
       </div>
-    </div>
-  </div>
+    </mat-card-actions>
+  </mat-card>
 </div>
 
 <swal #errorGuardar title="Datos Incompletos" text="Existen campos vacios 
-                          y ademas debe elegir un tipo de respuesta"
-                    type="error"></swal>
+                          y ademas debe elegir un tipo de respuesta" type="error"></swal>
 
-<swal #errorServidor
-      title="Error en el servidor"
-      text = "Existen problemas con el servidor, en estos momentos
-              intentelo mas tarde"
-      type = "warning"></swal>
+<swal #errorServidor title="Error en el servidor" text="Existen problemas con el servidor, en estos momentos
+              intentelo mas tarde" type="warning"></swal>
 
-<swal #guardadoExitoso
-      title = "Envio Exitoso"
-      text = "La pregunta sera revisada por miembros del comite, donde posteriormente
+<swal #guardadoExitoso title="Envio Exitoso" text="La pregunta sera revisada por miembros del comite, donde posteriormente
               se le notificara por correo si su pregunta ha sido aceptada, rechazada,
-              o necesitará que se les haga algunos cambios"
-      type = "success"></swal>
-<swal #guardarPregunta 
-      title = "Esta a punto de crear una nueva Pregunta!"
-      text =  "Verifique que la pregunta que va enviar tenga total coherencia con la 
+              o necesitará que se les haga algunos cambios" type="success"></swal>
+<swal #guardarPregunta title="Esta a punto de crear una nueva Pregunta!" text="Verifique que la pregunta que va enviar tenga total coherencia con la 
                 categoria y etiqueta que usted definio, puede dar click en visualizar
-                pregunta, para pre-visualizar su pregunta creada!"
-      type = "warning"
-      [showCancelButton]="true"
-      [focusCancel]="true"
-      (confirm)="guardarpregunta()"></swal>
+                pregunta, para pre-visualizar su pregunta creada!" type="warning" [showCancelButton]="true" [focusCancel]="true"
+  (confirm)="guardarpregunta()"></swal>

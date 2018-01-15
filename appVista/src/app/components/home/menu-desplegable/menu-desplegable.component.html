@@ -1,0 +1,74 @@
+<mz-sidenav [id]="'sidenav-app'" [collapseButtonId]="'btn-sidenav-app'" [edge]="left" [closeOnClick]="true">
+  <mz-sidenav-header>
+    <h4>Open Source Survey</h4>
+  </mz-sidenav-header>
+  <mz-sidenav-subheader>
+    <li>
+      <a>Portal de Discusiones</a>
+    </li>
+  </mz-sidenav-subheader>
+  <mz-sidenav-link>
+    <a [routerLink]="['/home','portalPregunta']"><i mz-icon-mdi [icon]="'comment-question'" [align]="'left'" class="caret"></i>Preguntas</a>
+  </mz-sidenav-link>
+  <mz-sidenav-link>
+    <a ><i mz-icon-mdi [icon]="'library-books'" [align]="'left'" class="caret"></i>Encuestas</a>
+  </mz-sidenav-link>
+  <mz-sidenav-divider></mz-sidenav-divider>
+  <mz-sidenav-subheader>
+    <li>
+      <a>Mis Actividades</a>
+    </li>
+  </mz-sidenav-subheader>
+  <mz-sidenav-collapsible [onClose]="closeEncuestas" [onOpen]="openEncuestas">
+    <mz-sidenav-collapsible-header>
+    <i mz-icon-mdi [icon]="'menu-right'" [align]="'right'" class="caret" [rotate]="rotateEncuestas"></i>Encuestas
+    </mz-sidenav-collapsible-header>
+    <mz-sidenav-collapsible-content>
+      <mz-sidenav-link>
+        <a  class="waves-effect"><i mz-icon-mdi [icon]="'folder-plus'" [align]="'left'" class="caret"></i>Crear Encuesta</a>
+      </mz-sidenav-link>
+      <mz-sidenav-link>
+        <a  class="waves-effect"><i mz-icon-mdi [icon]="'bug'" [align]="'left'" class="caret"></i>Discusiones Encuestas</a>
+      </mz-sidenav-link>
+      <mz-sidenav-link>
+        <a  class="waves-effect"><i mz-icon-mdi [icon]="'view-dashboard'" [align]="'left'" class="caret"></i>Administrar Encuestas</a>
+      </mz-sidenav-link>
+      <mz-sidenav-link>
+          <a  class="waves-effect"><i mz-icon-mdi [icon]="'folder-account'" [align]="'left'" class="caret"></i>Encuestas Compartidas</a>
+      </mz-sidenav-link>
+    </mz-sidenav-collapsible-content>
+  </mz-sidenav-collapsible>
+
+  <mz-sidenav-collapsible [onClose]="closePreguntas" [onOpen]="openPreguntas">
+      <mz-sidenav-collapsible-header>
+        <i mz-icon-mdi [icon]="'menu-right'" [align]="'right'" [rotate]="rotatePreguntas" ></i>Preguntas
+      </mz-sidenav-collapsible-header>
+      <mz-sidenav-collapsible-content>
+        <mz-sidenav-link>
+          <a [routerLink]="['/home','agregarPregunta']" class="waves-effect"><i mz-icon-mdi [icon]="'folder-plus'" [align]="'left'" class="caret"></i>Crear Preguntas</a>
+        </mz-sidenav-link>
+        <mz-sidenav-link>
+          <a [routerLink]="['/home','misDiscusionesPreguntas']" class="waves-effect"><i mz-icon-mdi [icon]="'bug'" [align]="'left'" class="caret"></i>Discusiones Preguntas</a>
+        </mz-sidenav-link>
+        <mz-sidenav-link>
+          <a [routerLink]="['/home','misPreguntas']" class="waves-effect"><i mz-icon-mdi [icon]="'view-dashboard'" [align]="'left'" class="caret"></i>Administrar Preguntas</a>
+        </mz-sidenav-link>
+      </mz-sidenav-collapsible-content>
+    </mz-sidenav-collapsible>
+    <mz-sidenav-divider></mz-sidenav-divider>
+    <mz-sidenav-subheader>
+      <li>
+        <a>Mensajes</a>
+      </li>
+    </mz-sidenav-subheader>
+  <mz-sidenav-link>
+      <a><i mz-icon-mdi [icon]="'bell-ring'" [align]="'left'" class="caret"></i>Acciones de usuarios</a>
+    </mz-sidenav-link>
+    <mz-sidenav-link>
+      <a> <i mz-icon-mdi [icon]="'message-alert'" [align]="'left'" class="caret"></i>Mensajes de usuarios</a>
+  </mz-sidenav-link>
+  <mz-sidenav-divider></mz-sidenav-divider>
+  <mz-sidenav-link>
+    <a><i mz-icon-mdi [icon]="'pencil'" [align]="'left'" class="caret"></i>Discusiones de usuarios</a>
+  </mz-sidenav-link>
+</mz-sidenav>

@@ -1,0 +1,59 @@
+@import "../../../../assets/styles/_var";
+
+:host {
+  z-index: $z-index__main-toolbar;
+}
+
+.colorFondo {
+  background-color: #02BE6A;
+}
+#btn-dropdown-Perfil{
+  background-color: #02BE6A;
+  border-color: #02BE6A;
+
+}
+
+.badge{
+  font-size: 9px;
+  padding: 0px 4px;
+  color:white;
+  min-width: 16px;
+  min-height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 16px;
+}
+
+.bg-danger{
+  background-color: #e65252 !important;
+  border-color: #e65252;
+}
+
+mat-icon{
+  color: white;
+}
+
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .name {
+      margin: 0 8px 0 10px;
+      color: white;
+    }
+
+    .icon {
+      width: 16px;
+      height: 16px;
+      font-size: 16px;
+      transform: rotate(0);
+      transition: transform .25s cubic-bezier(.25,.8,.25,1);
+    }
+
+
+

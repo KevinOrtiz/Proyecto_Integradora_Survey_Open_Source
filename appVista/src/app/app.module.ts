@@ -8,20 +8,14 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
-import { NavbarComponent } from './components/home/navbar/navbar.component';
 import { HeaderComponent } from './components/home/header/header.component';
 import { TableroComponent } from './components/home/tablero/tablero.component';
-import { ProfileComponent } from './components/home/profile/profile.component';
-import { NotificacionesComponent } from './components/home/profile/notificaciones.component';
-import { MensajesComponent } from './components/home/profile/mensajes.component';
 import { APP_ROUTING } from './app.routes';
 import { LoginService } from './services/login.service';
 import { ProfileService } from './services/profile.service';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { LoaderComponent } from './components/loader/loader.component';
-import { EncuestasUsuarioComponent } from './components/home/profile/encuestas-usuario.component';
-import { PreguntasUsuarioComponent } from './components/home/profile/preguntas-usuario.component';
 import { PreguntasComponent } from './components/home/preguntas/preguntas.component';
 import { CasillaComponent } from './components/home/preguntas/respuesta/casilla/casilla.component';
 import { RadioComponent } from './components/home/preguntas/respuesta/radio/radio.component';
@@ -32,7 +26,6 @@ import { ListaDesplegableComponent } from './components/home/preguntas/respuesta
 import { RespuestasService } from './services/respuestas.service';
 import { PreguntasService } from './services/preguntas.service';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
-import { AddLabelCategoriesComponent } from './components/home/preguntas/add-label-categories/add-label-categories.component';
 import { CategoriasEtiquetasService } from './services/categorias-etiquetas.service';
 import { SnackBarMensajesComponent } from './components/home/preguntas/snack-bar-mensajes/snack-bar-mensajes.component';
 // tslint:disable-next-line:max-line-length
@@ -74,6 +67,21 @@ import { EditarDiscusionComponent } from './components/home/editar-discusion/edi
 import { AdminPreguntasComponent } from './components/home/admin-preguntas/admin-preguntas.component';
 import { ListadoDiscusionesPreguntaComponent } from './components/home/listado-discusiones-pregunta/listado-discusiones-pregunta.component';
 import { ValidarPreguntasComponent } from './components/home/validar-preguntas/validar-preguntas.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { CommonModule } from '@angular/common';
+import { ClickOutsideModule } from 'ng-click-outside';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import { MenuDesplegableComponent } from './components/home/menu-desplegable/menu-desplegable.component';
+import { MzSidenavModule, MzIconModule, MzIconMdiModule,  MzDropdownModule, MzTooltipModule } from 'ng2-materialize';
+import { NotificacionAccionesComponent } from './components/home/notificacion-acciones/notificacion-acciones.component';
+import { NotificacionMensajesComponent } from './components/home/notificacion-mensajes/notificacion-mensajes.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { AddLabelCategoriesComponent } from './components/home/preguntas/add-label-categories/add-label-categories.component';
+import { FileHandledDirective } from './uploads/file-handled.directive';
+
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyC4WyYXEuKYdy2tUGzcCYi2HF7gs7_TxJc',
@@ -90,15 +98,9 @@ export const firebaseConfig = {
     AppComponent,
     LoginComponent,
     HomeComponent,
-    NavbarComponent,
     HeaderComponent,
     TableroComponent,
-    ProfileComponent,
-    NotificacionesComponent,
-    MensajesComponent,
     LoaderComponent,
-    EncuestasUsuarioComponent,
-    PreguntasUsuarioComponent,
     PreguntasComponent,
     CasillaComponent,
     RadioComponent,
@@ -106,7 +108,6 @@ export const firebaseConfig = {
     PuntajeComponent,
     DescripcionComponent,
     ListaDesplegableComponent,
-    AddLabelCategoriesComponent,
     SnackBarMensajesComponent,
     SnackBarEliminarPreguntaComponent,
     SnackBarMensajesActualizadosComponent,
@@ -124,6 +125,11 @@ export const firebaseConfig = {
     AdminPreguntasComponent,
     ListadoDiscusionesPreguntaComponent,
     ValidarPreguntasComponent,
+    MenuDesplegableComponent,
+    NotificacionAccionesComponent,
+    NotificacionMensajesComponent,
+    AddLabelCategoriesComponent,
+    FileHandledDirective
   ],
   imports: [
     BrowserModule,
@@ -154,10 +160,22 @@ export const firebaseConfig = {
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatChipsModule
+    MatChipsModule,
+    FlexLayoutModule,
+    MatSidenavModule,
+    MatListModule,
+    MatProgressBarModule,
+    CommonModule,
+    ClickOutsideModule,
+    MatToolbarModule,
+    MzSidenavModule,
+    MzIconModule,
+    MzIconMdiModule,
+    MzDropdownModule,
+    MatTooltipModule
   ],
   entryComponents: [
-    AddLabelCategoriesComponent, SnackBarMensajesComponent, SnackBarEliminarPreguntaComponent,
+     SnackBarMensajesComponent, SnackBarEliminarPreguntaComponent,
     SnackBarMensajesActualizadosComponent, UploadFormComponent,  ListaSubComentariosComponent, VerPreguntaComponent,
     CrearDiscusionComponent, VistaPreviaDiscusionComponent, EditarDiscusionComponent, ListadoDiscusionesPreguntaComponent,
     ValidarPreguntasComponent

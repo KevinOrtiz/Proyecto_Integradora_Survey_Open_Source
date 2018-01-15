@@ -5,7 +5,7 @@ import { PreguntasService } from '../../../services/preguntas.service';
 @Component({
   selector: 'app-listado-discusiones-pregunta',
   templateUrl: './listado-discusiones-pregunta.component.html',
-  styleUrls: ['./listado-discusiones-pregunta.component.css']
+  styleUrls: ['./listado-discusiones-pregunta.component.scss']
 })
 export class ListadoDiscusionesPreguntaComponent implements OnInit {
   listaDiscusiones$: Observable<Object[]>;

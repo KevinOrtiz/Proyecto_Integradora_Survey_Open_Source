@@ -10,7 +10,7 @@ import { PreguntasService } from '../../../../../services/preguntas.service';
 @Component({
   selector: 'app-radio',
   templateUrl: './radio.component.html',
-  styleUrls: ['./radio.component.css']
+  styleUrls: ['./radio.component.scss']
 })
 export class RadioComponent implements OnInit, AfterViewInit {
   @ViewChild('valorInputRespuestaRadio') input: ElementRef;

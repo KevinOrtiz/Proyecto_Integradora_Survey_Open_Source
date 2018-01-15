@@ -1,76 +1,77 @@
-<div class="content">
-  <div class="row">
+<div fxLayout="row" fxLayoutAlign="center center" style="margin: 24px 0;">
+
+  <mat-card fxFlex="90%">
     <mat-card-header>
       <img mat-card-avatar [src]="imagen">
       <mat-card-title> {{ usuario }}</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content fxLayout="column">
       <mat-form-field class="full-width">
         <textarea matInput placeholder="Dejanos tu comentario" [(ngModel)]="contenido"></textarea>
       </mat-form-field>
     </mat-card-content>
+
     <mat-card-actions>
-      <div class="button-row">
+      <div fxLayout="row">
         <button mat-raised-button (click)="limpiarComentario()">Cancelar</button>
         <button mat-raised-button color="primary" (click)="enviarComentario()">Enviar Comentario</button>
       </div>
     </mat-card-actions>
+  </mat-card>
+</div>
 
-  </div>
-  <br>
-  <div class="container">
-    <div *ngIf="listaComentarios">
-      <div *ngFor="let item of listaComentarios">
-        <div class="col col-md12">
-          <mat-card class="card">
-            <mat-card-header>
-              <img mat-card-avatar [src]="item?.urlUsuario">
-              <mat-card-title>{{ item?.creador }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              {{ item?.descripcion }}
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-icon-button class="favorite" (click)="addFavorite(item?.idComentario)">
-                <mat-icon>favorite</mat-icon>
-                <p> {{ item?.numeroFavorite }}</p>
-              </button>
-              <button mat-icon-button class="thumbsUp" (click)="addLikes(item?.idComentario)">
-                <mat-icon>thumb_up</mat-icon>
-                <p> {{ item?.numeroLike }}</p>
-              </button>
-              <button mat-icon-button class="thumbsDown" (click)="addDislike(item?.idComentario)">
-                <mat-icon>thumb_down</mat-icon>
-                <p>{{ item?.numeroDislike }}</p>
+<br>
+<div *ngIf="listaComentarios">
+  <div *ngFor="let item of listaComentarios" fxLayout="row" fxLayoutAlign="center center" style="margin: 24px 0;">
+    <mat-card fxFlex="50%">
+      <mat-card-header>
+        <img mat-card-avatar [src]="item?.urlUsuario">
+        <mat-card-title>{{ item?.creador }}</mat-card-title>
+      </mat-card-header>
+      <br>
+      <mat-card-content fxLayout="column">
+        {{ item?.descripcion }}
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <br>
+      <br>
+      <br>
+      <mat-card-actions>
+        <div fxLayout="row">
+          <button mat-icon-button class="favorite" (click)="addFavorite(item?.idComentario)">
+            <mat-icon>favorite</mat-icon>
+            <p class="favoriteText"> {{ item?.numeroFavorite }}</p>
+          </button>
+          <button mat-icon-button class="thumbsUp" (click)="addLikes(item?.idComentario)">
+            <mat-icon>thumb_up</mat-icon>
+            <p class="thumbsUpText"> {{ item?.numeroLike }}</p>
+          </button>
+          <button mat-icon-button class="thumbsDown" (click)="addDislike(item?.idComentario)">
+            <mat-icon>thumb_down</mat-icon>
+            <p class="thumbsDownText">{{ item?.numeroDislike }}</p>
 
-              </button>
-              <button mat-icon-button class="comments" (click)="CargarSubcomentario(item?.idComentario)">
-                <mat-icon>comment</mat-icon>
-                <p> {{ item?.numeroComentarios }} </p>
-              </button>
-            </mat-card-actions>
-          </mat-card>
-          <hr>
-          <hr>
-
+          </button>
+          <button mat-icon-button class="comments" (click)="CargarSubcomentario(item?.idComentario)">
+            <mat-icon>comment</mat-icon>
+            <p class="commentsText"> {{ item?.numeroComentarios }} Comentarios </p>
+          </button>
         </div>
+      </mat-card-actions>
+    </mat-card>
+    <br>
 
-      </div>
-    </div>
-
 
   </div>
-  <br>
-  <br>
-  <div *ngIf="!finished && existeDatos" class="cargando">
-    <mat-spinner></mat-spinner>
-  </div>
-  <div *ngIf="finished">
-  </div>
+</div>
+<br>
+<br>
+<div *ngIf="!finished && existeDatos" class="cargando" fxLayoutAlign="center center">
+</div>
+<div *ngIf="finished">
+</div>
 
-  <div *ngIf="!listaComentarios" class="col col-md-12">
-    <h3>Eres el primero en comentar!</h3>
-  </div>
-  <div infiniteScroll [infiniteScrollDistance]="0.00001" [infiniteScrollThrottle]="1000" (scrolled)="onScroll()">
-  </div>
+<div *ngIf="!listaComentarios" class="col col-md-12">
+  <h3>Eres el primero en comentar!</h3>
+</div>
+<div infiniteScroll [infiniteScrollDistance]="0.00001" [infiniteScrollThrottle]="1000" (scrolled)="onScroll()">
 </div>

@@ -6,7 +6,7 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
 @Component({
   selector: 'app-crear-discusion',
   templateUrl: './crear-discusion.component.html',
-  styleUrls: ['./crear-discusion.component.css']
+  styleUrls: ['./crear-discusion.component.scss']
 })
 export class CrearDiscusionComponent implements OnInit {
   @ViewChild('guardado') private guardado: SwalComponent;

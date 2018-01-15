@@ -1,15 +1,10 @@
-<div class="container">
-    <div class="row">
-      <div class="section">
-        <div class="col col-md8">
-          <label class="field prepend-icon">
-            <input type="text" style="width:300px;" #valorInputRespuestaRadio 
-            class="gui-input" placeholder="respuesta" (keyup.enter)="addRespuesta()">
-            <span class="field-icon">
-              <i class="far fa-check-circle"></i>
-            </span>
-          </label>
-        </div>
-      </div>
-    </div>
-  </div>
+
+            <mat-card-content fxLayout="column">
+                <mat-form-field>
+                    <input matInput style="width:300px;" #valorInputRespuestaRadio
+                    placeholder="respuesta" (keyup.enter)="addRespuesta()">
+                    <mat-icon>radio_button_checked</mat-icon>
+                </mat-form-field>
+    
+                </mat-card-content>
+    

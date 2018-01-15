@@ -1,18 +1,16 @@
 <div *ngIf="currentUpload">
   <div class="progress">
-      <div class="progress-bar progress-bar-animated" [ngStyle]="{ 'width': currentUpload?.progress + '%' }"></div>
+    <div class="progress-bar progress-bar-animated" [ngStyle]="{ 'width': currentUpload?.progress + '%' }"></div>
   </div>
   Progress: {{currentUpload?.name}} | {{currentUpload?.progress}}% Complete
 </div>
 
-<label>
-    <input type="file" (change)="detectedFiles($event)">
-</label>
 
-<button class="btn btn-outline-success"
-  [disabled]="!selectedFiles"
-  (click)="uploadSingle()">
-  Subir Foto
-</button>
+<div class="box_input" appFileHandled (filesDropped)="handleDrop($event)" (filesHovered)="dropzoneState($event)">
+    <input class="box_file" type="file" (change)="detectedFiles($event)">
+    <label for="file"><strong>Elija una foto o arrastre una foto aqui</strong></label>
+    <button class="btn btn-outline-success" [disabled]="!selectedFiles" (click)="uploadSingle()">
+    Subir Foto
+   </button>
+</div>
 
-<button class="btn btn-icon btn-outline-success" (click)="cerrarVentana()">Ok</button>

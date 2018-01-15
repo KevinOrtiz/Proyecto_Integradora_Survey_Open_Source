@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-admin-preguntas',
   templateUrl: './admin-preguntas.component.html',
-  styleUrls: ['./admin-preguntas.component.css']
+  styleUrls: ['./admin-preguntas.component.scss']
 })
 export class AdminPreguntasComponent implements OnInit, AfterViewInit {
   listaPreguntas: TablePreguntas[] = [];

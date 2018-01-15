@@ -7,7 +7,7 @@ import { PreguntasService } from '../../../../../services/preguntas.service';
 @Component({
   selector: 'app-si-no',
   templateUrl: './si-no.component.html',
-  styleUrls: ['./si-no.component.css']
+  styleUrls: ['./si-no.component.scss']
 })
 export class SiNoComponent implements OnInit, AfterViewInit {
 

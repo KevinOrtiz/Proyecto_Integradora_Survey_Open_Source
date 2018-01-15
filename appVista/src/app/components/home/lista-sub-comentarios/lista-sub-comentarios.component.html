@@ -1,61 +1,68 @@
 <mat-dialog-content>
-<div class="content">
-  <div class="content">
-    <mat-card-header>
-      <img mat-card-avatar [src]="imagen">
-      <mat-card-title> {{ usuario }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-form-field class="full-width">
-        <textarea matInput placeholder="Dejanos tu comentario" [(ngModel)]="contenido"></textarea>
-      </mat-form-field>
-    </mat-card-content>
-    <mat-card-actions>
-      <div class="button-row">
-        <button mat-raised-button (click)="limpiarComentario()">Cancelar</button>
-        <button mat-raised-button color="primary" (click)="enviarComentario()">Enviar Comentario</button>
-      </div>
-    </mat-card-actions>
+  <div fxLayout="row" fxLayoutAlign="center center" style="margin: 24px 0;">
+    <mat-card fxFlex="90%">
+      <mat-card-header>
+        <img mat-card-avatar [src]="imagen">
+        <mat-card-title> {{ usuario }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content fxLayout="column">
+        <mat-form-field class="full-width">
+          <textarea matInput placeholder="Dejanos tu comentario" [(ngModel)]="contenido"></textarea>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <div fxLayout="row">
+          <button mat-raised-button (click)="limpiarComentario()">Cancelar</button>
+          <button mat-raised-button color="primary" (click)="enviarComentario()">Enviar Comentario</button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
   </div>
   <br>
-  <div class="container">
     <div *ngIf="listaSubComentarios">
-      <div *ngFor="let item of listaSubComentarios">
-        <mat-card class="card">
+      <div *ngFor="let item of listaSubComentarios" fxLayout="row" fxLayoutAlign="center center" style="margin: 24px 0;">
+        <mat-card fxFlex="90%">
           <mat-card-header>
             <img mat-card-avatar [src]="item?.urlUsuario">
             <mat-card-title>{{ item?.creador }}</mat-card-title>
           </mat-card-header>
-          <mat-card-content>
+          <br>
+          <mat-card-content fxLayout="column">
             {{ item?.descripcion }}
           </mat-card-content>
+          <mat-divider></mat-divider>
+          <br>
+          <br>
+          <br>
           <mat-card-actions>
+            <div fxLayout="row">
             <button mat-icon-button class="favorite" (click)="addFavorite(item?.idComentario)">
-              <mat-icon>favorite</mat-icon>
-              <p> {{ item?.numeroFavorite }}</p>
-            </button>
-            <button mat-icon-button class="thumbsUp" (click)="addLikes(item?.idComentario)">
-              <mat-icon>thumb_up</mat-icon>
-              <p> {{ item?.numeroLike }}</p>
-            </button>
-            <button mat-icon-button class="thumbsDown" (click)="addDislike(item?.idComentario)">
-              <mat-icon>thumb_down</mat-icon>
-              <p>{{ item?.numeroDislike }}</p>
+                <mat-icon>favorite</mat-icon>
+                <p class="favoriteText"> {{ item?.numeroFavorite }}</p>
+              </button>
+              <button mat-icon-button class="thumbsUp" (click)="addLikes(item?.idComentario)">
+                <mat-icon>thumb_up</mat-icon>
+                <p class="thumbsUpText"> {{ item?.numeroLike }}</p>
+              </button>
+              <button mat-icon-button class="thumbsDown" (click)="addDislike(item?.idComentario)">
+                <mat-icon>thumb_down</mat-icon>
+                <p class="thumbsDownText">{{ item?.numeroDislike }}</p>
+  
+              </button>
 
-            </button>
+            </div>
           </mat-card-actions>
         </mat-card>
-        <hr>
-        <hr>
+        <br>
       </div>
     </div>
+    <br>
+    <br>
     <div *ngIf="!listaSubComentarios" class="col col-md-12">
       <h3>Eres el primero en comentar!</h3>
     </div>
     <br>
 
 
-  </div>
 
-</div>
 </mat-dialog-content>

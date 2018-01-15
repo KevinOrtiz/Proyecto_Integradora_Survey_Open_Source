@@ -1,5 +1,8 @@
-<div *ngFor="let discusion of listadoDiscusiones ">
-  <mat-card class="card">
+<div *ngFor="let discusion of listadoDiscusiones " fxLayout="row" fxLayoutAlign="center center" style="margin: 24px 0;" [ngSwitch]="discusion.estados">
+  <mat-card fxFlex="50%">
+      <img mat-card-image src="../../../../assets/img/revision.jpeg" *ngSwitchCase="'revision'">
+      <img mat-card-image src="../../../../assets/img/rechazada.jpg" *ngSwitchCase="'rechazada'">
+      <img mat-card-image src="../../../../assets/img/pregunta_aprobada.jpg" *ngSwitchCase="'aceptada'">
     <mat-card-header>
       <img mat-card-avatar [src]="discusion.urlUsuario">
       <mat-card-title>{{ discusion.titulo}}</mat-card-title>
@@ -19,21 +22,28 @@
         </mat-chip-list>
       </mat-card-subtitle>
     </mat-card-header>
-    <hr>
-    <mat-card-content>
+    <br>
+    <mat-card-content fxLayout="column">
       <div [innerHtml]="discusion.descripcion"></div>
     </mat-card-content>
+    <mat-divider></mat-divider>
+    <br>
+    <br>
+    <br>
     <mat-card-actions>
+      <div fxLayout="row">
       <button mat-icon-button (click)="verListadoComentarios(discusion._id)" class="btncomentarios">
-        <mat-icon>comment</mat-icon>
-        <p> {{ discusion.numeroComentarios}}</p>
-      </button>
-      <button mat-raised-button color="accent" *ngIf="idUserActive == discusion.creador_ID && discusion.fecha_cierre === '' && discusion.estados === 'revision'" (click)="showPopUp(discusion._id)">
-        Cerrar Discusion
-      </button>
+          <mat-icon>comment</mat-icon>
+          <p> {{ discusion.numeroComentarios}}</p>
+        </button>
+        <button mat-raised-button color="accent" *ngIf="idUserActive == discusion.creador_ID && discusion.fecha_cierre === '' && discusion.estados === 'revision'" (click)="showPopUp(discusion._id)">
+          Cerrar Discusion
+        </button>
+
+      </div>
     </mat-card-actions>
   </mat-card>
-
+  <br>
 </div>
 
 <swal #cerrarDiscusion title="Cerrar Discusion" text="Desea cerrar la discusion?, se le notificara al creador de la pregunta acerca

@@ -13,6 +13,8 @@ export class UploadFormComponent implements OnInit {
 
   selectedFiles: FileList;
   currentUpload: Upload;
+  // tslint:disable-next-line:no-inferrable-types
+  dropzoneActive: boolean = false;
   constructor(private instanceUpload: UploadService, public thisDialogRef: MatDialogRef<UploadFormComponent>) { }
 
   ngOnInit() {
@@ -27,8 +29,22 @@ export class UploadFormComponent implements OnInit {
     this.currentUpload = new Upload(file);
     this.instanceUpload.pushUpload(this.currentUpload);
   }
+  getFileUpload () {
+    return this.currentUpload;
+  }
   cerrarVentana() {
     this.thisDialogRef.close('confirm');
+  }
+  dropzoneState($event: boolean) {
+    this.dropzoneActive = $event;
+  }
+
+  handleDrop ( fileList: FileList) {
+    const filesIndex = _.range(fileList.length);
+    _.each(filesIndex, (idx) => {
+      this.currentUpload = new Upload(fileList[idx]);
+      this.instanceUpload.pushUpload(this.currentUpload);
+    });
   }
 
 }

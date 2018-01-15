@@ -1,0 +1,13 @@
+.box_dragndrop{
+    display: none;
+}
+
+.box_input{
+    background-color: white;
+    outline: 2px dashed black;
+    outline-offset: -10px;
+}
+
+.box_input .box_dragndrop{
+    display: inline;
+}
