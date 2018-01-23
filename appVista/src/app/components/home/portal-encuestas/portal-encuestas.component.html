@@ -1,0 +1,98 @@
+<div fxLayout="row" fxLayoutAlign="center stretch">
+    <button class="search-button" mat-button (click)="open()">
+      <mat-icon>search</mat-icon>
+    </button>
+    <mat-form-field class="search" floatingPlaceholder="false" [class.search-open]="isOpen">
+      <input  placeholder="Busqueda por etiqueta de la encuesta" [(ngModel)]="textoBusqueda" [formControl]="searchField"
+        #input (blur)="close()" matInput>
+    </mat-form-field>
+  </div>
+  
+  <div *ngIf="!finished" >
+    <mat-spinner></mat-spinner>
+  </div>
+  
+  <div  *ngIf="finished">
+  <div *ngFor="let encuesta of encuestas" fxLayout="row" fxLayoutAlign="center center" style="margin: 24px 0;" >
+    <mat-card fxFlex="50%">
+        <img mat-card-image [src]="encuesta?.contenidoMultimedia.url" *ngIf="encuesta?.contenidoMultimedia.url">
+        <img mat-card-image src="assets/survey_example.png" *ngIf="!encuesta?.contenidoMultimedia.url">
+      <mat-card-header>
+        <img mat-card-avatar [src]="encuesta?.urlUsuario">
+        <mat-card-title>{{ encuesta?.usuario }}</mat-card-title>
+        <mat-card-subtitle>Creado: {{ encuesta?.fecha_creacion }}</mat-card-subtitle>
+        <span fxFlex></span>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="verEncuesta(encuesta?._id)">
+            <mat-icon>remove_red_eye</mat-icon>
+            <span>Ver Encuesta</span>
+          </button>
+          <button mat-menu-item (click)="crearDiscusion(encuesta?._id)">
+            <mat-icon>open_in_new</mat-icon>
+            <span>Crear Discusion</span>
+          </button>
+        </mat-menu>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content fxLayout="column">
+        <div>
+          <span class="card-title">{{encuesta?.titulo}}</span>
+        </div>
+        <div>
+          <mat-chip-list class="tag">
+              <mat-chip color="primary" selected="true" *ngFor="let item of encuesta?.etiqueta" >
+                {{item.texto}}
+              </mat-chip>
+          </mat-chip-list>
+        </div>
+        <div>
+            {{ encuesta?.descripcion }}
+        </div>
+        <div>
+          <p>Cantidad Preguntas : {{encuesta?.numeroPreguntas}}</p>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <div fxLayout="row">
+          <button mat-icon-button (click)="verListaDiscusiones(encuesta?._id)">
+            <mat-icon>bug_report {{ encuesta?.numeroDiscusiones }} </mat-icon>
+            <p class="estiloDiscusiones">{{ encuesta?.numeroDiscusiones }} Discusiones</p>
+          </button>
+          <span fxFlex></span>
+          <button mat-icon-button (click)="verListadoComentarios(encuesta?._id)">
+            <mat-icon>comment</mat-icon>
+            <p class="estiloComentarios"> {{ encuesta?.numeroComentarios}} Comentarios</p>
+          </button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  
+    <br>
+  
+  </div>
+  
+  <br>
+  
+  <br>
+  <ul class="pagination">
+      <li class="waves-effect">
+        <a (click)="nextPage(1)">1</a>
+      </li>
+      <li class="waves-effect">
+          <a (click)="nextPage(2)">2</a>
+      </li>
+      <li class="waves-effect">
+          <a (click)="nextPage(3)">3</a>
+      </li>
+      <li class="waves-effect">
+          <a (click)="nextPage(4)">4</a>
+      </li>
+      <li class="waves-effect">
+            <a (click)="nextPage(5)">5</a>
+      </li>
+      <li class="waves-effect"><a (click)="next()"><i class="material-icons">chevron_right</i></a></li>
+  </ul>
+  </div>

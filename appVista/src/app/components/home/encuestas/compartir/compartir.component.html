@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="row">
+    <span class="card-title">Descarga tus encuestas en los distintos formatos</span>
+    <div class="col s12 m6">
+      <h2 class="header">Descargue su encuesta en version CSV</h2>
+      <div class="card horizontal">
+        <div class="card-image">
+          <img src="assets/cssv_file.svg">
+        </div>
+        <div class="card-stacked">
+          <div class="card-content">
+            <p>De click en el boton Descargar, para proceder a descargar su encuesta en version CSV (archivo excel)</p>
+          </div>
+          <div class="card-action">
+            <a (click)="descargarEncuestaVersionCSV()">
+              <i class="material-icons right">
+                  file_download
+              </i>
+              Descargar
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m6">
+        <h2 class="header">Descargue su encuesta en version JSON</h2>
+        <div class="card horizontal">
+          <div class="card-image">
+            <img src="assets/json_image.png">
+          </div>
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>De click en el boton Descargar, para proceder a descargar su encuesta en version JSON</p>
+            </div>
+            <div class="card-action">
+              <a (click)="descargarEncuestaVersionJSON()" title="Download JSON" [href]="downloadUrl" download="ejemplo.json">
+                <i class="material-icons right">
+                    file_download
+                </i>
+                Descargar
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>

@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const discusionPreguntaSchema = new Schema({
     titulo:String,
     descripcion:String,
-    creador_ID:String,
+    creador_ID:{type: String, index: true},
     etiquetas:[{
         type: String
     }],
@@ -26,30 +26,6 @@ const discusionPreguntaSchema = new Schema({
 });
 
 
-discusionPreguntaSchema.virtual('numeroComentariosDiscusionesPreguntas').get(()=>{
-   return this.comentarios.length;
-});
-
-
-discusionPreguntaSchema.virtual('numeroEtiquetasDiscusionesPreguntas').get(()=>{
-   return this.etiquetas.length;
-});
-
-discusionPreguntaSchema.virtual('listaEtiquetasDiscusionesPreguntas').get(()=>{
-   return this.etiquetas;
-});
-
-discusionPreguntaSchema.virtual('numeroEstadosDiscusionesPreguntas').get(()=>{
-   return this.estados.length;
-});
-
-discusionPreguntaSchema.virtual('listaEstadosDiscusionesPreguntas').get(()=>{
-   return this.estados;
-});
-
-discusionPreguntaSchema.virtual('mostrarIDPregunta').get(()=>{
-   return this.pregunta_ID;
-});
 
 
 const discusionPregunta = mongoose.model('discusionPregunta',discusionPreguntaSchema);

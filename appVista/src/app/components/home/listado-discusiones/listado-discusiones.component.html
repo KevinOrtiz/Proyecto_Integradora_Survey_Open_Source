@@ -1,8 +1,5 @@
 <div *ngFor="let discusion of listadoDiscusiones " fxLayout="row" fxLayoutAlign="center center" style="margin: 24px 0;" [ngSwitch]="discusion.estados">
   <mat-card fxFlex="50%">
-      <img mat-card-image src="../../../../assets/img/revision.jpeg" *ngSwitchCase="'revision'">
-      <img mat-card-image src="../../../../assets/img/rechazada.jpg" *ngSwitchCase="'rechazada'">
-      <img mat-card-image src="../../../../assets/img/pregunta_aprobada.jpg" *ngSwitchCase="'aceptada'">
     <mat-card-header>
       <img mat-card-avatar [src]="discusion.urlUsuario">
       <mat-card-title>{{ discusion.titulo}}</mat-card-title>

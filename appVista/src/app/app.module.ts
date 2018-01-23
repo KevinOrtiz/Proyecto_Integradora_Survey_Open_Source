@@ -75,12 +75,27 @@ import { CommonModule } from '@angular/common';
 import { ClickOutsideModule } from 'ng-click-outside';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { MenuDesplegableComponent } from './components/home/menu-desplegable/menu-desplegable.component';
-import { MzSidenavModule, MzIconModule, MzIconMdiModule,  MzDropdownModule, MzTooltipModule } from 'ng2-materialize';
+// tslint:disable-next-line:max-line-length
+import { MzSidenavModule, MzIconModule, MzIconMdiModule,  MzDropdownModule, MzTooltipModule, MzProgressModule, MzInputModule, MzCollapsibleModule, MzCollapsibleComponent, MzTextareaModule } from 'ng2-materialize';
 import { NotificacionAccionesComponent } from './components/home/notificacion-acciones/notificacion-acciones.component';
 import { NotificacionMensajesComponent } from './components/home/notificacion-mensajes/notificacion-mensajes.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { AddLabelCategoriesComponent } from './components/home/preguntas/add-label-categories/add-label-categories.component';
 import { FileHandledDirective } from './uploads/file-handled.directive';
+import { MensajeAccionesUsuarioComponent } from './components/home/mensaje-acciones-usuario/mensaje-acciones-usuario.component';
+import { AccionesUsuarioService } from './services/acciones-usuario.service';
+import { StadisticalActivitiesService } from './services/stadistical-activities.service';
+import { ChartsModule } from 'ng2-charts';
+import { EncuestasComponent } from './components/home/encuestas/encuestas.component';
+import { ResumenComponent } from './components/home/encuestas/resumen/resumen.component';
+import { DisenoComponent } from './components/home/encuestas/diseno/diseno.component';
+import { CompartirComponent } from './components/home/encuestas/compartir/compartir.component';
+import {MatStepperModule} from '@angular/material/stepper';
+import { EncuestasService } from './services/encuestas.service';
+import {DndModule} from 'ng2-dnd';
+import { VerEncuestaComponent } from './components/home/ver-encuesta/ver-encuesta.component';
+import { MzModalModule } from 'ng2-materialize';
+import { PortalEncuestasComponent } from './components/home/portal-encuestas/portal-encuestas.component'
 
 
 export const firebaseConfig = {
@@ -129,7 +144,14 @@ export const firebaseConfig = {
     NotificacionAccionesComponent,
     NotificacionMensajesComponent,
     AddLabelCategoriesComponent,
-    FileHandledDirective
+    FileHandledDirective,
+    MensajeAccionesUsuarioComponent,
+    EncuestasComponent,
+    ResumenComponent,
+    DisenoComponent,
+    CompartirComponent,
+    VerEncuestaComponent,
+    PortalEncuestasComponent
   ],
   imports: [
     BrowserModule,
@@ -172,13 +194,21 @@ export const firebaseConfig = {
     MzIconModule,
     MzIconMdiModule,
     MzDropdownModule,
-    MatTooltipModule
+    MzProgressModule,
+    MatTooltipModule,
+    MzInputModule,
+    ChartsModule,
+    MatStepperModule,
+    MzCollapsibleComponent,
+    MzTextareaModule,
+    DndModule.forRoot(),
+    MzModalModule
   ],
   entryComponents: [
      SnackBarMensajesComponent, SnackBarEliminarPreguntaComponent,
     SnackBarMensajesActualizadosComponent, UploadFormComponent,  ListaSubComentariosComponent, VerPreguntaComponent,
     CrearDiscusionComponent, VistaPreviaDiscusionComponent, EditarDiscusionComponent, ListadoDiscusionesPreguntaComponent,
-    ValidarPreguntasComponent
+    ValidarPreguntasComponent, MensajeAccionesUsuarioComponent, VerEncuestaComponent
   ],
   providers: [
     LoginService,
@@ -189,7 +219,10 @@ export const firebaseConfig = {
     UploadService,
     AngularFireDatabase,
     ComentariosService,
-    DiscusionesService
+    DiscusionesService,
+    AccionesUsuarioService,
+    StadisticalActivitiesService,
+    EncuestasService,
   ],
   bootstrap: [AppComponent]
 })

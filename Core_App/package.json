@@ -35,7 +35,8 @@
     "node-async-loop": "^1.2.2",
     "nodemailer": "^4.4.1",
     "nodemon": "^1.12.1",
-    "redis": "^2.8.0"
+    "redis": "^2.8.0",
+    "underscore-node": "^0.1.2"
   },
   "devDependencies": {
     "chai": "^3.2.0",

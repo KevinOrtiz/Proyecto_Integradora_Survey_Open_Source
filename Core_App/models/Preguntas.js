@@ -3,16 +3,20 @@ const Schema = mongoose.Schema;
 const pagination = require('mongoose-paginate');
 
 const PreguntaSchema = new Schema({
-    identificador:String,
     descripcion:String,
-    usuario_ID: String,
+    usuario_ID: {type: String, index: true},
     historial_cambios:[{
-        texto:String
+        texto:{
+            type: String, index: true
+        }
     }],
-    registroActual:Boolean,
+    registroActual:{type:Boolean, index: true},
     listaImagen:[{
         url: String
     }],
+    fecha_creacion:{type: Date, default: Date.now, index: true},
+    fecha_actualizacion: {type: Date, default: Date.now, index:true},
+    estado:{type: String, index: true, default: 'revision'},
     etiquetas:{
         texto: String
     },
@@ -34,34 +38,8 @@ const PreguntaSchema = new Schema({
     }]
 });
 
-PreguntaSchema.virtual('numeroRespuestaPregunta').get(()=>{
-   return this.respuestas.length;
-});
 
-PreguntaSchema.virtual('numeroComentariosPregunta').get(()=>{
-   return this.comentarios.length;
-});
-
-PreguntaSchema.virtual('numeroDiscusionesPregunta').get(()=>{
-    return this.discusiones.length;
-});
-
-PreguntaSchema.virtual('numeroEtiquetasPregunta').get(()=>{
-   return this.etiquetas.length;
-});
-
-PreguntaSchema.virtual('numeroTopicosPreguntas').get(()=>{
-   return this.topicos.length;
-});
-
-PreguntaSchema.virtual('listaTopicosPreguntas').get(()=>{
-   return this.topicos;
-});
-
-PreguntaSchema.virtual('listaEtiquetasPreguntas').get(()=>{
-   return this.etiquetas;
-});
-PreguntaSchema.index({topicos:'text'});
+PreguntaSchema.index({'topicos' :'text'});
 PreguntaSchema.plugin(pagination);
 
 const Pregunta = mongoose.model('pregunta',PreguntaSchema);

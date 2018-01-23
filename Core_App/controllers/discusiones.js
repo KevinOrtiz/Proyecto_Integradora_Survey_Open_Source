@@ -9,12 +9,12 @@ let asyncloop = require('node-async-loop');
 exports.guardarDiscusion = (req, resp, next) => {
     if (req.body.tipoDiscusion === 'pregunta') {
         var objetoPregunta = new discusionPregunta(req.body.respuestaDiscusion);
-        console.log(objetoPregunta);
         objetoPregunta.save()
             .then((res) => {
                 console.log(res);
                 Pregunta.findByIdAndUpdate({
-                    '_id': req.body.idCuerpoDiscusion
+                    '_id': req.body.idCuerpoDiscusion,
+                    "registroActual": true
                 }, {
                     $push: {
                         'discusiones': objetoPregunta
@@ -23,15 +23,13 @@ exports.guardarDiscusion = (req, resp, next) => {
                     'new': true,
                     'upsert': true
                 }).then((pregunta, error) => {
-                    console.log("**********");
-                    console.log(pregunta);
-                    console.log("**********");
                     Usuario.findOne({
                         '_id': pregunta.usuario_ID
                     }).then((usuario, error) => {
                         correo.sendCorreoDiscusionCreada(usuario.correo, usuario.nombre, req.body.respuestaDiscusion.titulo);
                     });
                     if (error) {
+                        console.log(error);
                         return resp.json({
                             "status": 500
                         });
@@ -44,6 +42,9 @@ exports.guardarDiscusion = (req, resp, next) => {
             }).catch((error) => {
                 console.log('error');
                 console.log(error);
+                return resp.json({
+                    "status": 500
+                })
             });
     }
 }
@@ -114,15 +115,11 @@ exports.loadListaDiscusiones = (req, resp, next) => {
 }
 
 exports.loadListaMisDiscusiones = (req, resp, next) => {
-    console.log("entre");
-    console.log(req.query);
     if (req.query.tipoDiscusion == 'pregunta') {
         discusionPregunta.find({
                 'creador_ID': req.query.id,
-                'titulo': {
-                    $ne: 'Pregunta propuesta'
-                },
             })
+            .where("titulo").ne("Pregunta-propuesta")
             .then((discusion, error) => {
                 if (error) {
                     return resp.json({
@@ -133,10 +130,6 @@ exports.loadListaMisDiscusiones = (req, resp, next) => {
                     let listaDiscusion = [];
                     let numeroElementosDiscusion = discusion.length;
                     let contador = 0;
-                    console.log("&&&&&&&&&&&&&");
-                    console.log(discusion);
-                    console.log(discusion.length);
-                    console.log("&&&&&&&&&&&&&");
                     asyncloop(discusion, (item, next) => {
                         var objectDiscusionPregunta = {
                             _id: item._id,
@@ -160,6 +153,7 @@ exports.loadListaMisDiscusiones = (req, resp, next) => {
                 }
             }).catch((error) => {
                 console.log(error);
+                return resp.json({"status":500})
             });
     }
 }
@@ -173,6 +167,7 @@ exports.loadMyDiscusion = (req, resp, next) => {
                 console.log(discusion);
                 if (error) {
                     console.log(error);
+                    return resp.json({"status":500})
                 } else {
                     return resp.json({
                         "status": 200,
@@ -189,14 +184,16 @@ exports.loadMyDiscusion = (req, resp, next) => {
                     })
                 }
             }).catch((error) => {
+                console.log("error en la consulta de discusion de Pregunta");
                 console.log(error);
+                return resp.json({
+                    "status":500
+                })
             });
     }
 }
 
 exports.editMyDiscusion = (req, resp, next) => {
-    console.log('llegue !!!');
-    console.log(req.body);
     if (req.body.tipoDiscusion == 'pregunta') {
         discusionPregunta.findOneAndUpdate({
                 '_id': req.body.id
@@ -210,7 +207,11 @@ exports.editMyDiscusion = (req, resp, next) => {
                     "discusionActualizada": discusion
                 })
             }).catch((error) => {
+                console.log("no se pudo actualizar la discusion");
                 console.log(error);
+                return resp.json({
+                    "status":500
+                })
             });
     }
 }
@@ -224,13 +225,13 @@ exports.removeMyDiscusion = (req, resp, next) => {
             .then((discusion, error) => {
                 console.log(discusion);
                 Pregunta.findByIdAndUpdate({
-                        '_id': req.query.pregunta_ID
+                        '_id': req.query.pregunta_ID,
                     }, {
                         $pull: {
                             'discusiones': req.query.id
                         }
                     })
-                    .then((usuario, error) => {
+                    .then((pregunta, error) => {
                         if (error) {
                             return resp.json({
                                 "status": 500,
@@ -269,7 +270,7 @@ exports.loadListaDiscusionByPregunta = (req, resp, next) => {
         .populate('discusiones')
         .then((preguntas, error) => {
             if (error) {
-                resp.json({
+               return  resp.json({
                     "status": 500
                 })
             } else {
@@ -297,6 +298,7 @@ exports.loadListaDiscusionByPregunta = (req, resp, next) => {
                 });
             }
         }).catch((error) => {
+            console.log()
             console.log(error);
             return resp.json({
                 "status": 500,
@@ -378,6 +380,9 @@ exports.validarPregunta = (req, resp, next) => {
                         }, {
                             $push: {
                                 'discusiones': discusion
+                            },
+                            $set: {
+                                'estado': discusion.estados.texto
                             }
                         }, {
                             'new': true,
@@ -396,19 +401,19 @@ exports.validarPregunta = (req, resp, next) => {
                                 })
                             })
                             if (discusion.estados[0].texto == 'aceptada') {
-                                console.log('entreeeeeeeeee');
                                 var preguntaValidada = {
-                                    "identificador": pregunta.identificador,
                                     "descripcion": pregunta.descripcion,
                                     "usuario_ID": pregunta.usuario_ID,
                                     "etiquetas": {
                                         "texto": pregunta.etiquetas.texto
                                     },
+                                    "listaImagen":[{
+                                        "url": pregunta.listaImagen[0].url
+                                    }],
                                     "topicos": {
                                         "texto": pregunta.topicos.texto
                                     },
                                     "respuestas": pregunta.respuestas,
-                                    "comentarios": pregunta.comentarios
                                 }
                                 var instanceNuevaPregunta = new preguntasValidas(preguntaValidada);
                                 instanceNuevaPregunta.save()

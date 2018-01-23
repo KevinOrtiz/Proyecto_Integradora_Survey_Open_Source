@@ -17,6 +17,7 @@ import { isFakeMousedownFromScreenReader } from '@angular/cdk/a11y';
 import { SnackBarEliminarPreguntaComponent } from './snack-bar-eliminar-pregunta/snack-bar-eliminar-pregunta.component';
 import { UploadFormComponent } from '../../uploads/upload-form/upload-form.component';
 import { VerPreguntaComponent } from '../ver-pregunta/ver-pregunta.component';
+import { UploadService } from '../../../uploads/shared/upload.service';
 
 
 @Component({
@@ -33,6 +34,8 @@ export class PreguntasComponent implements OnInit {
   @ViewChild('errorServidor') private errorServidor: SwalComponent;
   @ViewChild('guardadoExitoso') private guardadoExitoso: SwalComponent;
   @ViewChild('guardarPregunta') private guardarPregunta: SwalComponent;
+  @ViewChild('imagenEliminada') private imagenEliminada: SwalComponent;
+  @ViewChild('imagenNoEliminada') private imagenNoEliminada: SwalComponent;
   private listaRespuestasCasilla = [];
   private listaRespuestasRadio = [];
   private listaRespuestasLista = [];
@@ -48,11 +51,11 @@ export class PreguntasComponent implements OnInit {
   private lacajaRespuestasEstaVacia = true;
   private descripcionPreguntaEstaVacia = true;
   private showButton = false;
-  private fotoCargada = false;
   private showLoading: boolean;
+  private imgPregunta;
   constructor(private resolver: ComponentFactoryResolver, private respuestas: RespuestasService,
               private categoria: CategoriasEtiquetasService, private dialog: MatDialog, private preguntaServicio: PreguntasService,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar, private uploadService: UploadService) { }
 
   ngOnInit() {
     const categoriasLista = new CategoriasPreguntas();
@@ -216,6 +219,14 @@ export class PreguntasComponent implements OnInit {
     this.preguntaServicio.setDescripcion(descripcion);
   }
 
+  eliminarImagen() {
+    if (this.uploadService.deleteUpload(this.imgPregunta)) {
+      this.imagenEliminada.show();
+      this.imgPregunta = null;
+    } else {
+      this.imagenNoEliminada.show();
+    }
+  }
   /**
    * Aqui se se llamara a la funcion que guardara el objeto pregunta en la base de datos
    */
@@ -237,10 +248,10 @@ export class PreguntasComponent implements OnInit {
 
   anadirFoto() {
     const dialogCategorias = this.dialog.open(UploadFormComponent, {
-      width: '450px'
+      width: '800px',
     });
     dialogCategorias.afterClosed().subscribe(result => {
-      this.fotoCargada = true;
+     this.imgPregunta = this.uploadService.getfileImage();
     });
   }
   visualizarPregunta() {

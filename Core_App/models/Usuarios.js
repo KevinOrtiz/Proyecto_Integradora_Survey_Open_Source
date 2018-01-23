@@ -3,15 +3,18 @@ const Schema = mongoose.Schema;
 const usuarioSchema = new Schema({
     nombre:{
         type: String,
-        default: 'WITHOUT NAME'
+        default: 'WITHOUT NAME',
+        index: true
     },
     apellido:{
         type: String,
-        default: "WITHOUT LASTNAME"
+        default: "WITHOUT LASTNAME",
+        index: true
     },
     correo:{
         type: String,
-        default: 'nullUsuario@gmail.com'
+        default: 'nullUsuario@gmail.com',
+        index: true
     },
     urlImage:String,
     historialLogin:[
@@ -21,10 +24,10 @@ const usuarioSchema = new Schema({
                 default: 'No ha usado la plataforma',
             },
             fecha_entrada:{
-                type: Date
+                type: Date, default: Date.now 
             },
             fecha_salida:{
-                type: Date
+                type: Date, default: Date.now
             }
         }
     ],
@@ -38,6 +41,9 @@ const usuarioSchema = new Schema({
             }
         ]
     }],
+    institucion: {type: String, default:"sin definir"},
+    grado_academico: {type: String, default:"sin definir"},
+    area_academica: {type: String, default: 'sin definir'},
     colaboradores: [{
         type:Schema.Types.ObjectId,
         ref:'colaborador'
@@ -48,57 +54,6 @@ const usuarioSchema = new Schema({
     }]
 });
 
-usuarioSchema.virtual('obtenerNombreApellido').get(()=>{
-    return `${this.nombre} + ${this.apellido}`;
-});
-
-usuarioSchema.virtual('obtnerCorreo').get(()=>{
-    return this.correo;
-});
-
-
-usuarioSchema.virtual('obtenerHistorial').get(()=>{
-    return this.historialLogin;
-});
-
-usuarioSchema.virtual('obtenerCantidadRoles').get(()=>{
-    return this.roles.length;
-});
-
-usuarioSchema.virtual('obtenerRoles').get(()=>{
-    return this.roles;
-});
-
-usuarioSchema.virtual('obtenerCantidadColaboradores').get(()=>{
-    return this.listaColaboradores.length;
-});
-
-usuarioSchema.virtual('obtenerColaboradores').get(()=>{
-    return this.listaColaboradores;
-});
-
-usuarioSchema.virtual('obtenerCantidadNotificacionesNoLeidas').get(()=>{
-    const contador = 0;
-    for (const valor of this.listaNotificaciones) {
-        if( valor.leido == false){
-            contador = contador + 1;
-        }
-    }
-    
-    return contador;
-});
-
-usuarioSchema.virtual('obtenerNotificacionesNoLeidas').get(()=>{
-    const lista = [];
-    for (const valor of this.listaNotificaciones) {
-        if( valor.leido == false){
-            lista.push(valor);
-        }
-    }
-    
-    return lista;
-
-});
 
 const Usuario = mongoose.model('usuario',usuarioSchema);
 

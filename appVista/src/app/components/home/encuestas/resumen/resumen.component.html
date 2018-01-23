@@ -1,0 +1,90 @@
+<div class="row">
+  <div class="col s12 m6">
+    <div class="card">
+      <div class="card-image" *ngIf="url">
+        <img [src]="url">
+      </div>
+      <div class="card-content">
+        <span class="card-title">{{tituloEncuesta}}</span>
+        <p>Descripcion: {{descripcionEncuesta}}</p>
+        <p>numero Preguntas: {{numeroPreguntas}}</p>
+        <div class="chip" *ngFor="let etiqueta of etiquetas" >
+          {{etiqueta}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col s12 m6" *ngIf="listaPreguntasValidas">
+    <mz-collapsible [mode]="'expandable'" [popout]="true" *ngFor="let pregunta of listaPreguntasValidas">
+      <mz-collapsible-item [active]="true">
+        <mz-collapsible-item-header class="color_texto">
+          {{pregunta?.descripcion}}
+          <div class="mb10">
+              <span class="label label-default">Categoria:{{pregunta?.topicos}}</span>
+            </div>
+        </mz-collapsible-item-header>
+        <mz-collapsible-item-body>
+          <br>
+          <div *ngIf="pregunta?.listaImagen.url">
+            <img [src]="pregunta?.listaImagen.url">
+            <br>
+          </div>
+          <div class="row col s12 m12">
+            <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'casillas'">
+              <div *ngFor="let respuesta of pregunta?.respuestas; let i = index">
+                <mat-checkbox>{{i}}{{respuesta.texto}}</mat-checkbox>
+              </div>
+              <br>
+            </div>
+            <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'radios'">
+              <div *ngFor="let respuesta of pregunta?.respuestas; let i = index">
+                <mat-radio-button value="i">{{i}}{{respuesta.texto}}</mat-radio-button>
+              </div>
+              <br>
+            </div>
+            <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'lista'">
+              <mat-select placeholder="respuestas">
+                <mat-option *ngFor="let respuesta of pregunta?.respuestas" [value]="respuesta.texto">
+                  {{ respuesta.texto }}
+                </mat-option>
+              </mat-select>
+              <br>
+            </div>
+            <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'puntaje'">
+              <div class="container">
+                <div class="rating-wrapper centrar" *ngFor="let item of pregunta.respuestas">
+                  <input class="rating-input" id="r{{ item }}" type="radio" name="custom" checked>
+                  <label class="rating-star estilo" for="r{{item}}">
+                    <i mz-icon-mdi [icon]="'star'">
+                    </i>
+                  </label>
+                </div>
+              </div>
+              <br>
+            </div>
+            <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'abierta'">
+              <textarea matInput placeholder="Respuesta Abierta"></textarea>
+              <br>
+
+            </div>
+            <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'si/no'">
+              <mat-slide-toggle>Si/No</mat-slide-toggle>
+              <br>
+            </div>
+          </div>
+        </mz-collapsible-item-body>
+      </mz-collapsible-item>
+    </mz-collapsible>
+  </div>
+  <div class="col s12 m6" *ngIf="!listaPreguntasValidas" >
+      <div class="card">
+          <div class="card-content">
+            <span class="card-title">Mis preguntas</span>
+            <p>Actualmente no ha seleccionado ninguna pregunta de la lista mostrada en la seccion
+              de diseño
+            </p>
+          </div>
+        </div>
+  </div>
+</div>

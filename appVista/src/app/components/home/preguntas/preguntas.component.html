@@ -46,23 +46,28 @@
       <mat-form-field class="full-width">
         <textarea matInput placeholder="Ingresa tu pregunta..." #textDescriptionPregunta (keyup)="addDescripcion(textDescriptionPregunta.value)"></textarea>
       </mat-form-field>
-      <button mat-fab color="primary" (click)="anadirFoto()">
-        <mat-icon>insert_photo</mat-icon>
-      </button>
+      <div *ngIf="imgPregunta">
+          <img  [src]="imgPregunta.url">
+          <button mat-raised-button class="eliminarFoto" (click)="eliminarImagen()">Eliminar Imagen</button>
+      </div>
+  <button mat-raised-button class="anadirFoto" (click)="anadirFoto()">
+      <mat-icon>insert_photo</mat-icon>
+      anadir foto
+  </button>
     </mat-card-content>
     <mat-card-actions>
       <div fxLayout="row">
         <div *ngIf="!existePregunta">
         </div>
         <div class="section respuesta1" *ngIf="existePregunta &&  CHECKBOX">
-          <button type="button" mat-raised-button color="primary" (click)="addCasilla()">Añadir Respuesta</button>
-          <button type="button" mat-raised-button color="accent" (click)="removeComponentCasilla()">Eliminar Respuesta</button>
+          <button type="button" mat-raised-button class="anadirAccion" (click)="addCasilla()">Añadir Respuesta</button>
+          <button type="button" mat-raised-button class="eliminarAccion" (click)="removeComponentCasilla()">Eliminar Respuesta</button>
           <hr>
           <template #casillaComponent></template>
         </div>
         <div class="section respuesta1" *ngIf="existePregunta && RADIOBUTTON">
-          <button type="button"  mat-raised-button color="primary" (click)="addRadio()">Añadir Respuesta</button>
-          <button type="button"  mat-raised-button color="accent" (click)="removeComponentRadio()">Eliminar Respuesta</button>
+          <button type="button"  mat-raised-button class="anadirAccion" (click)="addRadio()">Añadir Respuesta</button>
+          <button type="button"  mat-raised-button class="eliminarAccion" (click)="removeComponentRadio()">Eliminar Respuesta</button>
           <hr>
           <template #radioComponent></template>
         </div>
@@ -76,8 +81,8 @@
           <app-descripcion></app-descripcion>
         </div>
         <div class="section respuesta1" *ngIf="existePregunta && LISTA_DESPLEGABLE">
-          <button type="button" mat-raised-button color="primary" (click)="addLista()">Añadir Respuesta</button>
-          <button type="button" mat-raised-button color="accent" (click)="removeComponentLista()">Eliminar Respuesta</button>
+          <button type="button" mat-raised-button class="anadirAccion" (click)="addLista()">Añadir Respuesta</button>
+          <button type="button" mat-raised-button class="eliminarAccion" (click)="removeComponentLista()">Eliminar Respuesta</button>
           <hr>
           <template #listaComponent></template>
         </div>
@@ -85,6 +90,7 @@
       </div>
     </mat-card-actions>
   </mat-card>
+
 </div>
 
 <swal #errorGuardar title="Datos Incompletos" text="Existen campos vacios 
@@ -97,6 +103,11 @@
               se le notificara por correo si su pregunta ha sido aceptada, rechazada,
               o necesitará que se les haga algunos cambios" type="success"></swal>
 <swal #guardarPregunta title="Esta a punto de crear una nueva Pregunta!" text="Verifique que la pregunta que va enviar tenga total coherencia con la 
-                categoria y etiqueta que usted definio, puede dar click en visualizar
-                pregunta, para pre-visualizar su pregunta creada!" type="warning" [showCancelButton]="true" [focusCancel]="true"
-  (confirm)="guardarpregunta()"></swal>
+                              categoria y etiqueta que usted definio, puede dar click en visualizar
+                              pregunta, para pre-visualizar su pregunta creada!" type="warning" [showCancelButton]="true" [focusCancel]="true"
+                              (confirm)="guardarpregunta()"></swal>
+<swal #imagenEliminada title="Imagen eliminada " text="La imagen que usted ha cargado se la eliminado de la base de datos"
+                       type="success" [showConfirmButton]="true"></swal>
+<swal #imagenNoEliminada title = "Imagen no eliminada" text="No se ha podido eliminar la imagen de la base de datos, intentelo mas tarde"
+                         type="error" [showConfirmButton]="true"></swal>                       
+                          

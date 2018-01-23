@@ -23,9 +23,6 @@ const comentarioSchame = new Schame({
 });
 
 
-comentarioSchame.virtual('numeroSubcomentarios').get(()=>{
-   return this.listaSubComentarios.length;
-});
 
 
 const Comentario = mongoose.model('comentario',comentarioSchame);

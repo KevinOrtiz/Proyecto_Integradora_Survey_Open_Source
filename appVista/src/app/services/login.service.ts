@@ -59,13 +59,15 @@ export class LoginService {
     return this.http.post(this.urlServicio, {usuario: this.getUserInformation()})
                     .map((res: Response) => {
                       this.setSessionTokenId(res['token'], res['_id']);
-                      this.setRolesUsuario(res['roles'][0]['rol'], res['roles'][0]['Acciones'][0]);
+                      this.setRolesUsuario(res['roles'][0]['rol'], res['roles'][0]['Acciones'][0], res['messaje']);
                       return res;
                     });
   }
-  setRolesUsuario (rol, acciones) {
+  setRolesUsuario (rol, acciones, mensaje) {
+    console.log('entre a roles de usuario');
     sessionStorage.setItem('rol', rol);
     sessionStorage.setItem('Acciones', acciones);
+    sessionStorage.setItem('messaje', mensaje);
   }
 
 }

@@ -24,13 +24,13 @@ export class PortalPreguntasComponent implements OnInit {
   isOpen: boolean;
   preguntas: any[] = [];
   finished = false;
-  page = 1;
   esSearch = false;
   textoBusqueda = '';
   rol = sessionStorage.getItem('rol');
   searchField: FormControl;
   @ViewChild('input')
   input: ElementRef;
+  paginaActual = 1;
   constructor(private servicioPregunta: PreguntasService,
               private dialog: MatDialog, private comentarios: ComentariosService,
               private router: Router, private discusiones: DiscusionesService, public renderer: Renderer) {
@@ -48,12 +48,11 @@ export class PortalPreguntasComponent implements OnInit {
         }else {
           this.esSearch = true;
         }
-        this.page = 1;
       })
-      .switchMap(respuestas => this.servicioPregunta.loadPreguntasByCategory(respuestas, this.page))
+      .switchMap(respuestas => this.servicioPregunta.loadPreguntasByCategory(respuestas, 1))
       .subscribe((res: Response) => {
-        console.log(res);
         this.preguntas = res['preguntas'];
+        this.finished = true;
       });
   }
 
@@ -69,6 +68,7 @@ export class PortalPreguntasComponent implements OnInit {
   close() {
     this.isOpen = false;
   }
+
   verPregunta(idPregunta) {
     console.log(idPregunta);
     this.servicioPregunta.setIdPregunta(idPregunta);
@@ -81,38 +81,22 @@ export class PortalPreguntasComponent implements OnInit {
     });
   }
 
-
-  onScroll() {
-    console.log('entro');
-    if (!this.esSearch) {
-      this.servicioPregunta.loadListaPregunta(this.page)
+  nextPage(pagina) {
+    this.paginaActual = pagina;
+    this.servicioPregunta.loadListaPregunta(pagina)
         .take(20)
         .subscribe((res) => {
-          if (res['paginas'] === this.page) {
-            this.finished = true;
-          } else if (res['paginas'] !== this.page) {
-            this.preguntas.push.apply(this.preguntas, res['preguntas']);
-            this.page++;
-            console.log(this.preguntas);
-          }
+            this.preguntas = res['preguntas'];
         });
-
-    }else {
-      this.servicioPregunta.loadPreguntasByCategory(this.textoBusqueda, this.page)
-                            .take(10)
-                            .subscribe((res) => {
-                              if (res['paginas'] === this.page) {
-                                console.log(res['paginas']);
-                                this.finished = true;
-                              } else if (res['paginas'] !== this.page) {
-                                this.page ++;
-                                this.preguntas.push.apply(this.preguntas, res['preguntas']);
-                                console.log(this.preguntas);
-                              }
-                            });
-    }
   }
-
+  next() {
+    this.paginaActual = this.paginaActual + 1;
+    this.servicioPregunta.loadListaPregunta(this.paginaActual)
+        .take(20)
+        .subscribe((res) => {
+            this.preguntas = res['preguntas'];
+        });
+  }
   crearDiscusion(idPregunta) {
     this.discusiones.setTipoDiscusion('pregunta');
     this.discusiones.setIdCuerpoDiscusion(idPregunta);
@@ -134,7 +118,6 @@ export class PortalPreguntasComponent implements OnInit {
   }
 
   verListaDiscusiones(idPregunta) {
-    console.log(idPregunta);
     this.discusiones.setTipoDiscusion('pregunta');
     this.discusiones.setIdCuerpoDiscusion(idPregunta);
     this.router.navigate(['/home', 'listadoDiscusiones']);

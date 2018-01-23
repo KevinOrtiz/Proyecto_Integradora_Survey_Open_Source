@@ -2,33 +2,19 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const colaboradorSchema = new Schema({
-    identificador:String,
     mensajes:String,
-    Usuario:{
+    usuarioColaborador:{
         type:Schema.Types.ObjectId,
-        ref:'usuario'
+        ref:'usuario',
+        index: true
     },
     listaEncuestas: [{
         type:Schema.Types.ObjectId,
-        ref:'encuesta'
+        ref:'encuesta',
+        index: true
     }]    
 });
 
-colaboradorSchema.virtual('obtenerCantidadUsuarios').get(()=>{
-    return this.usuarios.length;
-});
-
-colaboradorSchema.virtual('obtenerCantidadEncuestas').get(()=>{
-    return this.encuestas.length;
-});
-
-colaboradorSchema.virtual('obtenerEncuesta').get(()=>{
-    return this.encuestas;
-});
-
-colaboradorSchema.virtual('obtenerMensajeEncuesta').get(()=>{
-    return this.mensajes;
-});
 
 const Colaborador = mongoose.model('colaborador',colaboradorSchema);
 

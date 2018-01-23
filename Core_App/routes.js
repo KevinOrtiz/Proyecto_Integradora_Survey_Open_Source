@@ -46,7 +46,7 @@ module.exports = (app)=> {
      */
     
     apiRoute.get('/cargarPerfil',usuarios.cargarPerfilUsuario);
-    apiRoute.get('/cargarColaboradores',usuarios.cargarColaboradores);
+    apiRoute.get('/cargarColaboradores',usuarios.cargarListaMisColaboradores);
     apiRoute.get('/cargarNotificaciones',usuarios.cargarNotificaciones);
     apiRoute.post('/editarInformacion',usuarios.editarInformacionUsuario);
 
@@ -83,6 +83,11 @@ module.exports = (app)=> {
     apiRoute.get('/eliminarPregunta', preguntas.removePregunta);
     apiRoute.get('/cerrarDiscusionPregunta',discusion.cerrarDiscusionPregunta);
     apiRoute.post('/validarPregunta',discusion.validarPregunta);
+    apiRoute.get('/loadSummaryDiscusionesPregunta',usuarios.getDiscusionesByPreguntas);
+    apiRoute.get('/loadSummaryCommentsByPreguntas',usuarios.loadFirstCommentsByPreguntas);
+    apiRoute.get('/loadChartEncuestasByMonth',usuarios.getNumeroEncuestasByMonth);
+    apiRoute.get('/loadSummaryPreguntasValidasNoValidas',usuarios.getNumeroPreguntasValidasNoValidasByMonth);
+    apiRoute.get('/loadSummaryActivitiesByMonth',usuarios.getNumeroActividadesByMonth);
    app.use('/apiRest',apiRoute);
 
 

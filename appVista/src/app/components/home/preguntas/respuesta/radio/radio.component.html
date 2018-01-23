@@ -1,10 +1,12 @@
-
-            <mat-card-content fxLayout="column">
-                <mat-form-field>
-                    <input matInput style="width:300px;" #valorInputRespuestaRadio
-                    placeholder="respuesta" (keyup.enter)="addRespuesta()">
-                    <mat-icon>radio_button_checked</mat-icon>
-                </mat-form-field>
-    
-                </mat-card-content>
-    
+                <mz-input-container>
+                        <i mz-icon-mdi mz-input-prefix
+                            [icon]="'checkbox-marked-circle-outline'">
+                        </i>
+                        <input  mz-input
+                                #valorInputRespuestaRadio
+                                (keyup.enter)="addRespuesta()"
+                                id="radio-box"
+                                placeholder="respuesta"
+                                type="text">
+                    </mz-input-container>
+        

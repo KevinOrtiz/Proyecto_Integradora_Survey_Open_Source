@@ -2,14 +2,18 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const notificacionSchema = new Schema({
-    usuario_emisor:String,
-    usuario_receptor:String,
+    usuario_emisor:[{
+                    type:Schema.Types.ObjectId,
+                    ref:'usuario', 
+                    index: true
+                    }],
     fecha_creacion:{
         type:Date,
-        default: Date.now 
+        default: Date.now,
+        index: true
     },
     tipo:{
-        type:String
+        type:String, index: true
     },
     descripcion: String,
 });

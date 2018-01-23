@@ -1,60 +1,37 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const pagination = require('mongoose-paginate');
+
 
 const PreguntaValidadasSchema = new Schema({
-    identificador:String,
     descripcion:{
         type:String
     },
     usuario_ID:{
-        type:String
+        type:String, index: true
     },
     etiquetas:{
-        texto:{
-            type:String
-        }
+        texto:String
+    },
+    listaImagen:[{
+        url: String
+    }],
+    fecha_creacion:{
+        type: Date, default: Date.now, index: true
     },
     topicos:{
-        texto:{
-           type:String
-        }
+        texto: String
     },
     respuestas:[{
         id: String,
         texto:String,
         tipoRespuesta:String
-    }],
-    comentarios:[{
-        type:Schema.Types.ObjectId,
-        ref:'comentario'
     }]
 });
 
-PreguntaValidadasSchema.virtual('numeroRespuestaPregunta').get(()=>{
-   return this.respuestas.length;
-});
 
-PreguntaValidadasSchema.virtual('numeroComentariosPregunta').get(()=>{
-   return this.comentarios.length;
-});
-
-
-PreguntaValidadasSchema.virtual('numeroEtiquetasPregunta').get(()=>{
-   return this.etiquetas.length;
-});
-
-PreguntaValidadasSchema.virtual('numeroTopicosPreguntas').get(()=>{
-   return this.topicos.length;
-});
-
-PreguntaValidadasSchema.virtual('listaTopicosPreguntas').get(()=>{
-   return this.topicos;
-});
-
-PreguntaValidadasSchema.virtual('listaEtiquetasPreguntas').get(()=>{
-   return this.etiquetas;
-});
-
+PreguntaValidadasSchema.index({'topicos':'text'})
+PreguntaValidadasSchema.plugin(pagination);
 const PreguntaValidadas = mongoose.model('preguntaValidadas',PreguntaValidadasSchema);
 
 module.exports = PreguntaValidadas;

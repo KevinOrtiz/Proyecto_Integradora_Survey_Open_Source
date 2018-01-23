@@ -29,9 +29,7 @@ export class UploadFormComponent implements OnInit {
     this.currentUpload = new Upload(file);
     this.instanceUpload.pushUpload(this.currentUpload);
   }
-  getFileUpload () {
-    return this.currentUpload;
-  }
+
   cerrarVentana() {
     this.thisDialogRef.close('confirm');
   }

@@ -2,10 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const discusionEncuestaSchema = new Schema({
-    identificador:String,
     titulo:String,
     descripcion:String,
-    creador_ID:String,
+    creador_ID:{type: String, index: true},
     etiquetas:[{
         texto:{
             type:String
@@ -13,7 +12,7 @@ const discusionEncuestaSchema = new Schema({
     }],
     asignados:[{
         Usuario_ID:{
-            type:Number
+            type:String, index: true
         },
         tipo:{
             type:String
@@ -29,36 +28,6 @@ const discusionEncuestaSchema = new Schema({
     encuesta_ID:String
 });
 
-
-discusionEncuestaSchema.virtual('numeroComentariosDiscusionesEncuesta').get(()=>{
-   return this.comentarios.length;
-});
-
-
-discusionEncuestaSchema.virtual('numeroEtiquetasDiscusionesEncuesta').get(()=>{
-   return this.etiquetas.length;
-});
-
-discusionEncuestaSchema.virtual('listaEtiquetasDiscusionesEncuesta').get(()=>{
-   return this.etiquetas;
-});
-
-discusionEncuestaSchema.virtual('numeroAsignadosDiscusionesEncuesta').get(()=>{
-   return this.asignados.length;
-});
-
-
-discusionEncuestaSchema.virtual('listaAsignadosDiscusionesEncuesta').get(()=>{
-   return this.asignados;
-});
-
-discusionEncuestaSchema.virtual('mostrarEstadosDiscusionesEncuesta').get(()=>{
-   return this.estado;
-});
-
-discusionEncuestaSchema.virtual('mostrarIDEncuesta').get(()=>{
-   return this.encuesta_ID;
-});
 
 
 const discusionEncuesta = mongoose.model('discusionEncuesta',discusionEncuestaSchema);

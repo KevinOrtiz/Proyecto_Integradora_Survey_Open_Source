@@ -2,47 +2,28 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const EncuestaSchema = new Schema({
-    identificador:String,
     titulo:String,
     descripcion:String,
-    usuario_ID:String,
-    fecha_creacion:String,
-    fecha_edicion:String,
-    colaboradores:[{
-        colaborador_ID:{
-            type:Number
-        }
+    usuario_ID:{type: String, index:true},
+    fecha_creacion:{type: Date, default: Date.now, index: true},
+    fecha_edicion:{type: Date, default: Date.now, index: true},
+    colaboradores:[{   
+        type:Schema.Types.ObjectId,
+        ref:'colaborador'
     }],
-    historial_cambios:[{
-        texto:{
-            type:String
-        }
-    }],
-    registroActual:Boolean,
+    historial_cambios:[String],
+    registroActual:{type: Boolean, index: true},
     etiqueta:[{
-       texto:{
-           type:String
-       },
-       color:{
-           type:String
-       }
+        texto: String
     }],
-    topicos:[{
-       texto:{
-           type:String
-       },
-       color:{
-           type:String
-       }
-    }],
-    contenido_multimedia:[{
+    contenido_multimedia:{
        url:{
            type:String
        },
        tipo:{
-           type:String
+           type:String, index: true
        }
-    }],
+    },
     preguntas:[{
         type:Schema.Types.ObjectId,
         ref:'pregunta'
@@ -59,34 +40,8 @@ const EncuestaSchema = new Schema({
 
 
 
-EncuestaSchema.virtual('numeroPreguntasEncuesta').get(()=>{
-   return this.preguntas.length;
-});
 
-EncuestaSchema.virtual('numeroComentariosEncuesta').get(()=>{
-   return this.comentarios.length;
-});
-
-EncuestaSchema.virtual('numeroDiscusionesEncuesta').get(()=>{
-    return this.discusiones.length;
-});
-
-EncuestaSchema.virtual('numeroEtiquetasEncuesta').get(()=>{
-   return this.etiquetas.length;
-});
-
-EncuestaSchema.virtual('numeroTopicosEncuesta').get(()=>{
-   return this.topicos.length;
-});
-
-EncuestaSchema.virtual('listaTopicosEncuesta').get(()=>{
-   return this.topicos;
-});
-
-EncuestaSchema.virtual('listaEtiquetasEncuesta').get(()=>{
-   return this.etiquetas;
-});
-
+EncuestaSchema.index({'etiqueta.texto': 'text'})
 const Encuesta = mongoose.model('encuesta',EncuestaSchema);
 
 module.exports = Encuesta;

@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="row">
+      <mat-horizontal-stepper>
+          <mat-step>
+              <ng-template matStepLabel>
+                  <a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">insert_drive_file</i></a>
+              </ng-template>
+              <div>
+                <app-resumen></app-resumen>
+              </div>
+              <div>
+                  <button class="btn-floating btn-large waves-effect waves-light red" matStepperPrevious><i class="material-icons">navigate_next</i></button>
+              </div>
+          </mat-step>
+          <mat-step>
+            <form>
+              <ng-template matStepLabel>
+                  <a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">edit</i></a>
+              </ng-template>
+              <div>
+                <app-diseno></app-diseno>
+              </div>
+              <div>
+                <button class="btn-floating btn-large waves-effect waves-light red" matStepperPrevious><i class="material-icons">navigate_next</i></button>
+                <button class="btn-floating btn-large waves-effect waves-light red" matStepperNext><i class="material-icons">navigate_before</i></button>
+              </div>
+            </form>
+          </mat-step>
+          <mat-step>
+            <ng-template matStepLabel>
+                <a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">share</i></a>
+            </ng-template>
+            <div>
+              <app-compartir></app-compartir>
+            </div>
+            <div>
+                <button class="btn-floating btn-large waves-effect waves-light red" matStepperNext><i class="material-icons">navigate_before</i></button>
+            </div>
+          </mat-step>
+        </mat-horizontal-stepper>
+  </div>
+</div>

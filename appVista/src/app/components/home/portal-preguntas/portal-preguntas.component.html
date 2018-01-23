@@ -3,12 +3,17 @@
     <mat-icon>search</mat-icon>
   </button>
   <mat-form-field class="search" floatingPlaceholder="false" [class.search-open]="isOpen">
-    <input matInput placeholder="Busqueda por categoria de la pregunta" [(ngModel)]="textoBusqueda" [formControl]="searchField"
+    <input  placeholder="Busqueda por categoria de la pregunta" [(ngModel)]="textoBusqueda" [formControl]="searchField"
       #input (blur)="close()" matInput>
   </mat-form-field>
 </div>
 
-<div *ngFor="let pregunta of preguntas" fxLayout="row" fxLayoutAlign="center center" style="margin: 24px 0;" [ngSwitch]="pregunta?.topicos.texto">
+<div *ngIf="!finished" >
+  <mat-spinner></mat-spinner>
+</div>
+
+<div  *ngIf="finished">
+<div *ngFor="let pregunta of preguntas" fxLayout="row" fxLayoutAlign="center center" style="margin: 24px 0;" >
   <mat-card fxFlex="50%">
     <mat-card-header>
       <img mat-card-avatar [src]="pregunta?.urlUsuario">
@@ -63,12 +68,22 @@
 <br>
 
 <br>
-<div infiniteScroll [infiniteScrollDistance]="0.001" [infiniteScrollUpDistance]="0.001" [infiniteScrollThrottle]="1500" (scrolled)="onScroll()">
-</div>
-<div *ngIf="!finished" class="cargando">
-  <mat-spinner></mat-spinner>
-</div>
-<br>
-<div *ngIf="finished">
-  end of database
+<ul class="pagination">
+    <li class="waves-effect">
+      <a (click)="nextPage(1)">1</a>
+    </li>
+    <li class="waves-effect">
+        <a (click)="nextPage(2)">2</a>
+    </li>
+    <li class="waves-effect">
+        <a (click)="nextPage(3)">3</a>
+    </li>
+    <li class="waves-effect">
+        <a (click)="nextPage(4)">4</a>
+    </li>
+    <li class="waves-effect">
+          <a (click)="nextPage(5)">5</a>
+    </li>
+    <li class="waves-effect"><a (click)="next()"><i class="material-icons">chevron_right</i></a></li>
+</ul>
 </div>

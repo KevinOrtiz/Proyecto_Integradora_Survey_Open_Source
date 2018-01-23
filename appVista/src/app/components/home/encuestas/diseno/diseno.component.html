@@ -1,0 +1,252 @@
+<div class="row">
+  <form [formGroup]="formularioEncuesta" (ngSubmit)="guardarEncuesta(formularioEncuesta.value,formularioEncuesta.valid)">
+    <div class="col s12 m6">
+      <div class="col s2 m2">
+        <img [src]="imagen" class="circle">
+        <button class="btn-floating btn-small waves-effect waves-light" (click)="addPhoto()">
+          <i class="material-icons">
+            photo_camera
+          </i>
+        </button>
+        <button class="btn-floating btn-small waves-effect waves-light" (click)="deletePhoto()" *ngIf="fotoEliminada" >
+            <i class="material-icons">
+              delete
+            </i>
+          </button>
+      </div>
+      <div class="col s4 m4">
+        <mz-input-container>
+          <i mz-icon-mdi mz-input-prefix [icon]="'comment-text'">
+          </i>
+          <input mz-input [label]="'titulo'" id="titulo-input" formControlName="titulo" placeholder="Ingrese un titulo de su encuesta"
+            type="text">
+        </mz-input-container>
+      </div>
+      <div class="col s6 m6">
+        <mat-chip-list #EtiquetasEncuestas>
+          <mat-chip *ngFor="let etiqueta of etiquetas" [selectable]="seleccionado" [removable]="removido" (remove)="removeEtiqueta(etiqueta)">
+            {{etiqueta.texto}}
+            <mat-icon matChipRemove *ngIf="removido">cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+        <input placeholder="ingrese una etiqueta a su encuesta" [matChipInputFor]="EtiquetasEncuestas" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="addEtiqueta($event)" formControlName="etiqueta" />
+      </div>
+      <div class="col s6 m6">
+        <mz-textarea-container>
+          <i mz-icon-mdi mz-textarea-prefix [icon]="'message-reply-text'">
+          </i>
+          <textarea mz-textarea [label]="'Ingrese una descripcion'" id="descripcion_encuesta" placeholder="descripcion de la encuesta"
+            formControlName="descripcion">
+          </textarea>
+        </mz-textarea-container>
+      </div>
+      <div class="col s6 m6">
+        <div dnd-droppable (onDropSuccess)="addPregunta($event)" [dropZones]="['zona-pregunta']" class="box-pregunta">
+          <div *ngIf="listaPreguntasSeleccionadas">
+            <div *ngFor="let preguntaSeleccionada of listaPreguntasSeleccionadas">
+              <div class="row">
+                <div class="card ">
+                  <div class="card-image waves-effect waves-block waves-light">
+                    <img class="activator" [src]="preguntaSeleccionada?.url" *ngIf="preguntaSeleccionada?.url">
+                    <img class="activator" src="assets/img/survey_example.png" *ngIf="!preguntaSeleccionada?.url">
+                  </div>
+                  <div class="card-content">
+                    <span class="card-title activator grey-text text-darken-4">Categoria: {{preguntaSeleccionada?.topicos}}</span>
+                    <p>Posteada el: {{preguntaSeleccionada?.fecha_creacion | date:"MM/dd/yy" }}</p>
+                    <p>
+                      <a class="activator">Ver Mas</a>
+                    </p>
+                    <p><a (click)="eliminarPregunta(preguntaSeleccionada)">Descartar Pregunta</a></p>
+                  </div>
+                  <div class="card-reveal">
+                    <span class="card-title grey-text text-darken-4">
+                      <i class="material-icons right">close</i>
+                    </span>
+                    <p>.-{{preguntaSeleccionada?.descripcion}}</p>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'casillas'">
+                      <div *ngFor="let respuesta of preguntaSeleccionada?.respuestas; let i = index">
+                        <mat-checkbox>{{i}}{{respuesta.texto}}</mat-checkbox>
+                      </div>
+                      <br>
+                    </div>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'radios'">
+                      <div *ngFor="let respuesta of preguntaSeleccionada?.respuestas; let i = index">
+                        <mat-radio-button value="i">{{i}}{{respuesta.texto}}</mat-radio-button>
+                      </div>
+                      <br>
+                    </div>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'lista'">
+                      <mat-select placeholder="respuestas">
+                        <mat-option *ngFor="let respuesta of preguntaSeleccionada?.respuestas" [value]="respuesta.texto">
+                          {{ respuesta.texto }}
+                        </mat-option>
+                      </mat-select>
+                      <br>
+                    </div>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'puntaje'">
+                      <div class="container">
+                        <div class="rating-wrapper centrar" *ngFor="let item of preguntaSeleccionada?.respuestas">
+                          <input class="rating-input" id="r{{ item }}" type="radio" name="custom" checked>
+                          <label class="rating-star estilo" for="r{{item}}">
+                            <i mz-icon-mdi [icon]="'star'">
+                            </i>
+                          </label>
+                        </div>
+                      </div>
+                      <br>
+                    </div>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'abierta'">
+                      <textarea matInput placeholder="Respuesta Abierta"></textarea>
+                      <br>
+
+                    </div>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'si/no'">
+                      <mat-slide-toggle>Si/No</mat-slide-toggle>
+                      <br>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fixed-action-btn horizontal">
+      <button type="submit" [disable]="!formularioEncuesta.valid" class="btn-floating btn-large red">
+        <i class="large material-icons">save</i>
+      </button>
+    </div>
+  </form>
+  <div class="col s12 m6">
+    <mz-input-container>
+      <i mz-icon-mdi mz-input-prefix
+          [icon]="'magnify'">
+      </i>
+      <input mz-input
+              [label]="'categoria-Pregunta'"
+                id="categoria-pregunta"
+                placeholder="ingrese por categoria de la pregunta"
+                (keyup.enter)="filtrarPreguntas($event)">
+    </mz-input-container>
+    <div *ngIf="cargandoPregunta">
+      <mat-spinner></mat-spinner>
+    </div>
+    <div *ngIf="listaPreguntas">
+      <div *ngFor="let pregunta of listaPreguntas" dnd-draggable [dragEnabled]="true" [dragData]="pregunta" (OnDragSuccess)="obteniendoPregunta($event)"
+        [dropZones]="['zona-pregunta']">
+        <div class="row">
+          <div class="card ">
+            <div class="card-image waves-effect waves-block waves-light">
+              <img class="activator" [src]="pregunta?.url" *ngIf="pregunta?.url">
+              <img class="activator" src="assets/img/survey_example.png" *ngIf="!pregunta?.url">
+            </div>
+            <div class="card-content">
+              <span class="card-title activator grey-text text-darken-4">Categoria: {{pregunta?.topicos}}</span>
+              <p>Posteada el: {{pregunta?.fecha_creacion | date:"MM/dd/yy" }}</p>
+              <p>
+                <a class="activator">Ver Mas</a>
+              </p>
+            </div>
+            <div class="card-reveal">
+              <span class="card-title grey-text text-darken-4">
+                <i class="material-icons right">close</i>
+              </span>
+              <p>.-{{pregunta?.descripcion}}</p>
+              <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'casillas'">
+                <div *ngFor="let respuesta of pregunta?.respuestas; let i = index">
+                  <mat-checkbox>{{i}}{{respuesta.texto}}</mat-checkbox>
+                </div>
+                <br>
+              </div>
+              <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'radios'">
+                <div *ngFor="let respuesta of pregunta?.respuestas; let i = index">
+                  <mat-radio-button value="i">{{i}}{{respuesta.texto}}</mat-radio-button>
+                </div>
+                <br>
+              </div>
+              <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'lista'">
+                <mat-select placeholder="respuestas">
+                  <mat-option *ngFor="let respuesta of pregunta?.respuestas" [value]="respuesta.texto">
+                    {{ respuesta.texto }}
+                  </mat-option>
+                </mat-select>
+                <br>
+              </div>
+              <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'puntaje'">
+                <div class="container">
+                  <div class="rating-wrapper centrar" *ngFor="let item of pregunta?.respuestas">
+                    <input class="rating-input" id="r{{ item }}" type="radio" name="custom" checked>
+                    <label class="rating-star estilo" for="r{{item}}">
+                      <i mz-icon-mdi [icon]="'star'">
+                      </i>
+                    </label>
+                  </div>
+                </div>
+                <br>
+              </div>
+              <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'abierta'">
+                <textarea matInput placeholder="Respuesta Abierta"></textarea>
+                <br>
+
+              </div>
+              <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'si/no'">
+                <mat-slide-toggle>Si/No</mat-slide-toggle>
+                <br>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="btn-flat" (click)="loadPreguntas()">
+        <i class="material-icons">keyboard_arrow_down</i>Cargar Mas Preguntas</a>
+    </div>
+    <div *ngIf="!listaPreguntas">
+      <div class="row">
+        <div class="col s12 m6">
+          <div class="card">
+            <div class="card-image">
+              <img src="assets/img/survey_example.png">
+            </div>
+            <div class="card-content">
+              <span card="card-title">Preguntas Inexistentes</span>
+              <p>No existe preguntas validadas por la comunidad en el cual tu puedas usarla para crear una encuesta
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<swal
+      #guardar
+      title="Encuesta guardad de forma exitosa"
+      text = "La encuesta ha sido registrada de manera exitosa, y sera 
+              publicada de manera automatica en el portal de Encuestas,
+              para que otros usuarios puedan comentar y crear discusiones"
+      type= "success"
+      [showConfirmButton]="true">
+</swal>
+
+<swal 
+      #error
+      title = "No se guardo la encuesta de manera exitosa"
+      text = "La encuesta no ha sido guardada, por problemas con el servidor,
+              por favor comunicarse con soporte tecnico"
+      type = "error"
+      [showConfirmButton]="true">
+</swal>
+
+<swal
+      #datosFaltantes
+      title = "Existen campos vacios"
+      text="Una encuesta debe estar conformada por al menos un titulo, etiqueta, descripcion y una pregunta"
+      type = "info"
+      [showConfirmButton]="true">
+
+</swal>
+      

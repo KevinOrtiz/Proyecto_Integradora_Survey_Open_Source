@@ -16,8 +16,8 @@ export class HeaderComponent implements OnInit {
   notificacionAccionesUsuarios;
 
   constructor() {
-    this.notificacionAccionesUsuarios = 30;
-    this.notificacionMensajesUsuarios = 20;
+    this.notificacionAccionesUsuarios = 0;
+    this.notificacionMensajesUsuarios = 0;
   }
 
   ngOnInit() {

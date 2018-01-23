@@ -1,9 +1,11 @@
-
-            <mat-card-content fxLayout="column">
-            <mat-form-field>
-                <input matInput style="width:300px;" #valorInputRespuestaCasilla
-                placeholder="respuesta" (keyup.enter)="addRespuesta()">
-                <mat-icon>crop_square</mat-icon>
-            </mat-form-field>
-
-            </mat-card-content>
+            <mz-input-container>
+                <i mz-icon-mdi mz-input-prefix
+                    [icon]="'checkbox-marked-outline'">
+                </i>
+                <input  mz-input
+                        #valorInputRespuestaCasilla
+                        (keyup.enter)="addRespuesta()"
+                        id="casilla-box"
+                        placeholder="respuesta"
+                        type="text">
+            </mz-input-container>

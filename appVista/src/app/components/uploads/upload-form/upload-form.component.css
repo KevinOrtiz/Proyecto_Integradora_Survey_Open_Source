@@ -1,13 +1,26 @@
-.box_dragndrop{
-    display: none;
+input{
+    position: relative;
+    top: 43px;
+    left: 100px;
 }
 
+label{
+    position: relative;
+    top:230px;
+    left:120px;
+    font-size: 20px;
+}
+
+button{
+    position:relative;
+    top:43px;
+    left: 100px;
+}
 .box_input{
     background-color: white;
     outline: 2px dashed black;
     outline-offset: -10px;
-}
-
-.box_input .box_dragndrop{
-    display: inline;
+    position: relative;
+    top: 30px;
+    height: 500px;
 }

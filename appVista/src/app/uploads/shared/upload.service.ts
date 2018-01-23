@@ -9,8 +9,7 @@ import { PreguntasService } from '../../services/preguntas.service';
 export class UploadService {
   private basePath = '/uploads';
   private uploadTask: firebase.storage.UploadTask;
-  private fileUpload = false;
-  private fileDelete = false;
+  private fileImage;
   constructor(private af: AngularFireModule, private db: AngularFireDatabase, private pregunta: PreguntasService) { }
 
   pushUpload( upload: Upload) {
@@ -23,27 +22,40 @@ export class UploadService {
       console.log(error);
     },
     () => {
+      console.log(this.uploadTask);
       upload.url = this.uploadTask.snapshot.downloadURL;
       upload.name = upload.file.name;
       this.pregunta.setListaImagenes(upload.url);
       this.saveFileData(upload);
-      this.fileUpload = true;
-      this.fileDelete = false;
+      this.setfileImage(upload);
       }
     );
   }
+  setfileImage(file) {
+    this.fileImage = file;
+  }
+
+  getfileImage() {
+    console.log(this.fileImage);
+    return this.fileImage;
+  }
+
   private saveFileData( upload: Upload) {
     this.db.list(`${this.basePath}/`).push(upload);
   }
 
   deleteUpload(upload: Upload) {
+    console.log(upload.file.name);
     this.deleteFileData(upload.$key)
     .then( () => {
-      this.deleteFileStorage(upload.name);
-      this.fileDelete = true;
-      this.fileUpload = false;
+      this.deleteFileStorage(upload.file.name);
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+    return true;
+
   }
 
   private deleteFileData(key: string) {

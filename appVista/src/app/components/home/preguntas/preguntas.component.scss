@@ -29,6 +29,28 @@ h3{
 }
 
 .opcionesPregunta{
-    right: 100px;
-    bottom: 539px;
+    right: -450px;
+    bottom: 20px;
+    position: relative;
+}
+.anadirFoto{
+    background-color: #02BE6A;
+    color: white;
+    width: 120px;
+}
+
+.eliminarFoto{
+    background-color: red;
+    color: white;
+    width: 120px;
+
+}
+.anadirAccion{
+    background-color: #02BE6A;
+    color: white;
+}
+
+.eliminarAccion{
+    background-color: red;
+    color: white;
 }
