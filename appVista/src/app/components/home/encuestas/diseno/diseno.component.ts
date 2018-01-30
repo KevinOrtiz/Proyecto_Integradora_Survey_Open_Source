@@ -19,14 +19,15 @@ export class DisenoComponent implements OnInit {
   @ViewChild('datosFaltantes') private datosFaltantes: SwalComponent;
   separatorKeysCodes = [ENTER, COMMA];
   formularioEncuesta: FormGroup;
-  pagina = 0;
+  addOnBlur = true;
+  pagina = 1;
   removido = true;
   visible = true;
   seleccionado = true;
   fotoEliminada = false;
   imagen = 'assets/img/no_available.jpg';
   etiquetas: Object [] = [{
-    texto: 'e.g Seguridad de la informacion'
+    texto: '#ops'
   }];
   listaPreguntas: Object [] = [];
   listaPreguntasSeleccionadas: Object [] = [];
@@ -36,15 +37,31 @@ export class DisenoComponent implements OnInit {
               private snackBar: MatSnackBar) {
           this.servicioEncuesta.loadlistaPreguntasValidas(this.pagina).subscribe((res) => {
             this.listaPreguntas = res;
+            console.log(res);
           });
   }
 
   ngOnInit() {
     this.formularioEncuesta = new FormGroup({
       titulo: new FormControl('', Validators.required),
-      descripcion: new FormControl('', Validators.required),
+      descripcion: new FormControl(''),
       etiqueta: new FormControl('', Validators.required)
     });
+  }
+
+  addDescripcion ($event) {
+    this.servicioEncuesta.setDescripcion($event.target.value);
+    this.snackBar.open('descripcion añadida a su encuesta', 'close', {
+      duration: 1000
+    });
+  }
+
+  addTitulo ($event) {
+    this.servicioEncuesta.setTitulo($event.target.value);
+    this.snackBar.open('titulo añadido a su encuesta', 'close', {
+      duration: 1000
+    });
+
   }
 
   addEtiqueta (event: MatChipInputEvent) {
@@ -70,16 +87,21 @@ export class DisenoComponent implements OnInit {
       width: '800px'
     });
     openFoto.afterClosed().subscribe((foto) => {
-      this.imagen = this.servicioUpload.getfileImage().url;
-      this.servicioEncuesta.setImagen(this.imagen);
-      this.fotoEliminada = true;
-    });
-    this.snackBar.open('logo añadido a la encuesta', 'close', {
-      duration: 1000
+      if (this.servicioUpload.getfileImage()) {
+        this.imagen = this.servicioUpload.getfileImage().url;
+        console.log(this.imagen);
+        this.servicioEncuesta.setImagen(this.imagen);
+        this.fotoEliminada = true;
+        this.snackBar.open('logo añadido a la encuesta', 'close', {
+          duration: 1000
+        });
+      }
     });
 
   }
   addPregunta($event: any) {
+    console.log('entre');
+    console.log($event.dragData);
     const newPregunta = $event.dragData;
     this.listaPreguntasSeleccionadas.push(newPregunta);
     this.servicioEncuesta.addPregunta(newPregunta);
@@ -101,6 +123,7 @@ export class DisenoComponent implements OnInit {
   deletePhoto() {
     this.servicioUpload.deleteUpload(this.servicioUpload.getfileImage());
     this.imagen = 'assets/img/no_available.jpg';
+    this.servicioEncuesta.setImagen('');
     this.fotoEliminada = false;
 
   }
@@ -108,9 +131,11 @@ export class DisenoComponent implements OnInit {
   eliminarPregunta(preguntaSeleccionada) {
     const index = this.listaPreguntasSeleccionadas.indexOf(preguntaSeleccionada);
     this.listaPreguntasSeleccionadas.splice(index, 1);
+    this.servicioEncuesta.deleteRespuesta(preguntaSeleccionada);
+    this.listaPreguntas.push(preguntaSeleccionada);
   }
 
-  filterPregunta($event) {
+  filtrarPregunta($event) {
     const filterArray = this.listaPreguntas.filter((pregunta) => pregunta['topicos'] === $event.target.value );
     this.listaPreguntas = filterArray;
   }
@@ -126,7 +151,7 @@ export class DisenoComponent implements OnInit {
   guardarEncuesta (value, valid) {
     this.servicioEncuesta.setUsuarioID(sessionStorage.getItem('id'));
     this.servicioEncuesta.setHistorialCambios('pregunta creada');
-    if (valid && this.listaPreguntasSeleccionadas) {
+    if (valid && this.listaPreguntasSeleccionadas.length > 0) {
       this.servicioEncuesta.guardarEncuesta().subscribe((res) => {
         if (res === 200) {
           this.guardar.show();

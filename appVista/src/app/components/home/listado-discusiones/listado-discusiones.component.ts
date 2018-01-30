@@ -4,6 +4,7 @@ import { ComentariosService } from '../../../services/comentarios.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
+import { NotificacionesService } from '../../../services/notificaciones.service';
 
 @Component({
   selector: 'app-listado-discusiones',
@@ -19,7 +20,7 @@ export class ListadoDiscusionesComponent implements OnInit {
   @ViewChild('actualizacionErronea') private actualizacionErronea: SwalComponent;
   constructor(private discusion: DiscusionesService,
     private comentarios: ComentariosService,
-    private router: Router) {
+    private router: Router, private servicioNotificacion: NotificacionesService) {
     this.discusion.loadListaDiscusiones().subscribe((res) => {
       this.listadoDiscusiones = res;
     });
@@ -45,6 +46,7 @@ export class ListadoDiscusionesComponent implements OnInit {
       if (res['status'] === 200) {
         this.actualizacionCorrecta.show();
         this.mostrarDiscusionPreguntaActualizada(this.idDiscusion, res['fecha_cierre']);
+        this.servicioNotificacion.sendNotificacionAccion(res['idUsuario'], 'discusion-cerrada', 'cambio_estado_discusion');
       }else {
         this.actualizacionErronea.show();
       }

@@ -1,0 +1,97 @@
+.bodyDiseno{
+    width: 100%;
+    height: 100%;
+}
+
+.diseno{
+    width: 500px;
+    position: relative;
+    height: 500px;
+}
+
+img{
+ width: 100px;
+}
+
+
+
+
+.logo{
+    position: relative;
+    left: 30px;
+}
+
+.eliminarLogo{
+    position: relative;
+    left: 70px;
+    top: -40px;
+}
+
+.tituloEncuesta {
+    position: relative;
+    left: 60px;
+    width: 430px;
+}
+
+#titulo-input {
+    width: 340px;
+    
+}
+
+
+
+.inputTituloEncuesta{
+    width: 340px;
+    position: relative;
+    left: 10px;
+}
+
+
+.txtDescripcion{
+    position: relative;
+    left: -90px;
+    bottom: -170px;
+    width: 430px;
+}
+
+.preguntasEncuesta{
+    position: relative;
+    width: 480px;
+    height: 195px;
+    bottom: -160px;
+    overflow-y: scroll;
+}
+
+.preguntasValidadas{
+    position: relative;
+    left: -119px;
+    bottom: 12px;
+    overflow-y: scroll;
+}
+
+.cardPreguntasNoDisponible{
+    width: 650px;
+    position: relative;
+    bottom: 10px;
+    left: 120px;
+}
+.cardPreguntasDisponible{
+    width: 850px;
+    position: relative;
+    bottom: 50px;
+    left: 130px;
+}
+mat-form-field{
+    bottom: -120px;
+    width: 400px;
+    position: relative;
+    right: 109px;
+}
+
+#descripcion_encuesta{
+    width: 450px;
+}
+
+#tag_encuesta{
+    width: 380px;
+}

@@ -36,6 +36,8 @@
     "nodemailer": "^4.4.1",
     "nodemon": "^1.12.1",
     "redis": "^2.8.0",
+    "socket.io": "^2.0.4",
+    "socketio-jwt-auth": "0.0.6",
     "underscore-node": "^0.1.2"
   },
   "devDependencies": {

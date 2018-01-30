@@ -1,3 +1,21 @@
-<p>
-  notificacion-mensajes works!
-</p>
+<div class="container">
+  <div class="row">
+    <ul class="collection" *ngIf="listaMensajes">
+      <li class="collection-item avatar" *ngFor="let item of listaMensajes">
+        <img [src]="item?.usuario_emisor[0].urlImage" class="circle">
+        <span class="title">{{item?.usuario_emisor[0].nombre}} {{item?.usuario_emisor[0].apellido}}</span>
+        <p>Creado: {{item?.fecha_creacion | date : 'dd/MM/yyyy'}}<br> Mensaje: {{item?.descripcion}}
+        </p>
+        <p>Correo: {{item?.usuario_emisor[0].correo}}<br> Rol : {{item?.usuario_emisor[0].roles[0].rol}}
+        </p>
+          <div *ngIf="item?.usuario_emisor[0].institucion" >
+              Institucion: {{item?.usuario_emisor[0].institucion}}
+          </div>
+          <br> 
+          <div *ngIf="item?.usuario_emisor[0].grado_academico">
+                Grado Academico: {{item?.usuario_emisor[0].grado_academico}}
+          </div>
+      </li>
+    </ul>
+  </div>
+</div>

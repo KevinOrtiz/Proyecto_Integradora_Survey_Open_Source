@@ -1,5 +1,4 @@
-<div class="container">
-  <div class="row">
+<mat-card fxFlex="100%">
       <mat-horizontal-stepper>
           <mat-step>
               <ng-template matStepLabel>
@@ -9,7 +8,7 @@
                 <app-resumen></app-resumen>
               </div>
               <div>
-                  <button class="btn-floating btn-large waves-effect waves-light red" matStepperPrevious><i class="material-icons">navigate_next</i></button>
+                  <button class="btn-floating btn-large waves-effect waves-light red" matStepperNext><i class="material-icons">navigate_next</i></button>
               </div>
           </mat-step>
           <mat-step>
@@ -21,8 +20,8 @@
                 <app-diseno></app-diseno>
               </div>
               <div>
-                <button class="btn-floating btn-large waves-effect waves-light red" matStepperPrevious><i class="material-icons">navigate_next</i></button>
-                <button class="btn-floating btn-large waves-effect waves-light red" matStepperNext><i class="material-icons">navigate_before</i></button>
+                <button class="btn-floating btn-large waves-effect waves-light red" matStepperPrevious><i class="material-icons">navigate_before</i></button>
+                <button class="btn-floating btn-large waves-effect waves-light red" matStepperNext><i class="material-icons">navigate_next</i></button>
               </div>
             </form>
           </mat-step>
@@ -34,9 +33,8 @@
               <app-compartir></app-compartir>
             </div>
             <div>
-                <button class="btn-floating btn-large waves-effect waves-light red" matStepperNext><i class="material-icons">navigate_before</i></button>
+                <button class="btn-floating btn-large waves-effect waves-light red" matStepperPrevious><i class="material-icons">navigate_before</i></button>
             </div>
           </mat-step>
         </mat-horizontal-stepper>
-  </div>
-</div>
+</mat-card>

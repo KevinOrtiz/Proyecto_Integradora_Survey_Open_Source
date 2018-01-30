@@ -1,7 +1,6 @@
 <div class="container" *ngFor="let item of listaDiscusiones$ | async" >
     <h4>{{ item.titulo }}</h4>
     <p> Creado : {{ item.fecha_creacion | date: 'fullDate'}}</p>
-    <p *ngIf="item.fecha_cierre !== ''">Discusion Cerrada: {{ item.fecha_cierre | date: 'fullDate'}}</p>
     <div [innerHtml]="item.descripcion | saniarHtml"></div>
       <mat-chip-list class="tag">
         <mat-chip color="primary" selected="true" *ngFor="let itemEtiqueta of item.etiquetas">{{itemEtiqueta}}</mat-chip>

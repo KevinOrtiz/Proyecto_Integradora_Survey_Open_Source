@@ -1,235 +1,356 @@
+
 'use strict';
 let encuesta = require('../models/Encuestas');
-let pregunta = require('../models/Preguntas');
-
-/**
- *Este metodo guarda una nueva encuesta en la base de datos
- * @param req : obtengo el objeto json con informacion como : Nombre,Descripcion,Topico,Lista de preguntas
- * @param res
- * @param next
- */
+let preguntasValidas = require('../models/preguntasValidadas');
+let asyncloop = require('node-async-loop');
+let usuario = require('../models/Usuarios');
 
 
-exports.crearEncuesta = (req,resp,next)=>{
-    let instanceEncuesta = new encuesta(req.body.encuesta);
-    instanceEncuesta.save()
-        .then(()=>{
-            for (var indexPregunta in req.body.identificadorPregunta ){
-                    pregunta.findOne({identificador:indexPregunta})
-                        .then((instancePregunta)=>{
-                            instanceEncuesta.preguntas.push(instancePregunta);
-                        });
-            }
-            return resp.json({status:'ok',codec:200});
-        });
-};
+exports.getListaPreguntasValidas=(req, resp, next) => {
+    console.log('entre');
+    var listapreguntasValidas = [];
+    preguntasValidas.paginate({}, {
+        page: req.query.page,
+        limit:5,
+        sort: {fecha_creacion: -1}
+    })
+    .then((result, err) => {
+        if (err) {
+            return resp.json({
+                "status": 404,
+                "messaje": "no existen mas datos",
+                "listaPreguntas": []
+            });
+        }
+        else {
+            let contador = 0;
+            let limiteDocumento = result.docs.length;
+            asyncloop(result.docs, (item, next) => {
+                var preguntasValidas = {
+                    id: item._id,
+                    url: item.listaImagen[0].url,
+                    topicos: item.topicos.texto,
+                    fecha_creacion: item.fecha_creacion,
+                    descripcion: item.descripcion,
+                    respuestas : item.respuestas
+                }
+                listapreguntasValidas.push(preguntasValidas);
+                next();
+                contador ++;
+                if (contador === limiteDocumento) {
+                    console.log('todo salio bien');
+                    return resp.json({
+                        "listaPreguntas": listapreguntasValidas,
+                        "status": 200,
+                        "paginas": result.pages
+                    })
+                }
+            })
 
+        }
+    })
+    .catch((error) => {
+        console.log("error en la consulta de extraccion de preguntas validas");
+        console.log(error);
+        return resp.json({
+            "status":500,
+            "listaPreguntas": []
+        })
 
+    })
+}
 
+exports.guardarEncuesta = (req, res , next) => {
+    var  preguntas = []
+   var contador = 0;
+    let limiteDocumento = req.body.encuesta.preguntas.length;
+    asyncloop(req.body.encuesta.preguntas,(item, next) => {
+        preguntas.push(item.id);
+        next();
+        contador ++ ;
+        if (contador === limiteDocumento) {
+            req.body.encuesta.preguntas = preguntas;
+            let nuevaEncuesta = new encuesta(req.body.encuesta);
+            nuevaEncuesta.save((error) => {
+                if (error){
+                    console.log(error);
+                    return res.json({
+                        "status":404,
+                        "messaje": 'no se pudo guardar la encuesta'
+                    })
+                }
+                else {
+                    return res.json({
+                        "status": 200,
+                        "messaje": 'la encuesta se guardo de manera exitosa'
+                    })
+                }
 
-/**
- *Este metodo realiza cambios sobre una encuesta dado un identificador en la base de datos , Nota: La actualizacion
- * no debe sobreescribir al registro en la base de datos, si no que debe anadirse despues del elemento anterior
- * y tomarse este objeto como el registro actual en la aplicacion
- * @param req
- * @param res
- * @param next
- */
+            })
+        }
+    })
+    
+}
 
-exports.editarEncuesta = (req,resp,next)=>{
-    encuesta.findOneAndUpdate({identificador:req.body.identificadorEncuestaAnterior},{registroActual:false})
-        .then(()=>{
-            let encuestaNueva = new encuesta(req.body.encuestaActual);
-            encuestaNueva.save()
-                .then(()=>{
-                    for (var indexPregunta in req.body.listaIdentificadoresPregunta){
-                        pregunta.findOne({identificador:indexPregunta})
-                            .then((instancePregunta)=>{
-                                encuestaNueva.preguntas.push(instancePregunta)
-
-                            });
+exports.cargarEncuesta = (req, res, next) => {
+    encuesta.findOne({
+        _id: req.query.id,
+        registroActual: true
+    })
+    .populate('preguntas')
+    .then((response, err) => {
+        if (err) {
+            console.log(err);
+            return res.json({
+                "status":404,
+                "encuesta": null
+            })
+        }
+        else {
+            usuario.findOne({
+                _id: response.usuario_ID
+            }).then((responseUsuario, err) => {
+                if (err) {
+                    console.log(err);
+                    return res.json({
+                        "status":404,
+                        "encuesta": null
+                    })
+                }
+                else {
+                    var encuestaObject = {
+                        usuario : {
+                            url : responseUsuario.urlImage,
+                            nombre: responseUsuario.nombre + responseUsuario.apellido,
+                        },
+                        fecha_creacion: response.fecha_creacion,
+                        titulo: response.titulo,
+                        etiqueta: response.etiqueta,
+                        descripcion: response.descripcion,
+                        preguntas:response.preguntas,
+                        contenidoMultimedia: {
+                            url: response.contenido_multimedia.url
+                        }
                     }
-                    encuestaNueva.set('registroActual',true);
-                    return resp.json({status:'ok',codec:200});
-                });
-        });
+                    return res.json({
+                        "status":200,
+                        "encuesta": encuestaObject
+                    })
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                return res.json({
+                    "status":500,
+                    "encuesta": null
+                })
+            })
+        }
+    }).catch((error) => {
+        return res.json({
+            "status":500,
+            "encuesta":null
+        })
+    })
+}
 
+exports.loadListaMyEncuestas = (req, res, next) => {
+    var listaMyEncuestas = []
+    encuesta.find({
+        usuario_ID: req.query.id,
+        registroActual: true
+    }).then((respuesta, error)=> {
+        if (error) {
+            console.log(error);
+            return res.json({
+                "status": 404,
+                "listaMyEncuestas":null
+            })
+        }else {
+            let contador = 0;
+            let limiteDocumento = respuesta.length;
+            asyncloop(respuesta, (item, next) => {
+                var encuesta = {
+                    titulo: item.titulo,
+                    descripcion: item.descripcion,
+                    id: item._id,
+                    fecha_creacion: item.fecha_creacion,
+                    numeroPreguntas: item.preguntas.length
+                }
+                listaMyEncuestas.push(encuesta)
+                contador ++;
+                next();
+                if (contador === limiteDocumento){
+                    return res.json({
+                        "status":200,
+                        "encuestas": listaMyEncuestas
+                    })
+                }
 
+            })
 
-};
+        }
 
-/**
- *Este metodo elimina una encuesta dado un identificador
- * @param req
- * @param res
- * @param next
- */
+    }).catch((error) => {
+        console.log(error);
+        return res.json({
+            "status":500,
+            "listaMyEncuestas": null
+        })
+    })
+}
 
-exports.eliminarEncuesta = (req,resp,next)=>{
-    encuesta.findByIdAndRemove(req.body._idEncuesta,(err,instanceEncuesta)=>{
-        resp.json({'status':'delete',codec:200});
-    });
-};
+exports.queryEncuestas = (req, res, next) => {
+    var encuestas = []
+    encuesta.paginate({
+        "etiqueta.texto": new RegExp(req.query.topico, 'i'),
+        "registroActual": true
+    }, {
+        page: req.query.page,
+        limit: 5,
+        sort: {fecha_creacion: -1}
+    })
+    .then((result, err) => {
+        if (err) {
+            console.log(err);
+            return res.json({
+                "status":404,
+                "messajes": 'no hay mas elementos para cargar',
+                "listaEncuestas" : null
+            })
+        }
+        let contador = 0;
+        let limiteDocumento = result.docs.length;
+        if (limiteDocumento > 0) {
 
+        asyncloop(result.docs, (item, next) => {
+            usuario.findOne({
+                _id: item.usuario_ID
+            })
+            .then((usuario, err) => {
+                console.log(item);
+                if (err) {
+                    return res.json({
+                        "status":404,
+                        "messaje": 'error en la consulta de usuario',
+                        "listaEncuestas": null
+                    })
+                } 
+                else {
+                    var encuesta = {
+                        _id: item._id,
+                        urlUsuario: usuario.urlImage,
+                        usuario: usuario.nombre + usuario.apellido,
+                        fecha_creacion: item.fecha_creacion,
+                        titulo: item.titulo,
+                        etiqueta: item.etiqueta,
+                        descripcion: item.descripcion,
+                        numeroPreguntas: item.preguntas.length,
+                        numeroDiscusiones: item.discusiones.length,
+                        numeroComentarios: item.comentarios.length,
+                        contenidoMultimedia: {
+                            url : item.contenido_multimedia.url
+                        }
+                    }
+                    encuestas.push(encuesta);
+                    next();
+                    contador ++ ;
+                    if (contador === limiteDocumento){
+                        return res.json({
+                            "listaEncuestas":encuestas,
+                            "status":200,
+                            "longitud": limiteDocumento,
+                            "paginas": result.pages
+                        });
+                    }
 
+                }
 
-/**
- * En este metodo lo que hace devolver una lista con las encuestas creadas por un usuario
- * @param req
- * @param res
- * @param next
- */
+            })
+            .catch((error) => {
+                console.log(error);
+                return res.json({
+                    "status":500,
+                    "listaEncuestas":null
+                })
+            })
+        })
 
-exports.listEncuestas=(req,resp,next)=>{
-    let lstEncuestas = [];
-    encuesta.find({usuario_ID:req.query.usuarioID,registroActual:true})
-        .then((listaEncuestas)=>{
-            for(var instancelstEncuestas in listaEncuestas){
-                let objEncuestas ={
-                    identificador:instancelstEncuestas.identificador,
-                    titulo:instancelstEncuestas.titulo,
-                    descripcion:instancelstEncuestas.descripcion,
-                    fecha_creacion:instancelstEncuestas.fecha_creacion,
-                    fecha_cierre:instancelstEncuestas.fecha_cierre,
-                    usuarioId:instancelstEncuestas.usuarioID,
-                    colaboradores:instancelstEncuestas.colaboradores,
-                    numerosColaboradores:instancelstEncuestas.colaboradores.length,
-                    registroActual:instancelstEncuestas.registroActual,
-                    etiqueta:instancelstEncuestas.etiqueta,
-                    topicos:instancelstEncuestas.topicos,
-                    numerospreguntas:instancelstEncuestas.preguntas.length,
-                    numerodiscusiones:instancelstEncuestas.discusiones.length,
-                    numerocomentarios:instancelstEncuestas.comentarios.length
-                };
-                lstEncuestas.push(objEncuestas);
-            }
-            return resp.json({listaEncuestasUsuario:lstEncuestas});
-        });
+        }else {
+            return res.json({
+                "status":200,
+                "listaEncuesta":null
+            })
 
-};
+        }
+    })
+}
 
-/**
- *
- * @param req
- * @param resp
- * @param next
- */
-exports.listPreguntasByEncuesta = (req,resp,next)=>{
-    encuesta.findOne({identificador:req.query.identificador,registroActual:true})
-        .populate('preguntas')
-        .then((instanceEncuesta)=>{
-            return resp.json({listaPreguntas:instanceEncuesta.preguntas});
-        });
-};
-/**
- *
- * @param req
- * @param resp
- * @param next
- */
-exports.listDiscusionByEncuesta = (req,resp,next)=>{
-    encuesta.findOne({identificador:req.query.identificador,registroActual:true})
-        .populate('discusiones')
-        .then((instanceEncuesta)=>{
-            return resp.json({listaDiscusiones:instanceEncuesta.discusiones})
-        });
-};
-/**
- *
- * @param req
- * @param resp
- * @param next
- */
-exports.listComentariosByEncuesta = (req,resp,next)=>{
-  encuesta.findOne({identificador:req.query.identificador,registroActual:true})
-      .populate('comentarios')
-      .then((instanceEncuesta)=>{
-        return resp.json({listaComentarios:instanceEncuesta.comentarios})
-      });
-};
+exports.loadListaEncuestas = (req, res, next) => {
+    var encuestas = []
+    encuesta.paginate({
+        registroActual: true
+    },{
+        page: req.query.page,
+        limit: 5,
+        sort: {fecha_creacion: -1}
+    })
+    .then((result, err) => {
+        if (err) {
+            console.log(err);
+            return res.json({
+                "status":404,
+                "listaEncuestas": null
+            })
+        }else{
+            console.log(result);
+            let contador = 0;
+            let limiteDocumento = result.docs.length;
+            asyncloop(result.docs, (item, next) => {
+                usuario.findOne({
+                    _id: item.usuario_ID
+                })
+                .then((usuario, err) => {
+                    var encuesta = {
+                        _id: item._id,
+                        urlUsuario: usuario.urlImage,
+                        usuario: usuario.nombre + usuario.apellido,
+                        fecha_creacion: item.fecha_creacion,
+                        titulo: item.titulo,
+                        etiqueta: item.etiqueta,
+                        descripcion: item.descripcion,
+                        numeroPreguntas: item.preguntas.length,
+                        numeroDiscusiones: item.discusiones.length,
+                        numeroComentarios: item.comentarios.length
+                    }
+                    encuestas.push(encuesta);
+                    next();
+                    contador ++ ;
+                    if (contador === limiteDocumento){
+                        return res.json({
+                            "listaEncuestas":encuestas,
+                            "status":200,
+                            "longitud": limiteDocumento,
+                            "paginas": result.pages
+                        });
+                    }
 
-
-/**
- * En este metodo lo que hace es devolver una lista de encuestas que concuerden con un conjunto de caracteres
- * @param req
- * @param res
- * @param next
- * @constructor
- */
-
-exports.QueryEncuestasByTitulo = (req,resp,next)=>{
-    encuesta.find({$text:{$search:req.query.titulo},registroActual:true})
-        .skip(20)
-        .limit(10)
-        .then((encuestaInstance)=>{
-            console.log(encuestaInstance);
-            return resp.json({listaEncuestas:encuestaInstance});
-        });
-};
-
-/**
- * Este metodo lo que hace es hacer un search de una lista de encuestas que concuerden con un etiqueta determinada
- * @param req
- * @param resp
- * @param next
- * @constructor
- */
-exports.QueryEncuestasByEtiquetas = (req,resp,next)=>{
-    encuesta.find({$text:{$search:req.query.etiqueta},registroActual:true})
-        .skip(20)
-        .limit(10)
-        .then((encuestaInstance)=>{
-            console.log(encuestaInstance);
-            return resp.json({listaEncuestas:encuestaInstance})
-        });
-};
-
-/**
- * Este metodo lo que hace es hacer un search de una lista de encuestas que concuerden con un topico determinado
- * @param req
- * @param resp
- * @param next
- * @constructor
- */
-
-exports.QueryEncuestasByTopicos = (req,resp,next)=>{
-    encuesta.find({$text:{$search:req.query.topicos},registroActual:true})
-        .skip(20)
-        .limit(10)
-        .then((encuestaInstance)=>{
-            console.log(encuestaInstance);
-            return resp.json({listaEncuestas:encuestaInstance});
-        });
-};
-
-
-
-/**
- * Este metodo lo que hace es cargar el historial de los cambios que se ha hecho sobre una encuesta dado un identificador
- * @param req
- * @param res
- * @param next
- */
-
-exports.loadHistoryChange = (req,resp,next)=>{
-    var listHistorialEncuestas = [];
-    encuesta.find({identificador:req.query.identificador,usuario_ID:req.query.usuarioID})
-        .then((historialEncuesta)=>{
-            for(var objEncuesta in historialEncuesta){
-                var registroCambioEncuesta = {
-                  titulo:objEncuesta.titulo,
-                  descripcion:objEncuesta.descripcion,
-                  fecha_creacion:objEncuesta.fecha_creacion,
-                  fecha_edicion:objEncuesta.fecha_edicion,
-                  historial:objEncuesta.historial_cambios
-                };
-                listHistorialEncuestas.push(registroCambioEncuesta);
-            }
-            resp.json({listaCambiosByEncuesta:listHistorialEncuestas});
-        });
-
-};
-
-exports.exportarEncuestaTellForm= (req,resp,next)=>{
-
-};
+                })
+                .catch((error) => {
+                    console.log(error);
+                    return res.json({
+                        "status":500,
+                        "listaEncuestas":null
+                    })
+                })
+            })
+        }
+    })
+    .catch((error)=> {
+        console.log(error);
+        return res.json({
+            "status":500,
+            "listaEncuestas":null
+        })
+    })
+}

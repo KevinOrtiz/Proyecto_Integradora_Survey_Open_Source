@@ -461,6 +461,7 @@ exports.getNumeroEncuestasByMonth = (req, res, next) => {
                 }
             })
             .then((encuestas, err) => {
+                console.log(encuestas);
                 if (err) {
                     return res.json({
                         "status": 500

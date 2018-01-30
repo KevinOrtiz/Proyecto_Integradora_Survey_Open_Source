@@ -12,7 +12,26 @@
   border-color: #02BE6A;
 
 }
+#btn-dropdown-notificacion{
+  background-color: #02BE6A;
+  border-color: #02BE6A;
 
+}
+
+#btn-dropdown-mensaje{
+  background-color: #02BE6A;
+  border-color: #02BE6A;
+
+}
+
+.notificacion{
+    background-color: #02BE6A;
+
+}
+.mensaje{
+    background-color: #02BE6A;
+
+}
 .badge{
   font-size: 9px;
   padding: 0px 4px;
@@ -54,6 +73,5 @@ mat-icon{
       transform: rotate(0);
       transition: transform .25s cubic-bezier(.25,.8,.25,1);
     }
-
 
 

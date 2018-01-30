@@ -1,13 +1,13 @@
 export class Encuesta {
-    private titulo: string;
+    private titulo = '';
     private descripcion = 'encuesta sin descripcion';
-    private usuario_ID: string;
-    private historial_cambios: String [];
+    private usuario_ID = '';
+    private historial_cambios: String [] = [];
     private registroActual = true;
-    private etiqueta: Object [];
-    private contenido_multimedia: {
-        url: String,
-        tipo: String
+    private etiqueta: Object [] = [];
+    private contenido_multimedia = {
+        url: '',
+        tipo: ''
     };
     private preguntas: Object [] = [];
     constructor () {}
@@ -44,6 +44,7 @@ export class Encuesta {
     }
 
     public setTitulo (titulo) {
+        console.log(titulo);
         this.titulo = titulo;
     }
 
@@ -52,6 +53,8 @@ export class Encuesta {
     }
 
     public addEtiqueta (texto) {
+        console.log(texto);
+        console.log(this.etiqueta);
         this.etiqueta.push(texto);
     }
 
@@ -64,16 +67,18 @@ export class Encuesta {
     }
 
     public setDescripcion (descripcion) {
+        console.log(descripcion);
         this.descripcion = descripcion;
     }
 
     public setlogoEncuesta(imagen) {
+        console.log(imagen);
         this.contenido_multimedia.url = imagen;
         this.contenido_multimedia.tipo = 'imagen';
     }
 
     public addPreguntaLista (pregunta: Object) {
-        this.preguntas.unshift(pregunta);
+        this.preguntas.push(pregunta);
     }
 
     public removePreguntaLista (pregunta: any) {
@@ -82,6 +87,7 @@ export class Encuesta {
     }
 
     public removeTagEncuesta (etiqueta: any) {
+        console.log(etiqueta);
         const index = this.etiqueta.indexOf(etiqueta);
         this.etiqueta.splice(index, 1);
     }

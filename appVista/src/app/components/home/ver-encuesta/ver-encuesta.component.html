@@ -1,111 +1,104 @@
-<mz-modal [fixedFooter]="true">
-  <mz-modal-header>
-  </mz-modal-header>
-  <mz-modal-content>
-    <div class="row">
-      <mat-card fxFlex="80%">
-        <img mat-card-image [src]="encuesta?.contenidoMultimedia.url" *ngIf="encuesta?.contenidoMultimedia.url">
-        <img mat-card-image src="assets/survey_example.png" *ngIf="!encuesta?.contenidoMultimedia.url">
-        <mat-tab-group>
-          <mat-tab label="Descripcion general de la encuesta">
-            <mat-card-header>
-              <img mat-card-avatar [src]="encuesta?.usuario.url">
-              <mat-card-title>{{encuesta?.usuario.nombre}}</mat-card-title>
-              <mat-card-subtitle>Creado : {{encuesta?.fecha_creacion}}</mat-card-subtitle>
-            </mat-card-header>
-            <mat-divider></mat-divider>
-            <mat-card-content fxLayout="column">
-              <div>
-                <span class="card-title">{{encuesta?.titulo}}</span>
-              </div>
-              <div>
-                <mat-chip-list class="tag">
-                  <mat-chip color="primary" selected="true" *ngFor="let item of encuesta?.etiqueta">
-                    {{item.texto}}
-                  </mat-chip>
-                </mat-chip-list>
-              </div>
-              <div>
-                <p>{{encuesta?.descripcion}}</p>
-              </div>
-              <div>
-                <p>Cantidad Preguntas : {{cantidadPreguntas}}</p>
-              </div>
-            </mat-card-content>
-          </mat-tab>
-          <mat-tab label="Conjunto de Preguntas">
-            <div class="row">
-              <div *ngFor="let pregunta of encuesta?.preguntas">
+<mat-dialog-content>
+  <div class="row">
+    <mat-card fxFlex="100%">
+      <mat-tab-group>
+        <mat-tab label="Descripcion general de la encuesta">
+          <mat-card-header>
+            <img mat-card-avatar [src]="encuesta?.usuario.url">
+            <mat-card-title>{{encuesta?.usuario.nombre}}</mat-card-title>
+            <mat-card-subtitle>Creado : {{encuesta?.fecha_creacion | date: 'yyyy:mm:dd'}}</mat-card-subtitle>
+          </mat-card-header>
 
-                <div class="act-content">
-                  <div class="font400">
-                    <p>{{ pregunta?.descripcion }}</p>
-                  </div>
-                  <br>
-                  <div class="mb10">
-                    <span class="label label-default">Categoria: {{ pregunta?.topicos }}</span>
-                  </div>
-                  <br>
-                  <div class="imagen col col-md-12" *ngIf="pregunta?.listaImagen.url">
-                    <img [src]="pregunta?.listaImagen.url">
-                    <br>
-                  </div>
+          <img mat-card-image [src]="encuesta?.contenidoMultimedia.url" *ngIf="encuesta?.contenidoMultimedia.url">
+          <img mat-card-image src="assets/img/survey_example.png" *ngIf="!encuesta?.contenidoMultimedia.url">
+          <mat-divider></mat-divider>
+          <mat-card-content fxLayout="column">
+            <div>
+              <span class="card-title">{{encuesta?.titulo}}</span>
+            </div>
+            <div>
+              <mat-chip-list class="tag">
+                <mat-chip color="primary" selected="true" *ngFor="let item of encuesta?.etiqueta">
+                  {{item.texto}}
+                </mat-chip>
+              </mat-chip-list>
+            </div>
+            <div>
+              <p>{{encuesta?.descripcion}}</p>
+            </div>
+            <div>
+              <p>Cantidad Preguntas : {{cantidadPreguntas}}</p>
+            </div>
+          </mat-card-content>
+        </mat-tab>
+        <mat-tab label="Conjunto de Preguntas">
+          <div class="row">
+            <div *ngFor="let pregunta of encuesta?.preguntas; let i=index">
+              <div class="content">
+                <div class="col md12 s12">
+                  <p>{{i + 1}}.-{{ pregunta?.descripcion }}</p>
                 </div>
-
-                <div class="respuestas col md12">
-                  <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'casillas'">
-                    <div *ngFor="let respuesta of pregunta?.respuestas; let i=index">
-                      <mat-checkbox>{{ respuesta.texto }}</mat-checkbox>
-                    </div>
-                    <br>
+                <br>
+                <div class="col md12 s12">
+                  <span class="label label-default">Categoria: {{ pregunta?.topicos.texto }}</span>
+                </div>
+                <br>
+                <div class="imagen col md12" *ngIf="pregunta?.listaImagen[0].url">
+                  <img [src]="pregunta?.listaImagen[0].url">
+                  <br>
+                </div>
+              </div>
+              <br>
+              <div class="respuestas col md12">
+                <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'casillas'">
+                  <div *ngFor="let respuesta of pregunta?.respuestas; let i=index">
+                    <mat-checkbox>{{ respuesta.texto }}</mat-checkbox>
                   </div>
-                  <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'radios'">
-                    <div *ngFor="let respuesta of pregunta?.respuestas; let i=index">
-                      <mat-radio-button value="i">{{ respuesta.texto }}</mat-radio-button>
-                    </div>
-                    <br>
+                  <br>
+                </div>
+                <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'radios'">
+                  <div *ngFor="let respuesta of pregunta?.respuestas; let i=index">
+                    <mat-radio-button value="i">{{ respuesta.texto }}</mat-radio-button>
                   </div>
-                  <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'lista'">
-                    <mat-select placeholder="Respuestas">
-                      <mat-option *ngFor="let respuesta of objetoPregunta?.respuestas" [value]="respuesta.texto">
-                        {{ respuesta.texto }}
-                      </mat-option>
-                    </mat-select>
-                    <br>
-                  </div>
-                  <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'puntaje'">
-                    <div class="smart-forms">
-                      <div class="section">
-                        <div class="rating-wrapper centrar" *ngFor="let item of pregunta?.respuestas">
-                          <input class="rating-input" id="r{{ item }}" type="radio" name="custom" checked>
-                          <label class="rating-star estilo" for="r{{ item }}">
-                            <i class="fas fa-star">
-                            </i>
-                          </label>
-                        </div>
+                  <br>
+                </div>
+                <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'lista'">
+                  <mat-select placeholder="Respuestas">
+                    <mat-option *ngFor="let respuesta of objetoPregunta?.respuestas" [value]="respuesta.texto">
+                      {{ respuesta.texto }}
+                    </mat-option>
+                  </mat-select>
+                  <br>
+                </div>
+                <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'puntaje'">
+                  <div class="smart-forms">
+                    <div class="section">
+                      <div class="rating-wrapper centrar" *ngFor="let item of pregunta?.respuestas">
+                        <input class="rating-input" id="r{{ item }}" type="radio" name="custom" checked>
+                        <label class="rating-star estilo" for="r{{ item }}">
+                          <i class="fas fa-star">
+                          </i>
+                        </label>
                       </div>
                     </div>
-                    <br>
                   </div>
-                  <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'abierta'">
-                    <textarea matInput placeholder="Respuesta Abierta"></textarea>
-                    <br>
-                    <br>
-                  </div>
+                  <br>
+                </div>
+                <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'abierta'">
+                  <textarea matInput placeholder="Respuesta Abierta"></textarea>
+                  <br>
+                </div>
 
-                  <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'si/no'">
-                    <mat-slide-toggle>Si/No</mat-slide-toggle>
-                    <br>
-                  </div>
+                <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'si/no'">
+                  <mat-slide-toggle>Si/No</mat-slide-toggle>
+                  <br>
                 </div>
               </div>
+              <br>
             </div>
-          </mat-tab>
-        </mat-tab-group>
-      </mat-card>
-    </div>
-  </mz-modal-content>
-  <mz-modal-footer>
-    <button mz-button [flat]="true" mz-modal-close>Cerrar</button>
-  </mz-modal-footer>
-</mz-modal>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </div>
+</mat-dialog-content>

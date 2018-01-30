@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
-import { MzModalService } from 'ng2-materialize';
 import { VerEncuestaComponent } from '../ver-encuesta/ver-encuesta.component';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
@@ -11,6 +10,7 @@ import { Router } from '@angular/router';
 import { EncuestasService } from '../../../services/encuestas.service';
 import { ComentariosService } from '../../../services/comentarios.service';
 import { DiscusionesService } from '../../../services/discusiones.service';
+import { MatDialog } from '@angular/material';
 
 
 @Component({
@@ -30,7 +30,7 @@ export class PortalEncuestasComponent implements OnInit {
               private servicioComentario: ComentariosService,
               private discusionesServicio: DiscusionesService,
               private renderer: Renderer,
-              private modal: MzModalService,
+              private modal: MatDialog,
               private router: Router) { }
 
   ngOnInit() {
@@ -44,8 +44,9 @@ export class PortalEncuestasComponent implements OnInit {
           }
         })
         .switchMap(encuestas => this.servicioEncuesta.loadEncuestasByCategory(encuestas, 1))
-        .subscribe((res: Response) => {
-          this.encuestas = res['encuestas'];
+        .subscribe((res) => {
+          console.log(res);
+          this.encuestas = res;
           this.finished = true;
         });
   }
@@ -63,8 +64,12 @@ export class PortalEncuestasComponent implements OnInit {
     this.isOpen = false;
   }
   verEncuesta (idEncuesta) {
+    console.log('entre');
+    console.log(idEncuesta);
     this.servicioEncuesta.setIDEncuesta(idEncuesta);
-    this.modal.open(VerEncuestaComponent);
+    this.modal.open(VerEncuestaComponent , {
+      width: '900px'
+    });
   }
 
   nextPage(pagina) {
@@ -72,7 +77,7 @@ export class PortalEncuestasComponent implements OnInit {
     this.servicioEncuesta.loadListaEncuestas(pagina)
                          .take(20)
                          .subscribe((res) => {
-                            this.encuestas = res['encuestas'];
+                            this.encuestas = res;
                          });
   }
 
@@ -81,7 +86,7 @@ export class PortalEncuestasComponent implements OnInit {
     this.servicioEncuesta.loadListaEncuestas(this.paginaActual)
         .take(20)
         .subscribe((res) => {
-            this.encuestas = res['encuestas'];
+            this.encuestas = res;
         });
   }
 

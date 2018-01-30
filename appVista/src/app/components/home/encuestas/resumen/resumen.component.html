@@ -5,11 +5,11 @@
         <img [src]="url">
       </div>
       <div class="card-content">
-        <span class="card-title">{{tituloEncuesta}}</span>
+        <span class="card-title">Titulo: {{tituloEncuesta}}</span>
         <p>Descripcion: {{descripcionEncuesta}}</p>
         <p>numero Preguntas: {{numeroPreguntas}}</p>
         <div class="chip" *ngFor="let etiqueta of etiquetas" >
-          {{etiqueta}}
+          {{etiqueta.texto}}
         </div>
       </div>
     </div>
@@ -25,9 +25,8 @@
             </div>
         </mz-collapsible-item-header>
         <mz-collapsible-item-body>
-          <br>
-          <div *ngIf="pregunta?.listaImagen.url">
-            <img [src]="pregunta?.listaImagen.url">
+          <div *ngIf="pregunta?.url">
+            <img [src]="pregunta?.url">
             <br>
           </div>
           <div class="row col s12 m12">
@@ -35,13 +34,11 @@
               <div *ngFor="let respuesta of pregunta?.respuestas; let i = index">
                 <mat-checkbox>{{i}}{{respuesta.texto}}</mat-checkbox>
               </div>
-              <br>
             </div>
             <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'radios'">
               <div *ngFor="let respuesta of pregunta?.respuestas; let i = index">
                 <mat-radio-button value="i">{{i}}{{respuesta.texto}}</mat-radio-button>
               </div>
-              <br>
             </div>
             <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'lista'">
               <mat-select placeholder="respuestas">
@@ -77,7 +74,7 @@
       </mz-collapsible-item>
     </mz-collapsible>
   </div>
-  <div class="col s12 m6" *ngIf="!listaPreguntasValidas" >
+  <div class="col s12 m6" *ngIf="listaPreguntasValidas.length == 0" >
       <div class="card">
           <div class="card-content">
             <span class="card-title">Mis preguntas</span>

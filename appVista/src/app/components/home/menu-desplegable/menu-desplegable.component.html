@@ -11,7 +11,7 @@
     <a [routerLink]="['/home','portalPregunta']"><i mz-icon-mdi [icon]="'comment-question'" [align]="'left'" class="caret"></i>Preguntas</a>
   </mz-sidenav-link>
   <mz-sidenav-link>
-    <a ><i mz-icon-mdi [icon]="'library-books'" [align]="'left'" class="caret"></i>Encuestas</a>
+    <a [routerLink]="['/home','portalEncuesta']"><i mz-icon-mdi [icon]="'library-books'" [align]="'left'" class="caret"></i>Encuestas</a>
   </mz-sidenav-link>
   <mz-sidenav-divider></mz-sidenav-divider>
   <mz-sidenav-subheader>
@@ -25,7 +25,7 @@
     </mz-sidenav-collapsible-header>
     <mz-sidenav-collapsible-content>
       <mz-sidenav-link>
-        <a  class="waves-effect"><i mz-icon-mdi [icon]="'folder-plus'" [align]="'left'" class="caret"></i>Crear Encuesta</a>
+        <a  [routerLink]="['/home','crearEncuesta']" class="waves-effect"><i mz-icon-mdi [icon]="'folder-plus'" [align]="'left'" class="caret"></i>Crear Encuesta</a>
       </mz-sidenav-link>
       <mz-sidenav-link>
         <a  class="waves-effect"><i mz-icon-mdi [icon]="'bug'" [align]="'left'" class="caret"></i>Discusiones Encuestas</a>
@@ -62,10 +62,10 @@
       </li>
     </mz-sidenav-subheader>
   <mz-sidenav-link>
-      <a><i mz-icon-mdi [icon]="'bell-ring'" [align]="'left'" class="caret"></i>Acciones de usuarios</a>
+      <a [routerLink]="['/home','notificaciones']"><i mz-icon-mdi [icon]="'bell-ring'" [align]="'left'" class="caret"></i>Acciones de usuarios</a>
     </mz-sidenav-link>
     <mz-sidenav-link>
-      <a> <i mz-icon-mdi [icon]="'message-alert'" [align]="'left'" class="caret"></i>Mensajes de usuarios</a>
+      <a [routerLink]="['/home','mensaje']"> <i mz-icon-mdi [icon]="'message-alert'" [align]="'left'" class="caret"></i>Mensajes de usuarios</a>
   </mz-sidenav-link>
   <mz-sidenav-divider></mz-sidenav-divider>
   <mz-sidenav-link>

@@ -54,9 +54,6 @@ export class DiscusionesService {
                 '&id=' + id;
   return this.http.get<DiscusionPregunta[]>(url, {headers})
                   .map((res) => {
-                    console.log('********');
-                    console.log(res);
-                    console.log('**********');
                     return res['listadiscusionPregunta'];
                   });
   }

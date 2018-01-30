@@ -15,12 +15,10 @@
   <div  *ngIf="finished">
   <div *ngFor="let encuesta of encuestas" fxLayout="row" fxLayoutAlign="center center" style="margin: 24px 0;" >
     <mat-card fxFlex="50%">
-        <img mat-card-image [src]="encuesta?.contenidoMultimedia.url" *ngIf="encuesta?.contenidoMultimedia.url">
-        <img mat-card-image src="assets/survey_example.png" *ngIf="!encuesta?.contenidoMultimedia.url">
       <mat-card-header>
         <img mat-card-avatar [src]="encuesta?.urlUsuario">
         <mat-card-title>{{ encuesta?.usuario }}</mat-card-title>
-        <mat-card-subtitle>Creado: {{ encuesta?.fecha_creacion }}</mat-card-subtitle>
+        <mat-card-subtitle>Creado: {{ encuesta?.fecha_creacion | date:'yyyy:mm:dd' }}</mat-card-subtitle>
         <span fxFlex></span>
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
@@ -48,11 +46,13 @@
               </mat-chip>
           </mat-chip-list>
         </div>
+        <br>
+        <br>
         <div>
             {{ encuesta?.descripcion }}
-        </div>
-        <div>
-          <p>Cantidad Preguntas : {{encuesta?.numeroPreguntas}}</p>
+            <br>
+            <br>
+            Cantidad Preguntas : {{encuesta?.numeroPreguntas}}
         </div>
       </mat-card-content>
       <mat-card-actions>

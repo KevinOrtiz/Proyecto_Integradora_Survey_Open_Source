@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DiscusionesService } from '../../../services/discusiones.service';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
+import { NotificacionesService } from '../../../services/notificaciones.service';
 
 @Component({
   selector: 'app-crear-discusion',
@@ -41,7 +42,7 @@ export class CrearDiscusionComponent implements OnInit {
   ];
 
   formularioDiscusion: FormGroup;
-  constructor(private servicioDiscusion: DiscusionesService) {
+  constructor(private servicioDiscusion: DiscusionesService, private servicioNotificacion: NotificacionesService) {
    }
 
   ngOnInit() {
@@ -60,6 +61,7 @@ export class CrearDiscusionComponent implements OnInit {
     this.servicioDiscusion.guardarDiscusion(this.discusion).subscribe((res) => {
       if (res['status'] === 200) {
          this.guardado.show();
+         this.servicioNotificacion.sendNotificacionAccion(res['idUsuario'], 'Se ha creado una discusion', 'creacion-discusion');
       }else {
         this.error.show();
       }

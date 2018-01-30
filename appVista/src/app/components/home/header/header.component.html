@@ -6,22 +6,74 @@
     </button>
   </div>
 
+  <audio #audioMensaje>
+    <source src="assets/audio/mensajes.mp3" type="audio/mp3">
+  </audio>
+
+  <audio #audioAccion>
+    <source src="assets/audio/acciones.mp3" type="audio/mp3">
+  </audio>
+
   <span fxFlex></span>
 
   <button [fxHide]="true" [fxHide.gt-sm]="false" mat-button class="fullscreen-toggle" (click)="toggleFullscreen()">
     <mat-icon *ngIf="!isFullscreen">fullscreen</mat-icon>
     <mat-icon *ngIf="isFullscreen">fullscreen_exit</mat-icon>
   </button>
-  <button mat-button>
+
+  <button mat-button id="btn-dropdown-mensaje" (click)="notificacionMensajesUsuarios=0;">
     <span class="badge bg-danger">{{notificacionMensajesUsuarios}}</span>
     <mat-icon >notifications
     </mat-icon>
   </button>
-  <button mat-button>
+
+
+  <mz-dropdown [id]="'dropdown-mensaje'" [align]="'right'" [belowOrigin]="false"  [dropdownButtonId]="'btn-dropdown-mensaje'"
+    [gutter]="false" [hover]="false" [inDuration]="300" [outDuration]="300" [stopPropagation]="true">
+    <mz-dropdown-item class="mensaje">
+      Mensaje
+    </mz-dropdown-item>
+    <mz-dropdown-divider></mz-dropdown-divider>
+    <mz-dropdown-item>
+      <ul class="collection" *ngIf="listaMensajes">
+        <li class="collection-item avatar" *ngFor="let mensaje of listaMensajes">
+          <img [src]="mensaje?.usuario_emisor[0].urlImage" class="circle">
+          <span class="title">{{mensaje?.usuario_emisor[0].nombre}} :{{mensaje?.usuario_emisor[0].correo}}</span>
+          <p>creado:{{mensaje?.fecha_creacion | date: 'dd/MM/yyyy'}}<br> Mensaje:{{mensaje?.descripcion}}
+          </p>
+        </li>
+      </ul>
+    </mz-dropdown-item>
+  </mz-dropdown>
+
+
+  <button mat-button id="btn-dropdown-notificacion" (click)="notificacionAccionesUsuarios=0">
       <span class="badge bg-danger">{{notificacionAccionesUsuarios}}</span>
     <mat-icon >message
     </mat-icon>
   </button>
+
+
+
+  <mz-dropdown [id]="'dropdown-notificacion'" [align]="'right'" [belowOrigin]="false" [constrainWidth]="true" [dropdownButtonId]="'btn-dropdown-notificacion'"
+    [gutter]="true" [hover]="true" [inDuration]="300" [outDuration]="300" [stopPropagation]="true">
+    <mz-dropdown-item class="notificacion">
+      Notificaciones
+    </mz-dropdown-item>
+    <mz-dropdown-divider></mz-dropdown-divider>
+    <mz-dropdown-item>
+      <ul class="collection" *ngIf="listaAcciones">
+        <li class="collection-item avatar" *ngFor="let acciones of listaAcciones">
+          <img [src]="acciones?.usuario_emisor[0].urlImage" class="circle">
+          <span class="title">{{acciones?.usuario_emisor[0].nombre}} :{{acciones?.usuario_emisor[0].correo}}</span>
+          <p>Tipo Notificacion: {{acciones?.tipo}}</p>
+          <p>creado:{{acciones?.fecha_creacion | date: 'dd/MM/yyyy'}}<br> Mensaje:{{acciones?.descripcion}}
+          </p>
+        </li>
+      </ul>
+    </mz-dropdown-item>
+  </mz-dropdown>
+
   <mz-dropdown [id]="'dropdown-Perfil'" [belowOrigin]="true" [constrainWidth]="true" [dropdownButtonId]="'btn-dropdown-Perfil'"
     [gutter]="2" [hover]="true" [inDuration]="300" [outDuration]="300" [stopPropagation]="true">
     <mz-dropdown-divider></mz-dropdown-divider>
@@ -45,8 +97,4 @@
         <mat-icon class="icon" fxHide fxShow.gt-sm>keyboard_arrow_down</mat-icon>
       </span>
     </button>
-
-
-
-
 </div>

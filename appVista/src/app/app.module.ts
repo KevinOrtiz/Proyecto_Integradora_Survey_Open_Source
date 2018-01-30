@@ -76,7 +76,9 @@ import { ClickOutsideModule } from 'ng-click-outside';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { MenuDesplegableComponent } from './components/home/menu-desplegable/menu-desplegable.component';
 // tslint:disable-next-line:max-line-length
-import { MzSidenavModule, MzIconModule, MzIconMdiModule,  MzDropdownModule, MzTooltipModule, MzProgressModule, MzInputModule, MzCollapsibleModule, MzCollapsibleComponent, MzTextareaModule } from 'ng2-materialize';
+import { MzSidenavModule, MzIconModule, MzIconMdiModule,
+         MzDropdownModule, MzTooltipModule, MzProgressModule,
+         MzInputModule, MzCollapsibleModule, MzTextareaModule, MzButtonModule } from 'ng2-materialize';
 import { NotificacionAccionesComponent } from './components/home/notificacion-acciones/notificacion-acciones.component';
 import { NotificacionMensajesComponent } from './components/home/notificacion-mensajes/notificacion-mensajes.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
@@ -91,11 +93,12 @@ import { ResumenComponent } from './components/home/encuestas/resumen/resumen.co
 import { DisenoComponent } from './components/home/encuestas/diseno/diseno.component';
 import { CompartirComponent } from './components/home/encuestas/compartir/compartir.component';
 import {MatStepperModule} from '@angular/material/stepper';
-import { EncuestasService } from './services/encuestas.service';
 import {DndModule} from 'ng2-dnd';
 import { VerEncuestaComponent } from './components/home/ver-encuesta/ver-encuesta.component';
-import { MzModalModule } from 'ng2-materialize';
-import { PortalEncuestasComponent } from './components/home/portal-encuestas/portal-encuestas.component'
+import { PortalEncuestasComponent } from './components/home/portal-encuestas/portal-encuestas.component';
+import { NotificacionesService } from './services/notificaciones.service';
+import { MzModalService } from 'ng2-materialize';
+import { EncuestasService } from './services/encuestas.service';
 
 
 export const firebaseConfig = {
@@ -199,10 +202,10 @@ export const firebaseConfig = {
     MzInputModule,
     ChartsModule,
     MatStepperModule,
-    MzCollapsibleComponent,
     MzTextareaModule,
+    MzButtonModule,
     DndModule.forRoot(),
-    MzModalModule
+    MzCollapsibleModule
   ],
   entryComponents: [
      SnackBarMensajesComponent, SnackBarEliminarPreguntaComponent,
@@ -222,7 +225,8 @@ export const firebaseConfig = {
     DiscusionesService,
     AccionesUsuarioService,
     StadisticalActivitiesService,
-    EncuestasService,
+    NotificacionesService,
+    EncuestasService
   ],
   bootstrap: [AppComponent]
 })

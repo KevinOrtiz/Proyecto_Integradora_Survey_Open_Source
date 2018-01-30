@@ -7,6 +7,7 @@ const preguntasValidas = require('../models/preguntasValidadas');
 let asyncloop = require('node-async-loop');
 
 exports.guardarDiscusion = (req, resp, next) => {
+    let idUsuario = '';
     if (req.body.tipoDiscusion === 'pregunta') {
         var objetoPregunta = new discusionPregunta(req.body.respuestaDiscusion);
         objetoPregunta.save()
@@ -26,6 +27,7 @@ exports.guardarDiscusion = (req, resp, next) => {
                     Usuario.findOne({
                         '_id': pregunta.usuario_ID
                     }).then((usuario, error) => {
+                        idUsuario = pregunta.usuario_ID;
                         correo.sendCorreoDiscusionCreada(usuario.correo, usuario.nombre, req.body.respuestaDiscusion.titulo);
                     });
                     if (error) {
@@ -35,7 +37,8 @@ exports.guardarDiscusion = (req, resp, next) => {
                         });
                     } else {
                         return resp.json({
-                            "status": 200
+                            "status": 200,
+                            "idUsuario": idUsuario
                         });
                     }
                 });
@@ -322,7 +325,6 @@ exports.cerrarDiscusionPregunta = (req, resp, next) => {
             "new": true
         })
         .then((discusionPregunta, error) => {
-            console.log(discusionPregunta);
             if (error) {
                 return resp.json({
                     "status": 500,
@@ -334,6 +336,7 @@ exports.cerrarDiscusionPregunta = (req, resp, next) => {
                     "status": 200,
                     "messaje": "actualizado con exito",
                     "fecha_cierre": dateClosed,
+                    "idUsuario": discusionPregunta.creador_ID,
                     "estados": "cerrado"
                 })
             }
@@ -425,7 +428,8 @@ exports.validarPregunta = (req, resp, next) => {
                             }
                             return resp.json({
                                 "status": 200,
-                                "messaje": 'se guardo correctamente la discusion'
+                                "messaje": 'se guardo correctamente la discusion',
+                                "idUsuario":req.body.respuestaDiscusion.creador_ID
                             })
                         }).catch((error) => {
                             console.log(error);

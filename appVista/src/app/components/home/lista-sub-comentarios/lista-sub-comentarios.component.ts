@@ -3,6 +3,7 @@ import { ComentariosService } from '../../../services/comentarios.service';
 import { AccionesUsuarioService } from '../../../services/acciones-usuario.service';
 import { MatSnackBar } from '@angular/material';
 import { MensajeAccionesUsuarioComponent } from '../mensaje-acciones-usuario/mensaje-acciones-usuario.component';
+import { NotificacionesService } from '../../../services/notificaciones.service';
 
 @Component({
   selector: 'app-lista-sub-comentarios',
@@ -23,7 +24,7 @@ export class ListaSubComentariosComponent implements OnInit {
   valuePost = 1;
   valueFavoritos = 1;
   constructor(private servicioComentario: ComentariosService, private acciones: AccionesUsuarioService,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar, private servicioNotificacion: NotificacionesService) {
     this.imagen = sessionStorage.getItem('imagen');
     this.usuario = sessionStorage.getItem('nombre') + sessionStorage.getItem('apellido');
     this.servicioComentario.listComentarios(this.page).subscribe((res) => {
@@ -50,6 +51,8 @@ export class ListaSubComentariosComponent implements OnInit {
       this.snackBar.openFromComponent(MensajeAccionesUsuarioComponent, {
         duration: 500
       });
+      this.servicioNotificacion.sendNotificacionAccion(res['comentarios']['idUsuario'],
+                              'se ha creado un comentario a un comentario que creaste', 'comentario');
       this.contenido = '';
     });
   }

@@ -2,7 +2,10 @@
 const usuarios = require("./controllers/usuarios");
 const preguntas = require("./controllers/Preguntas");
 const comentarios = require("./controllers/comentarios");
-const discusion = require('./controllers/discusiones');
+const discusion = require("./controllers/discusiones");
+const encuesta = require("./controllers/Encuestas");
+const notificacion = require("./controllers/notificaciones");
+
 /**
  * definir un middleware de rutas
  * Cuando un usuario quiera comunicarse con el servicio rest debera estar previamente autenticado en la aplicacion
@@ -13,7 +16,6 @@ var jwt = require('jsonwebtoken');
 var apiRoute = express.Router();
 
 module.exports = (app)=> {
-
     apiRoute.post('/crearUsuario',usuarios.crearUsuario);
     apiRoute.use(function (req,res,next) {
         var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -45,6 +47,8 @@ module.exports = (app)=> {
      * Endpoint para las operaciones de usuarios
      */
     
+    apiRoute.get('/numeroAcciones',notificacion.loadNumeroAccionesUsuario);
+    apiRoute.get('/numeroMensajes',notificacion.loadNumeroMensajesUsuarios);
     apiRoute.get('/cargarPerfil',usuarios.cargarPerfilUsuario);
     apiRoute.get('/cargarColaboradores',usuarios.cargarListaMisColaboradores);
     apiRoute.get('/cargarNotificaciones',usuarios.cargarNotificaciones);
@@ -88,6 +92,16 @@ module.exports = (app)=> {
     apiRoute.get('/loadChartEncuestasByMonth',usuarios.getNumeroEncuestasByMonth);
     apiRoute.get('/loadSummaryPreguntasValidasNoValidas',usuarios.getNumeroPreguntasValidasNoValidasByMonth);
     apiRoute.get('/loadSummaryActivitiesByMonth',usuarios.getNumeroActividadesByMonth);
+    apiRoute.get('/listEncuestas',encuesta.loadListaEncuestas);
+    apiRoute.get('/queryEncuestas',encuesta.queryEncuestas);
+    apiRoute.get('/getListaMyEncuestas',encuesta.loadListaMyEncuestas);
+    apiRoute.get('/loadEncuesta',encuesta.cargarEncuesta);
+    apiRoute.post('/guardarEncuesta',encuesta.guardarEncuesta);
+    apiRoute.get('/getPreguntasValidas',encuesta.getListaPreguntasValidas);
+    apiRoute.get('/loadListaMensajes',notificacion.loadListaMensajes);
+    apiRoute.get('/loadListaAcciones',notificacion.loadListaAcciones);
+    apiRoute.get('/loadFiveAcciones', notificacion.loadListaFiveAcciones);
+    apiRoute.get('/loadFiveMensajes', notificacion.loadListaFiveMensajes);
    app.use('/apiRest',apiRoute);
 
 

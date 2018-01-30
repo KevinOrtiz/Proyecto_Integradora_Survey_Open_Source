@@ -108,6 +108,29 @@ exports.sendComentarioCreado=(receptor,contenido)=>{
 
 }
 
+exports.sendComentarioCreadoEncuesta=(receptor,contenido)=>{
+    const contenidoComentario = `<h4>Comentario Creado</h4>
+    <p>Se ha creado un comentario en una encuesta elaborada por usted,
+    el contenido de la encuesta indica lo siguiente: ${contenido}</p>
+    <p>Saludos Open Source Survey</p>`;
+    let mailOptions = {
+        from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
+        to: receptor,
+        subject: 'Comentario Creado de una Encuesta',
+        text: 'Hola con todos',
+        html: contenidoComentario
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('mensaje enviando');
+        console.log(info);
+    });
+
+}
+
+
 exports.sendCorreoDiscusionCreada =(receptor,nombre,titulo)=>{
     const contenidoDiscusion = `<h4>Discusion Creada</h4>
     Estimado ${nombre} han creado una discusion de una pregunta que usted desarrollo

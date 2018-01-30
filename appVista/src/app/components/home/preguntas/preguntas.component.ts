@@ -55,7 +55,9 @@ export class PreguntasComponent implements OnInit {
   private imgPregunta;
   constructor(private resolver: ComponentFactoryResolver, private respuestas: RespuestasService,
               private categoria: CategoriasEtiquetasService, private dialog: MatDialog, private preguntaServicio: PreguntasService,
-              private snackBar: MatSnackBar, private uploadService: UploadService) { }
+              private snackBar: MatSnackBar, private uploadService: UploadService) {
+                this.uploadService.setfileImage(null);
+              }
 
   ngOnInit() {
     const categoriasLista = new CategoriasPreguntas();
@@ -231,9 +233,6 @@ export class PreguntasComponent implements OnInit {
    * Aqui se se llamara a la funcion que guardara el objeto pregunta en la base de datos
    */
   guardarpregunta() {
-    console.log('este dialogo se ha cerrado');
-    console.log(this.respuestas.getDescripcion());
-    console.log(this.preguntaServicio.getObjectRespuesta());
     this.showLoading = true;
     this.preguntaServicio.enviarPreguntaServidor().subscribe((response) => {
     this.showLoading = false;

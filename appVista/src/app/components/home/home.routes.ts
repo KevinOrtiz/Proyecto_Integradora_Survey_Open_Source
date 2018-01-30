@@ -6,12 +6,20 @@ import { VerComentariosComponent } from './ver-comentarios/ver-comentarios.compo
 import { ListadoDiscusionesComponent } from './listado-discusiones/listado-discusiones.component';
 import { AdminDiscusionesPreguntasComponent } from './admin-discusiones-preguntas/admin-discusiones-preguntas.component';
 import { AdminPreguntasComponent } from './admin-preguntas/admin-preguntas.component';
+import { EncuestasComponent } from './encuestas/encuestas.component';
+import { PortalEncuestasComponent } from './portal-encuestas/portal-encuestas.component';
+import { NotificacionAccionesComponent } from './notificacion-acciones/notificacion-acciones.component';
+import { NotificacionMensajesComponent } from './notificacion-mensajes/notificacion-mensajes.component';
 
 
 export const HOME_ROUTES: Routes = [
     {path: 'tablero', component: TableroComponent},
     {path: 'portalPregunta', component: PortalPreguntasComponent},
     {path: 'agregarPregunta', component: PreguntasComponent},
+    {path: 'crearEncuesta', component: EncuestasComponent},
+    {path: 'notificaciones', component: NotificacionAccionesComponent},
+    {path: 'mensaje', component: NotificacionMensajesComponent},
+    {path: 'portalEncuesta', component: PortalEncuestasComponent},
     {path: 'verComentarios', component: VerComentariosComponent},
     {path: 'listadoDiscusiones', component: ListadoDiscusionesComponent},
     {path: 'misDiscusionesPreguntas', component: AdminDiscusionesPreguntasComponent},

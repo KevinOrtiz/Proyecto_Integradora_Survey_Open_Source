@@ -3,10 +3,12 @@ const Pregunta = require('../models/Preguntas');
 const Usuario = require('../models/Usuarios');
 const correo = require('../correo');
 const discusionPregunta = require('../models/discusionesPregutas');
+const Encuesta = require('../models/Encuestas')
 let asyncloop = require('node-async-loop');
 
 
 exports.guardarComentario = (req, resp, next) => {
+    console.log(req.body.idcategoria)
     var responseComentario = {
         creador: '',
         urlUsuario: '',
@@ -15,10 +17,9 @@ exports.guardarComentario = (req, resp, next) => {
         numeroLike: 0,
         numeroDislike: 0,
         numeroComentarios: 0,
-        idComentario: ''
+        idComentario: '',
+        idUsuario: ''
     };
-    console.log(req.body.comentario);
-    console.log(req.body.idCategoria);
     if (req.body.tipo === 'comentario') {
         Usuario.findOne({
                 '_id': req.body.comentario.creador.ID
@@ -27,6 +28,7 @@ exports.guardarComentario = (req, resp, next) => {
                 req.body.comentario.creador.nombre = usuario.nombre + usuario.apellido;
                 responseComentario.creador = usuario.nombre + usuario.apellido;
                 responseComentario.urlUsuario = usuario.urlImage;
+                responseComentario.idUsuario = usuario._id;
                 var comentario = new Comentario(req.body.comentario);
                 console.log(comentario);
                 responseComentario.idComentario = comentario._id;
@@ -59,13 +61,22 @@ exports.guardarComentario = (req, resp, next) => {
                             });
                         }).catch((error) => {
                             console.log(error);
+                            return resp.json({
+                                'comentarios':null
+                            })
                         });
                     }).catch((error) => {
                         console.log(error);
+                        return resp.json({
+                            'comentarios':null
+                        })
                     });
 
             }).catch((error) => {
                 console.log(error);
+                return resp.json({
+                    'comentarios':null
+                })
             });
 
     } else if (req.body.tipo === 'pregunta') {
@@ -76,9 +87,9 @@ exports.guardarComentario = (req, resp, next) => {
                 req.body.comentario.creador.nombre = usuario.nombre + usuario.apellido;
                 responseComentario.creador = usuario.nombre + usuario.apellido;
                 responseComentario.urlUsuario = usuario.urlImage;
-                console.log(req.body.comentario);
                 var comentario = new Comentario(req.body.comentario);
                 responseComentario.idComentario = comentario._id;
+                responseComentario.idUsuario = usuario._id;
                 comentario.save()
                     .then(() => {
                         Pregunta.findByIdAndUpdate({
@@ -110,16 +121,93 @@ exports.guardarComentario = (req, resp, next) => {
                             })
                         }).catch((error) => {
                             console.log(error);
+                            return resp.json({
+                                'comentarios': null
+                            })
                         });
                     }).catch((error) => {
                         console.log(error);
+                        return resp.json({
+                            'comentarios': null
+                        })
                     });
 
             }).catch((error) => {
                 console.log(error);
+                return resp.json({
+                    'comentarios':null
+                })
             });
 
-    } else if (req.body.tipo === 'discusionPregunta') {
+    } else if (req.body.tipo === 'encuesta'){
+        Usuario.findOne({
+            '_id': req.body.comentario.creador.ID
+        })
+        .then((usuario, error) => {
+            if (error) {
+                console.log('aqui se cayo');
+                console.log(error);
+                return resp.json({
+                    "comentarios":null
+                })
+            }
+            req.body.comentario.creador.nombre = usuario.nombre + usuario.apellido;
+            responseComentario.creador = usuario.nombre + usuario.apellido;
+            responseComentario.urlUsuario = usuario.urlImage;
+            var comentario = new Comentario(req.body.comentario);
+            responseComentario.idComentario = comentario._id;
+            responseComentario.idUsuario = usuario._id;
+            comentario.save()
+                      .then(() => {
+                          Encuesta.findByIdAndUpdate({
+                              '_id': req.body.idCategoria
+                          }, {
+                              $push: {
+                                  'comentarios': comentario
+                              }
+                          }, {
+                              'new':true,
+                              'upsert': true
+                          }).then((encuesta, error) => {
+                              console.log('encuesta');
+                              console.log(encuesta);
+                              if (error){
+                                  console.log(error);
+                                  return resp.json({
+                                      "status":404,
+                                      "comentarios":null
+                                  })
+                              } else {
+                                  Usuario.findOne({
+                                      '_id': encuesta.usuario_ID
+                                  }).then((usuario) => {
+                                      console.log(usuario.correo);
+                                      correo.sendComentarioCreadoEncuesta(usuario.correo, req.body.comentario.contenido);
+
+                                  }).catch((error) => {
+                                      console.log(error);
+                                  })
+                              }
+                              return resp.json({
+                                  "comentarios": responseComentario
+                              })
+                          }).catch((error) => {
+                              console.log('error en un then');
+                              console.log(error);
+                              return resp.json({
+                                  "comentarios":null
+                              })
+                          })
+                      })
+
+        })
+        .catch((error) => {
+            console.log(error);
+            return resp.json({
+                "comentarios": null
+            })
+        })
+    }else if (req.body.tipo === 'discusionPregunta') {
         Usuario.findOne({
                 '_id': req.body.comentario.creador.ID
             })
@@ -129,6 +217,7 @@ exports.guardarComentario = (req, resp, next) => {
                 responseComentario.urlUsuario = usuario.urlImage;
                 var comentario = new Comentario(req.body.comentario);
                 responseComentario.idComentario = comentario._id;
+                responseComentario.idUsuario = usuario._id;
                 comentario.save()
                     .then(() => {
                         discusionPregunta.findByIdAndUpdate({
@@ -389,7 +478,155 @@ exports.loadListaComentario = (req, resp, next) => {
             });
 
 
-    } else if (req.query.tipocategoria === 'discusionPregunta') {
+    }else if (req.query.tipocategoria === 'encuesta'){
+        var comentariosEncuesta = [];
+        Encuesta.findOne({
+            '_id': req.query.idcategoria
+        })
+        .then((encuesta, error) => {
+            if(encuesta.comentarios.length > skip){
+                Encuesta.findOne({
+                    "_id": req.query.idcategoria
+                },{
+                    "comentarios":{
+                        $slice: [skip, 5]
+                    }
+                })
+                .populate('comentarios')
+                .then((encuesta, error) => {
+                    if (error) {
+                        console.log(error);
+                        return resp.json({
+                            "comentarios":null,
+                            "status":404
+                        })
+                    }else {
+                        let contador = 0;
+                        let limiteDocumento = encuesta.comentarios.length;
+                        asyncloop(encuesta.comentarios, (item, next) => {
+                            Usuario.findOne({
+                                "_id": item.creador.ID
+                            })
+                            .then((usuario, error) => {
+                                var comentarios = {
+                                        creador: usuario.nombre + usuario.apellido,
+                                        urlUsuario: usuario.urlImage,
+                                        descripcion: item.contenido,
+                                        fecha_creacion: item.fecha_creacion,
+                                        numeroFavorite: item.favoritos,
+                                        numeroLike: item.likes,
+                                        numeroDislike: item.dislikes,
+                                        numeroComentarios: item.listaSubComentarios.length,
+                                        idComentario: item._id
+                                }
+                                comentariosEncuesta.unshift(comentarios);
+                                next();
+                                contador ++;
+                                if (contador === limiteDocumento) {
+                                    if (req.query.page == 0) {
+                                        return resp.json({
+                                            "comentarios": comentariosEncuesta,
+                                            "isDoneComentarios": true
+                                        })
+                                    }else {
+                                        return resp.json({
+                                            "comentarios": comentariosEncuesta,
+                                            "isDoneComentarios": false
+                                        })
+                                    }
+                                }
+                            }).catch((error) => {
+                                console.log(error);
+                                return resp.json({
+                                    "status":200,
+                                    "comentarios":null
+                                })
+                            })
+                        })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    return resp.json({
+                        "status":500,
+                        "comentarios": null
+                    })
+                })
+            } else {
+                Encuesta.findOne({
+                    "_id": req.query.idcategoria
+                })
+                .populate('comentarios')
+                .then((encuesta, error) => {
+                    if (error) {
+                        console.log(error);
+                        return resp.json({
+                            "status":404,
+                            "comentarios": null
+                        })
+                    }else {
+                        let contador = 0;
+                        let limiteDocumento = encuesta.comentarios.length;
+                        if (limiteDocumento === 0) {
+                            return resp.json({
+                                "comentarios": null
+                            })
+                        } else {
+                            asyncloop(encuesta.comentarios, (item, next) => {
+                                Usuario.findOne({
+                                    "_id": item.creador.ID
+                                })
+                                .then((usuario, error) => {
+                                    var comentario = {
+                                            creador: usuario.nombre + usuario.apellido,
+                                            urlUsuario: usuario.urlImage,
+                                            descripcion: item.contenido,
+                                            fecha_creacion: item.fecha_creacion,
+                                            numeroFavorite: item.favoritos,
+                                            numeroLike: item.likes,
+                                            numeroDislike: item.dislikes,
+                                            numeroComentarios: item.listaSubComentarios.length,
+                                            idComentario: item._id
+                                }
+                                comentariosEncuesta.push(comentario);
+                                next();
+                                contador ++;
+                                if (contador === limiteDocumento) {
+                                    return resp.json({
+                                        "comentarios": comentariosEncuesta,
+                                        "isDoneComentarios": true
+                                    })
+                                }
+
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                    return resp.json({
+                                        "comentarios": null
+                                    })
+                                })
+                            })
+                        }
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                    return resp.json({
+                        "status":500,
+                        "comentarios":null
+                    })
+                })
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            return resp.json({
+                "status":500,
+                "comentarios":null
+            })
+        })
+
+
+    }else if (req.query.tipocategoria === 'discusionPregunta') {
         const comentariosDiscusionPreguntas = [];
         discusionPregunta.findOne({
                 '_id': req.query.idcategoria

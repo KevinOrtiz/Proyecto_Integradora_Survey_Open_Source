@@ -1,13 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 import { Encuesta } from '../models/encuesta';
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 
 @Injectable()
 export class EncuestasService {
   encuestas: Encuesta;
-  idEncuesta: string;
+  idEncuesta = '';
+  titulo =  new BehaviorSubject<string>(null);
+  titulo$ = this.titulo.asObservable();
+  descripcion =  new BehaviorSubject<string>(null);
+  descripcion$ = this.descripcion.asObservable();
+  url=  new BehaviorSubject<string>(null);
+  url$ = this.url.asObservable();
   constructor(private http: HttpClient) {
     this.encuestas = new Encuesta();
   }
@@ -21,10 +30,22 @@ export class EncuestasService {
 
   setTitulo (titulo) {
     this.encuestas.setTitulo(titulo);
+    this.titulo.next(titulo);
   }
 
+  gettitulo$ () {
+    return this.titulo$;
+  }
+  getdescripcion$ () {
+    return this.descripcion$;
+  }
+
+  geturl$ () {
+    return this.url$;
+  }
   setDescripcion (descripcion) {
     this.encuestas.setDescripcion(descripcion);
+    this.descripcion.next(descripcion);
   }
 
   setUsuarioID (id) {
@@ -39,6 +60,7 @@ export class EncuestasService {
   }
   setImagen (url) {
     this.encuestas.setlogoEncuesta(url);
+    this.url.next(url);
   }
 
   setHistorialCambios (texto) {
@@ -65,7 +87,7 @@ export class EncuestasService {
     return true;
   }
   getObjectEncuesta () {
-    this.encuestas.getObjectEncuesta();
+    return this.encuestas.getObjectEncuesta();
   }
   getTitulo () {
    return  this.encuestas.getTitulo();
@@ -92,7 +114,8 @@ export class EncuestasService {
     return this.http.get(url, {headers})
                     .map((res: Response) => {
                       return res['listaPreguntas'];
-                    });
+                    })
+                    .catch((e) => Observable.throw(this.errorHandler(e)));
   }
 
   guardarEncuesta () {
@@ -101,7 +124,8 @@ export class EncuestasService {
     return this.http.post(url, {encuesta: this.encuestas.getObjectEncuesta()}, {headers})
                     .map((res: Response) => {
                       return res['status'];
-                    });
+                    })
+                    .catch((e) => Observable.throw(this.errorHandler(e)));
   }
 
   loadEncuesta () {
@@ -110,7 +134,8 @@ export class EncuestasService {
     return this.http.get(url, {headers})
                     .map((res: Response) => {
                       return res['encuesta'];
-                    });
+                    })
+                    .catch((e) => Observable.throw(this.errorHandler(e)));
   }
 
   loadListaMyEncuestas () {
@@ -119,7 +144,8 @@ export class EncuestasService {
     return this.http.get(url, {headers})
                     .map((res: Response) => {
                       return res['listaMyEncuestas'];
-                    });
+                    })
+                    .catch((e) => Observable.throw(this.errorHandler(e)));
   }
 
   loadEncuestasByCategory (categoria, page) {
@@ -127,8 +153,10 @@ export class EncuestasService {
     const url = 'apiRest/queryEncuestas/?topico=' + categoria + '&page=' + page;
     return this.http.get(url, {headers})
                     .map((res: Response) => {
-                      return res;
-                    });
+                      console.log(res);
+                      return res['listaEncuestas'];
+                    })
+                    .catch((e) => Observable.throw(this.errorHandler(e)));
   }
 
   loadListaEncuestas (page) {
@@ -136,7 +164,12 @@ export class EncuestasService {
     const url = '/apiRest/listEncuestas/?page=' + page;
     return this.http.get(url, {headers})
                     .map((res: Response) => {
-                      return res;
-                    });
+                      console.log(res['listaEncuestas']);
+                      return res['listaEncuestas'];
+                    })
+                    .catch((e) => Observable.throw(this.errorHandler(e)));
+  }
+  errorHandler(error) {
+    console.log(error);
   }
 }

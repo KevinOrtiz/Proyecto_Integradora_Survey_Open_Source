@@ -18,11 +18,7 @@ exports.crear = (req, res, next) => {
         titulo: 'Pregunta-propuesta',
         descripcion: 'Pregunta recientemente creada',
         creador_ID: req.body.pregunta.usuario_ID,
-        etiquetas: [{
-            texto: req.body.pregunta.topicos
-        }, {
-            texto: req.body.pregunta.etiquetas
-        }],
+        etiquetas: ['pregunta-creada'],
         estados: [{
             usuario_ID: req.body.pregunta.usuario_ID,
             texto: 'revision'
@@ -51,6 +47,7 @@ exports.crear = (req, res, next) => {
     let nuevaDiscusion = new discusionesPregunta(discusionPregunta);
     nuevaDiscusion.save((error) => {
         if (error) {
+            console.log(error);
             return res.json({
                 "mensaje": "no se ha generado la discusion automatica",
                 "status": 400
@@ -63,6 +60,7 @@ exports.crear = (req, res, next) => {
                     if (err) {
                         console.log('error en la consulta de usuario');
                     } else {
+                        console.log('entre');
                         correo.sendEmailPreguntaCreada(usuario.correo, req.body.pregunta.topicos);
                     }
                 }).catch((err) => {
@@ -93,7 +91,6 @@ exports.crear = (req, res, next) => {
 
 
 exports.verPregunta = (req, res, next) => {
-    console.log(req.query);
     modelpregunta.findOne({
             _id: req.query.id,
             registroActual: true
@@ -238,8 +235,7 @@ exports.QueryPreguntas = (req, res, next) => {
                             numeroDiscusiones: item.discusiones.length,
                             numeroComentarios: item.comentarios.length
                         }
-                        preguntas.unshift(pregunta);
-                        console.log(preguntas);
+                        preguntas.push(pregunta);
                         next();
                         contador++;
                         if (contador === limiteDocumento) {

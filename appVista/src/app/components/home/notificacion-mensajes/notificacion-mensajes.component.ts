@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NotificacionesService } from '../../../services/notificaciones.service';
 
 @Component({
   selector: 'app-notificacion-mensajes',
@@ -6,8 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./notificacion-mensajes.component.scss']
 })
 export class NotificacionMensajesComponent implements OnInit {
-
-  constructor() { }
+  listaMensajes = [];
+  constructor(private servicioNotificacion: NotificacionesService) {
+    this.servicioNotificacion.loadListaMensajes().subscribe((res) => {
+      console.log(res);
+      this.listaMensajes = res;
+    });
+  }
 
   ngOnInit() {
   }
