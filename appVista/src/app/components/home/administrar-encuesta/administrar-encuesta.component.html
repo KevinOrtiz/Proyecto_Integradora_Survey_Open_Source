@@ -1,0 +1,145 @@
+<div class="inbox" fxLayout="column">
+  <div class="header mat-elevation-z2"></div>
+  <div class="container" fxLayout="row">
+
+    <div class="content-container" fxFlex fxLayout="column">
+
+      <div class="search mat-elevation-z2" fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <mat-icon>search</mat-icon>
+        </div>
+        <input #input [(ngModel)]="textoBusqueda" [formControl]="searchField" fxFlex type="search" placeholder="Busqueda por titulo de la Encuesta">
+      </div>
+
+      <div class="mails-container mat-elevation-z2" fxFlex>
+        <div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
+          <button mat-icon-button [swal]="eliminarTodasLasEncuestasSwal" (confirm)="eliminarTodasMisEncuestas()">
+            <mat-icon>delete</mat-icon> Eliminar todas mis encuestas
+          </button>
+
+          <span fxFlex>
+            <!-- fill space -->
+          </span>
+          <span fxFlex>
+            <!-- fill space -->
+          </span>
+          <span>{{pageActual}} - 5 de {{numberPages}}</span>
+          <div class="chevrons">
+            <button mat-icon-button (click)="previous()">
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            <button mat-icon-button (click)="next()">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="mails">
+          <a class="mail" #mailList fxLayout="row">
+            <div fxHide="true" fxHide.gt-xs="false" class="start-wrapper" fxFlex="180px" fxFlex.gt-sm="270px" fxLayout="row" fxLayoutAlign="start center">
+              <span class="from-name">Titulo</span>
+            </div>
+            <p class="content-wrapper" fxLayout="row" fxLayoutAlign="start center">
+              <span class="subject">Descripcion</span>
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+              <span class="content">Cantidad de Preguntas</span>
+            </p>
+          </a>
+          <a class="mail" #mailList *ngFor="let encuesta of listaMisEncuestas" fxLayout="row">
+            <div fxHide="true" fxHide.gt-xs="false" class="start-wrapper" fxFlex="180px" fxFlex.gt-sm="270px" fxLayout="row" fxLayoutAlign="start center">
+              <span class="from-name">{{ encuesta?.titulo }}</span>
+            </div>
+            <p class="content-wrapper" fxLayout="row" fxLayoutAlign="start center">
+              <span class="subject">{{ encuesta?.descripcion }}</span>
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+
+              <span fxFlex>
+                <!-- fill space -->
+              </span>
+              <span class="content">{{ encuesta?.numeroPreguntas }}</span>
+            </p>
+            <div fxHide="true" fxHide.gt-xs="false" fxFlex="100px" fxFlex.gt-sm="120px" fxLayout="row" fxLayoutAlign="end center">
+              <button fxHide="true" fxHide.gt-sm="false" class="options" [matMenuTriggerFor]="mailOptions" mat-icon-button>
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #mailOptions="matMenu">
+                <button mat-menu-item (click)="verEncuesta(encuesta?.id)">
+                  <mat-icon>markunread_mailbox</mat-icon>Ver Encuesta</button>
+                <button mat-menu-item (click)="verListadoDiscusiones(encuesta?.id)">
+                  <mat-icon>label</mat-icon>Ver Listado de Discusiones</button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="editarEncuesta(encuesta?.id)">
+                  <mat-icon>delete</mat-icon>Editar Encuesta</button>
+                <button mat-menu-item [swal]="eliminarEncuestaSwal" (confirm)="eliminarEncuesta(encuesta?.id, encuesta)">
+                  <mat-icon>delete</mat-icon>Eliminar Encuesta</button>
+                <button mat-menu-item (click)="compartirEncuesta(encuesta?.id)">
+                  <mat-icon>delete</mat-icon>Compartir Encuesta</button>
+                <button mat-menu-item (click)="responderEncuesta(encuesta?.id)">
+                  <mat-icon>delete</mat-icon>Responder Encuesta</button>
+                <button mat-menu-item (click)="verResultados(encuesta?.id)">
+                  <mat-icon>delete</mat-icon>Ver Resultados</button>
+              </mat-menu>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<swal #eliminado title="Encuesta Eliminada" text="Dicha encuesta ha sida eliminada de forma exitosa de la base de datos"
+  type="success" [showConfirmButton]="true" [focusConfirm]="true">
+</swal>
+
+<swal #errorEliminar title="Encuesta no eliminada" text="Ha existido un error en eliminar determinada encuesta de la base de datos"
+  type="error" [showConfirmButton]="true" [focusConfirm]="true">
+</swal>
+
+<swal #eliminarEncuestaSwal title="Desea eliminar la encuesta seleccionada?" text="Al eliminar su encuesta, se conservaran las discusiones, preguntas y comentarios que otros usuarios
+              han realizado en su contenido, pero se les notificara acerca de la accion que usted llevo
+              a cabo" type="question" [showConfirmButton]="true" [showCancelButton]="true" [focusCancel]="true">
+
+</swal>
+
+<swal #eliminarTodasLasEncuestasSwal title="Desea eliminar todas las encuestas que usted ha desarrollado" text="Usted toma conciencia de la accion que esta realizando, ya que al eliminar
+              todas estas encuestas, ya no se podran recuperar bajo ningun motivo sin embargo se conservaran
+              las discusiones, comentarios y preguntas que han alimentado al contenido que usted ha desarrollado
+              en la plataforma" type="question" [showConfirmButton]="true" [showCancelButton]="true" [focusCancel]="true">
+
+</swal>

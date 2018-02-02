@@ -32,7 +32,7 @@ exports.setAcciones = (socket, mensaje, obj, io) => {
                         upsert: true,
                         new: true
                     })
-                    .populate('usuario')
+                    .populate('usuario_emisor')
                     .then((notificacion, error) => {
                         Usuario.findByIdAndUpdate({
                             "_id": mensaje.receptor
@@ -40,6 +40,9 @@ exports.setAcciones = (socket, mensaje, obj, io) => {
                             $push: {
                                 'notificaciones': notificacion
                             }
+                        },{
+                            upsert: true,
+                            new: true
                         }).then((usuario, error) => {
                             if (error) {
                                 console.log(error);

@@ -138,12 +138,13 @@ export class EncuestasService {
                     .catch((e) => Observable.throw(this.errorHandler(e)));
   }
 
-  loadListaMyEncuestas () {
+  loadListaMyEncuestas (page, etiqueta) {
     const headers = this.getHeaders();
-    const url = 'apiRest/getListaMyEncuestas/?usuario_ID=' + sessionStorage.getItem('id');
+    const url = 'apiRest/getListaMyEncuestas/?id=' + sessionStorage.getItem('id') +
+                '&page=' + page + '&topico=' + etiqueta;
     return this.http.get(url, {headers})
                     .map((res: Response) => {
-                      return res['listaMyEncuestas'];
+                      return res;
                     })
                     .catch((e) => Observable.throw(this.errorHandler(e)));
   }
@@ -168,6 +169,36 @@ export class EncuestasService {
                       return res['listaEncuestas'];
                     })
                     .catch((e) => Observable.throw(this.errorHandler(e)));
+  }
+
+  deleteAllMyEncuestas () {
+    const headers = this.getHeaders();
+    const url = '/apiRest/deleteAllMyEncuestas/?usuario_ID=' + sessionStorage.getItem('id');
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      return res['eliminado'];
+                    })
+                    .catch((error) => Observable.throw(this.errorHandler(error)));
+  }
+
+  deleteMyEncuesta (id) {
+    const headers = this.getHeaders();
+    const url = '/apiRest/deleteEncuesta/?id=' + id;
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      return res;
+                    })
+                    .catch((error) => Observable.throw(this.errorHandler(error)));
+  }
+
+  loadListaMisDiscusiones(): Observable<Object[]> {
+    const headers = this.getHeaders();
+    const url = '/apiRest/loadListadoDiscusionesFromEncuesta/?id=' + this.getIDEncuesta();
+    return this.http.get<Object[]>(url, {headers})
+                    .map((res) => {
+                        return res['listaDiscusiones'];
+                    })
+                    .catch((error) => Observable.throw(this.errorHandler(error)));
   }
   errorHandler(error) {
     console.log(error);

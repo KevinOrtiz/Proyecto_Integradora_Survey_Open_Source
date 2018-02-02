@@ -14,8 +14,8 @@ export class HeaderComponent implements OnInit {
   apellido: string;
   imagen: string;
   isFullscreen = false;
-  listaMensajes = [];
-  listaAcciones = [];
+  listaMensajes: any = [];
+  listaAcciones: any = [];
   notificacionMensajesUsuarios = 0;
   notificacionAccionesUsuarios = 0;
 
@@ -37,13 +37,21 @@ export class HeaderComponent implements OnInit {
     this.imagen = sessionStorage.getItem('imagen');
     this.servicioNotificacion.recibirAccionesUsuarios().subscribe((res) => {
       if (res['tipo'] === 'comentario') {
+        if (this.listaMensajes === null) {
+          this.listaMensajes = [res];
+        }else {
           this.listaMensajes.push(res);
+        }
         this.notificacionMensajesUsuarios = this.listaMensajes.length;
         if (this.notificacionMensajesUsuarios > 0) {
             this.audioMensajeRef.nativeElement.play();
         }
       } else {
-        this.listaAcciones.push(res);
+        if (this.listaAcciones === null) {
+          this.listaAcciones = [res];
+        } else {
+          this.listaAcciones.push(res);
+        }
         this.notificacionAccionesUsuarios = this.listaAcciones.length;
         if (this.notificacionAccionesUsuarios > 0) {
             this.audioAccionRef.nativeElement.play();

@@ -102,6 +102,9 @@ module.exports = (app)=> {
     apiRoute.get('/loadListaAcciones',notificacion.loadListaAcciones);
     apiRoute.get('/loadFiveAcciones', notificacion.loadListaFiveAcciones);
     apiRoute.get('/loadFiveMensajes', notificacion.loadListaFiveMensajes);
+    apiRoute.get('/deleteAllMyEncuestas',encuesta.deleteAllMyEncuestas);
+    apiRoute.get('/deleteEncuesta', encuesta.deleteEncuestaByID);
+    apiRoute.get('/loadListadoDiscusionesFromEncuesta',encuesta.loadListadoDiscusionesByEncuesta);
    app.use('/apiRest',apiRoute);
 
 

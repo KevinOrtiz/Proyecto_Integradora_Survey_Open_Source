@@ -49,9 +49,8 @@ io.on('connection', (socket) => {
       if (err) {
         console.log('existio un error con la conexion');
         console.log(err);
-        console.log(reply);
         } else {
-           client.set(socket.handshake.query.id,socket.id,);
+           client.set(socket.handshake.query.id,socket.id);
     }
 
 })
@@ -67,7 +66,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('recibir-accion', (accion) => {
-        console.log(accion);
         client.get(accion.receptor, (err, obj) => {
           if (err) {
              console.log('problemas con el envio de informacion');

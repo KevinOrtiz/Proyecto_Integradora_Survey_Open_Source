@@ -1,40 +1,22 @@
-<mat-card fxFlex="100%">
-      <mat-horizontal-stepper>
-          <mat-step>
-              <ng-template matStepLabel>
-                  <a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">insert_drive_file</i></a>
-              </ng-template>
-              <div>
-                <app-resumen></app-resumen>
-              </div>
-              <div>
-                  <button class="btn-floating btn-large waves-effect waves-light red" matStepperNext><i class="material-icons">navigate_next</i></button>
-              </div>
-          </mat-step>
-          <mat-step>
-            <form>
-              <ng-template matStepLabel>
-                  <a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">edit</i></a>
-              </ng-template>
-              <div>
-                <app-diseno></app-diseno>
-              </div>
-              <div>
-                <button class="btn-floating btn-large waves-effect waves-light red" matStepperPrevious><i class="material-icons">navigate_before</i></button>
-                <button class="btn-floating btn-large waves-effect waves-light red" matStepperNext><i class="material-icons">navigate_next</i></button>
-              </div>
-            </form>
-          </mat-step>
-          <mat-step>
-            <ng-template matStepLabel>
-                <a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">share</i></a>
-            </ng-template>
-            <div>
-              <app-compartir></app-compartir>
-            </div>
-            <div>
-                <button class="btn-floating btn-large waves-effect waves-light red" matStepperPrevious><i class="material-icons">navigate_before</i></button>
-            </div>
-          </mat-step>
-        </mat-horizontal-stepper>
-</mat-card>
+<div class="inbox" fxLayout="column">
+  <div class="header mat-elevation-z2"></div>
+    <div  fxLayoutAlign="center center" style="position:relative; bottom: -34px;">
+        <div class="fixed-action-btn horizontal">
+            <a class="btn-floating btn-large red">
+              <i class="large material-icons">mode_edit</i>
+            </a>
+            <ul>
+              <li><a matTooltip="Ver mi Encuesta" class="btn-floating red" (click)="abrirModalVistaPrevia()"><i class="material-icons">insert_chart</i></a></li>
+              <li><a matTooltip="Descargar Encuesta" class="btn-floating yellow darken-1" (click)="descargarEncuesta()"><i class="material-icons">format_quote</i></a></li>
+            </ul>
+          </div>
+    </div>
+    <mat-card fxFlex="100%">
+      <mat-card-header>
+        <mat-card-title>DISEÑO DE LA ENCUESTA</mat-card-title>
+      </mat-card-header>
+      <mat-card-content fxLayout="column">
+          <app-diseno></app-diseno>
+      </mat-card-content>
+    </mat-card>
+</div>

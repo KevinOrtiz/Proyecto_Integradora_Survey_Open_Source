@@ -26,9 +26,7 @@ export class DisenoComponent implements OnInit {
   seleccionado = true;
   fotoEliminada = false;
   imagen = 'assets/img/no_available.jpg';
-  etiquetas: Object [] = [{
-    texto: '#ops'
-  }];
+  etiquetas: Object [] = [];
   listaPreguntas: Object [] = [];
   listaPreguntasSeleccionadas: Object [] = [];
   constructor(private servicioEncuesta: EncuestasService,
@@ -103,7 +101,7 @@ export class DisenoComponent implements OnInit {
     console.log('entre');
     console.log($event.dragData);
     const newPregunta = $event.dragData;
-    this.listaPreguntasSeleccionadas.push(newPregunta);
+    this.listaPreguntasSeleccionadas.unshift(newPregunta);
     this.servicioEncuesta.addPregunta(newPregunta);
     const indexOldPregunta = this.listaPreguntas.indexOf(newPregunta);
     this.listaPreguntas.splice(indexOldPregunta, 1);
@@ -111,6 +109,16 @@ export class DisenoComponent implements OnInit {
       return a['descripcion'].localeCompare(b['descripcion']);
     });
 
+  }
+
+  agregarPregunta(pregunta) {
+    this.listaPreguntasSeleccionadas.unshift(pregunta);
+    this.servicioEncuesta.addPregunta(pregunta);
+    const indexOldPregunta = this.listaPreguntas.indexOf(pregunta);
+    this.listaPreguntas.splice(indexOldPregunta, 1);
+    this.listaPreguntasSeleccionadas.sort((a: Object, b: Object) => {
+      return a['descripcion'].localeCompare(b['descripcion']);
+    });
   }
 
   obteniendoPregunta($event: any) {

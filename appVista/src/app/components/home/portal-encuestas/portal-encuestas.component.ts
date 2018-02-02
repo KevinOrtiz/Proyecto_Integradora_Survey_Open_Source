@@ -45,7 +45,6 @@ export class PortalEncuestasComponent implements OnInit {
         })
         .switchMap(encuestas => this.servicioEncuesta.loadEncuestasByCategory(encuestas, 1))
         .subscribe((res) => {
-          console.log(res);
           this.encuestas = res;
           this.finished = true;
         });

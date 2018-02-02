@@ -78,7 +78,7 @@ export class Encuesta {
     }
 
     public addPreguntaLista (pregunta: Object) {
-        this.preguntas.push(pregunta);
+        this.preguntas.unshift(pregunta);
     }
 
     public removePreguntaLista (pregunta: any) {

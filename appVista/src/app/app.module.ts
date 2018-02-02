@@ -99,6 +99,11 @@ import { PortalEncuestasComponent } from './components/home/portal-encuestas/por
 import { NotificacionesService } from './services/notificaciones.service';
 import { MzModalService } from 'ng2-materialize';
 import { EncuestasService } from './services/encuestas.service';
+import { AdministrarEncuestaComponent } from './components/home/administrar-encuesta/administrar-encuesta.component';
+// tslint:disable-next-line:max-line-length
+import { AdministrarDiscusionesEncuestaComponent } from './components/home/administrar-discusiones-encuesta/administrar-discusiones-encuesta.component';
+import { ListadoDiscusionesEncuestaComponent } from './components/home/listado-discusiones-encuesta/listado-discusiones-encuesta.component';
+import { EditarEncuestaComponent } from './components/home/editar-encuesta/editar-encuesta.component';
 
 
 export const firebaseConfig = {
@@ -154,7 +159,11 @@ export const firebaseConfig = {
     DisenoComponent,
     CompartirComponent,
     VerEncuestaComponent,
-    PortalEncuestasComponent
+    PortalEncuestasComponent,
+    AdministrarEncuestaComponent,
+    AdministrarDiscusionesEncuestaComponent,
+    ListadoDiscusionesEncuestaComponent,
+    EditarEncuestaComponent
   ],
   imports: [
     BrowserModule,
@@ -211,7 +220,8 @@ export const firebaseConfig = {
      SnackBarMensajesComponent, SnackBarEliminarPreguntaComponent,
     SnackBarMensajesActualizadosComponent, UploadFormComponent,  ListaSubComentariosComponent, VerPreguntaComponent,
     CrearDiscusionComponent, VistaPreviaDiscusionComponent, EditarDiscusionComponent, ListadoDiscusionesPreguntaComponent,
-    ValidarPreguntasComponent, MensajeAccionesUsuarioComponent, VerEncuestaComponent
+    ValidarPreguntasComponent, MensajeAccionesUsuarioComponent, VerEncuestaComponent, ResumenComponent, CompartirComponent,
+    ListadoDiscusionesEncuestaComponent
   ],
   providers: [
     LoginService,
@@ -226,7 +236,7 @@ export const firebaseConfig = {
     AccionesUsuarioService,
     StadisticalActivitiesService,
     NotificacionesService,
-    EncuestasService
+    EncuestasService,
   ],
   bootstrap: [AppComponent]
 })

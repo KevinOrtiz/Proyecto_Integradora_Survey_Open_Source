@@ -9,33 +9,23 @@
     height: 500px;
 }
 
-img{
- width: 100px;
-}
-
-
-
 
 .logo{
     position: relative;
-    left: 30px;
+    left: 180px;
+    bottom: -20px;
 }
 
 .eliminarLogo{
     position: relative;
-    left: 70px;
-    top: -40px;
+    left: 200px;
+    top: 20px;
 }
 
 .tituloEncuesta {
     position: relative;
     left: 60px;
     width: 430px;
-}
-
-#titulo-input {
-    width: 340px;
-    
 }
 
 
@@ -92,6 +82,92 @@ mat-form-field{
     width: 450px;
 }
 
-#tag_encuesta{
-    width: 380px;
+input.mat-chip-input{
+    /* width: 150px; */
+    width: 1px !important;
+    margin: 3px !important;
+    flex: 1px !important;
+
 }
+mat-tab-group{
+    position: relative;
+    left: 0px;
+}
+
+img{
+    position: relative;
+    left: 290px;
+    bottom: -10px;
+    width: 100px;
+    border-radius: 50%;
+}
+
+.imagen{
+    height: 150px;
+}
+
+#titulo-input{
+    font-size: 30px;
+    position: relative;
+    left: 20px;
+    width: 599px;
+}
+
+#chip{
+    background-color: #02be6a;
+    color: #fafafa;
+}
+
+:host {
+    display: block;
+    background: #fff url('/assets/img/backgrounds/2.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100%;
+    min-width: 100%;
+  }
+  
+  h1 {
+    color: white;
+    text-shadow: 0 0 10px black;
+  }
+  
+  .container {
+    width: 90%;
+    padding: 100px 0 0;
+    margin: 0 auto;
+  }
+  
+  .list-container {
+    width: 100%;
+    margin: 24px;
+  
+    mat-list-item {
+      background: white;
+      position: relative;
+      bottom: -45px;
+    }
+  
+    .list {
+      margin: 24px;
+    }
+  
+    mat-list {
+      padding-top: 0;
+      max-width: 100%;
+      overflow-y: scroll;
+      height: 180px;
+    }
+  }
+  
+  mat-icon.left-right-compare {
+    text-shadow: 0px 0px 20px #444;
+    font-size: 60px;
+    width: 60px;
+    height: 60px;
+    color: white;
+  }
+  
+  .small-list-item {
+    padding-left: 6px;
+    padding-right: 16px;
+  }

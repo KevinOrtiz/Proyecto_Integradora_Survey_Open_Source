@@ -1,0 +1,22 @@
+<div class="container" *ngFor="let item of listaDiscusiones$ | async" >
+  <mat-card fxFlex="80%">
+    <mat-card-header>
+      <img mat-card-avatar [src]="item.urlImage">
+      <mat-card-title>{{item.nombre}} {{item.apellido}}</mat-card-title>
+      <mat-card-subtitle>Titulo: {{item.titulo}}</mat-card-subtitle>
+      <mat-card-subtitle>Creado: {{item.fecha_creacion | date: 'fullDate'}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div [innerHtml]="item.descripcion | saniarHtml"></div>
+      <br>
+      <mat-chip-list>
+        <mat-chip color="primary" selected="true" *ngFor="let itemEtiqueta of item.etiquetas">{{itemEtiqueta.texto}}</mat-chip>
+      </mat-chip-list>
+      <br>
+      <p>Estado : {{item.estado}}</p>
+      <br>
+      <p>Comentarios: {{item.numeroComentarios}}</p>
+    </mat-card-content>
+  </mat-card>
+
+</div>

@@ -18,6 +18,7 @@ export class CompartirComponent implements OnInit {
 
   descargarEncuestaVersionCSV() {
     console.log('todavia no implementado');
+    console.log(this.servicioEncuesta.getObjectEncuesta());
     const options = {
       fieldSeparator: ',',
       quoteStrings: '"',
@@ -27,7 +28,8 @@ export class CompartirComponent implements OnInit {
       useBom: true
     };
 
-    return new Angular5Csv(this.servicioEncuesta.getObjectEncuesta(), '' + sessionStorage.getItem('nombre') + '_encuesta', options);
+    // tslint:disable-next-line:max-line-length
+    return new Angular5Csv(JSON.stringify(this.servicioEncuesta.getObjectEncuesta()), '' + sessionStorage.getItem('nombre') + '_encuesta', options);
   }
 
   descargarEncuestaVersionJSON() {

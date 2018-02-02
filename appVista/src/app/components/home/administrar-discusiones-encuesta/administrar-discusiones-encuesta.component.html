@@ -1,0 +1,73 @@
+<div class="inbox" fxLayout="column">
+  <div class="header mat-elevation-z2"></div>
+  <div class="container" fxLayout="row">
+
+    <div class="content-container" fxFlex fxLayout="column">
+
+      <div class="search mat-elevation-z2" fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <mat-icon>search</mat-icon>
+        </div>
+        <input fxFlex type="search" placeholder="Search...">
+      </div>
+
+      <div class="mails-container mat-elevation-z2" fxFlex>
+        <div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
+          <button mat-icon-button>
+            <mat-icon>delete</mat-icon> Eliminar todas mis discusiones
+          </button>
+
+          <span fxFlex>
+
+          </span>
+          <span fxFlex>
+
+          </span>
+          <span>1 - 25 of 100</span>
+          <div class="chevrons">
+            <button mat-icon-button>
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            <button mat-icon-button>
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="mails">
+          <a class="mail" #mailList *ngFor="let mail of shownMails" fxLayout="row" [class.read]="mail.read">
+            <div fxHide="true" fxHide.gt-xs="false" class="start-wrapper" fxFlex="180px" fxFlex.gt-sm="270px" fxLayout="row" fxLayoutAlign="start center">
+              <img fxHide="true" fxHide.gt-sm="false" class="from-avatar" src="//placehold.it/40x40">
+              <span class="from-name">{{ mail.from.name }}</span>
+            </div>
+            <p class="content-wrapper" fxLayout="row" fxLayoutAlign="start center">
+              <span class="labels">
+                <span class="label" *ngFor="let label of mail.labels" [style.background]="label.color">{{ label.name }}</span>
+              </span>
+              <span class="subject">{{ mail.subject }}</span>
+              <span class="middot">&middot;</span>
+              <span class="content">{{ mail.content }}</span>
+            </p>
+            <div fxHide="true" fxHide.gt-xs="false" fxFlex="100px" fxFlex.gt-sm="200px" class="end-wrapper" fxLayout="row" fxLayoutAlign="end center">
+              <button fxHide="true" fxHide.gt-sm="false" class="options" [matMenuTriggerFor]="mailOptions" mat-icon-button>
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #mailOptions="matMenu">
+                <button mat-menu-item>
+                  <mat-icon>markunread_mailbox</mat-icon>Ver Encuesta</button>
+                <button mat-menu-item>
+                  <mat-icon>label</mat-icon>Ver discusion</button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item>
+                  <mat-icon>delete</mat-icon>Ver Comentarios</button>
+                <button mat-menu-item>
+                  <mat-icon>delete</mat-icon>Eliminar Discusion</button>
+              </mat-menu>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -10,6 +10,8 @@ import { EncuestasComponent } from './encuestas/encuestas.component';
 import { PortalEncuestasComponent } from './portal-encuestas/portal-encuestas.component';
 import { NotificacionAccionesComponent } from './notificacion-acciones/notificacion-acciones.component';
 import { NotificacionMensajesComponent } from './notificacion-mensajes/notificacion-mensajes.component';
+import { AdministrarEncuestaComponent } from './administrar-encuesta/administrar-encuesta.component';
+import { AdministrarDiscusionesEncuestaComponent } from './administrar-discusiones-encuesta/administrar-discusiones-encuesta.component';
 
 
 export const HOME_ROUTES: Routes = [
@@ -24,5 +26,7 @@ export const HOME_ROUTES: Routes = [
     {path: 'listadoDiscusiones', component: ListadoDiscusionesComponent},
     {path: 'misDiscusionesPreguntas', component: AdminDiscusionesPreguntasComponent},
     {path: 'misPreguntas', component: AdminPreguntasComponent},
+    {path: 'misEncuestas', component: AdministrarEncuestaComponent},
+    {path: 'misDiscusionesEncuestas', component: AdministrarDiscusionesEncuestaComponent},
     {path: '**', pathMatch: 'full', redirectTo: 'tablero'}
 ];

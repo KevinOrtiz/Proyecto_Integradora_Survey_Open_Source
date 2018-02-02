@@ -61,7 +61,7 @@ export class AdminPreguntasComponent implements OnInit, AfterViewInit {
   verDiscusion (row) {
     this.servicioPregunta.setIdPregunta(row['_id']);
     const modalListaDiscusiones = this.dialog.open(ListadoDiscusionesPreguntaComponent, {
-      width: '900'
+      width: '900px'
     });
     modalListaDiscusiones.afterClosed().subscribe(result => {
       console.log('ventana cerrada');
@@ -82,7 +82,7 @@ export class AdminPreguntasComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  editarDiscusion( row) {
+  editarPregunta(row) {
     console.log(row);
   }
 
