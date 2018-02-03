@@ -105,6 +105,7 @@ module.exports = (app)=> {
     apiRoute.get('/deleteAllMyEncuestas',encuesta.deleteAllMyEncuestas);
     apiRoute.get('/deleteEncuesta', encuesta.deleteEncuestaByID);
     apiRoute.get('/loadListadoDiscusionesFromEncuesta',encuesta.loadListadoDiscusionesByEncuesta);
+    apiRoute.post('/updateEncuesta',encuesta.updateMyEncuesta)
    app.use('/apiRest',apiRoute);
 
 

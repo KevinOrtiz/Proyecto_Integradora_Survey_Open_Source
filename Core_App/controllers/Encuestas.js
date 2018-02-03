@@ -27,7 +27,7 @@ exports.getListaPreguntasValidas = (req, resp, next) => {
                 let limiteDocumento = result.docs.length;
                 asyncloop(result.docs, (item, next) => {
                     var preguntasValidas = {
-                        id: item._id,
+                        _id: item._id,
                         url: item.listaImagen[0].url,
                         topicos: item.topicos.texto,
                         fecha_creacion: item.fecha_creacion,
@@ -65,7 +65,7 @@ exports.guardarEncuesta = (req, res, next) => {
     var contador = 0;
     let limiteDocumento = req.body.encuesta.preguntas.length;
     asyncloop(req.body.encuesta.preguntas, (item, next) => {
-        preguntas.push(item.id);
+        preguntas.push(item._id);
         next();
         contador++;
         if (contador === limiteDocumento) {
@@ -155,6 +155,7 @@ exports.cargarEncuesta = (req, res, next) => {
 }
 
 exports.loadListaMyEncuestas = (req, res, next) => {
+    console.log('entre aqui');
     var listaMyEncuestas = []
     encuesta.paginate({
         "etiqueta.texto": new RegExp(req.query.topico, 'i'),
@@ -187,9 +188,10 @@ exports.loadListaMyEncuestas = (req, res, next) => {
                             labels: item.etiqueta
                         }
                         listaMyEncuestas.push(encuesta)
-                        contador++;
                         next();
+                        contador++;
                         if (contador === limiteDocumento) {
+                            console.log(listaMyEncuestas);
                             return res.json({
                                 "status": 200,
                                 "listaMyEncuestas": listaMyEncuestas,
@@ -212,8 +214,10 @@ exports.loadListaMyEncuestas = (req, res, next) => {
         }).catch((error) => {
             console.log(error);
             return res.json({
-                "status": 500,
-                "listaMyEncuestas": null
+                "status":500,
+                "listaMyEncuestas": null,
+                "paginas": 0
+
             })
         })
 }

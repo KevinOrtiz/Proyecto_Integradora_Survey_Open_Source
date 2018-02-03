@@ -100,16 +100,19 @@ export class AdministrarEncuestaComponent implements OnInit {
   }
 
   editarEncuesta(id) {
-    console.log(id);
+    this.servicioEncuesta.setIDEncuesta(id);
+    this.router.navigate(['/home', 'editarEncuesta' ]);
   }
 
   eliminarEncuesta (id, encuesta) {
+    console.log(id);
     this.servicioEncuesta.deleteMyEncuesta(id).subscribe((response) => {
       if (response['status'] === 200 && response['eliminado']) {
         this.eliminado.show();
         const index = this.listaMisEncuestas.indexOf(encuesta);
-        if (index > 0) {
-          this.listaMisEncuestas.slice(index, 1);
+        console.log(index);
+        if (index !== -1) {
+          this.listaMisEncuestas.splice(index, 1);
         }
       } else {
         this.errorEliminar.show();

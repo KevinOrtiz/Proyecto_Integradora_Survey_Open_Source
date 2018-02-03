@@ -70,6 +70,15 @@ export class EncuestasService {
   getHistorialCambios () {
      return this.getHistorialCambios();
   }
+
+  setEtiqueta (etiquetas) {
+    this.encuestas.setEtiqueta(etiquetas);
+  }
+
+  setPreguntas (preguntas) {
+    this.encuestas.setPregunta(preguntas);
+  }
+
   addTagEncuesta (etiqueta) {
     this.encuestas.addEtiqueta(etiqueta);
     return true;
@@ -199,6 +208,16 @@ export class EncuestasService {
                         return res['listaDiscusiones'];
                     })
                     .catch((error) => Observable.throw(this.errorHandler(error)));
+  }
+
+  updateMyEncuesta () {
+    const headers = this.getHeaders();
+    const url = '/apiRest/updateEncuesta';
+    return this.http.post(url, {_id: this.getIDEncuesta(), encuesta: this.getObjectEncuesta()}, {headers})
+               .map((res: Response) => {
+                  return res['status'];
+               })
+               .catch((error) => Observable.throw(this.errorHandler(error)));
   }
   errorHandler(error) {
     console.log(error);

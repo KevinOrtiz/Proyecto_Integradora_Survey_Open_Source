@@ -1,3 +1,243 @@
-<p>
-  editar-encuesta works!
-</p>
+<div class="inbox" fxLayout="column">
+  <div class="header mat-elevation-z2"></div>
+  <div fxLayoutAlign="center center" style="position:relative; bottom: -34px;">
+    <div class="fixed-action-btn horizontal">
+      <a class="btn-floating btn-large red">
+        <i class="large material-icons">mode_edit</i>
+      </a>
+      <ul>
+        <li>
+          <a matTooltip="Ver mi Encuesta" class="btn-floating red" (click)="abrirModalVistaPrevia()">
+            <i class="material-icons">insert_chart</i>
+          </a>
+        </li>
+        <li>
+          <a matTooltip="Descargar Encuesta" class="btn-floating yellow darken-1" (click)="descargarEncuesta()">
+            <i class="material-icons">format_quote</i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <mat-card fxFlex="100%">
+    <mat-card-header>
+      <mat-card-title>EDITAR ENCUESTA</mat-card-title>
+    </mat-card-header>
+    <mat-card-content fxLayout="column">
+
+      <mat-tab-group>
+        <mat-tab label="Informacion de la encuesta">
+          <form [formGroup]="formularioEncuesta" (ngSubmit)="actualizarEncuesta(formularioEncuesta.value,formularioEncuesta.valid)" (keydown.enter)="$event.preventDefault()">
+            <div class="col s2 m2 imagen">
+              <img [src]="imagen" class="circle">
+              <button type="button" class="btn-floating btn-small waves-effect waves-light logo" (click)="addPhoto()">
+                <i class="material-icons">
+                  photo_camera
+                </i>
+              </button>
+              <button class="btn-floating btn-small waves-effect waves-light eliminarLogo" (click)="deletePhoto()" *ngIf="fotoEliminada">
+                <i class="material-icons">
+                  delete
+                </i>
+              </button>
+            </div>
+            <div class="col s12 m12">
+              <div fxLayout="column" FxLayout.gt-md="row">
+                <input matInput type="text" formControlName="titulo" placeholder="Ingrese un titulo de su encuesta" (keyup.enter)="addTitulo($event)"
+                  id="titulo-input" [ngModel]="titulo">
+
+              </div>
+            </div>
+            <div class="col s12 m12">
+              <div fxLayout="column" FxLayout.gt-md="row">
+
+                <mat-chip-list #EtiquetasEncuestas>
+                  <mat-chip id="chip" *ngFor="let etiqueta of etiquetas" [selectable]="seleccionado" [removable]="removido" (remove)="removeEtiqueta(etiqueta)">
+                    {{etiqueta.texto}}
+                    <mat-icon matChipRemove *ngIf="removido">cancel</mat-icon>
+                  </mat-chip>
+
+                  <input matInput placeholder="Ingrese palabras claves a su encuesta" [matChipInputFor]="EtiquetasEncuestas" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="addEtiqueta($event)" formControlName="etiqueta" id="tag_encuesta" [matChipInputAddOnBlur]="addOnBlur" />
+                </mat-chip-list>
+              </div>
+            </div>
+            <br>
+            <br>
+            <div class="col s12 m12">
+              <div fxLayout="column" FxLayout.gt-md="row">
+                <input matInput placeholder="Ingrese una breve descripcion  de una encuesta (Opcional)" formControlName="descripcion" (keyup.enter)="addDescripcion($event)"
+                 [ngModel]="descripcion">
+              </div>
+            </div>
+
+            <button type="submit" mat-raised-button color="warn">Actualizar Encuesta</button>
+
+          </form>
+        </mat-tab>
+        <mat-tab label="Preguntas asociadas a la encuesta">
+          <div class="list-container" fxLayout="column" fxLayoutAlign="left">
+            <div class="mat-elevation-z4">
+              <mat-toolbar>Lista Preguntas Escogidas</mat-toolbar>
+
+              <mat-list dnd-droppable (onDropSuccess)="addPregunta($event)" [dropZones]="['zona-pregunta']">
+                <br>
+                <mat-list-item *ngFor="let preguntaSeleccionada of listaPreguntasSeleccionadas; let i =index" fxLayout="row">
+                  <br>
+                  <h3 matLine fxLayout="row">{{i+1}}.-{{preguntaSeleccionada?.descripcion}}</h3>
+                  <p matLine fxLayout="row">
+                    <span class="title">{{preguntaSeleccionada?.topicos.texto}}</span>
+                    <span class="extra">--{{preguntaSeleccionada?.fecha_creacion | date:"MM/dd/yy" }}</span>
+                  </p>
+                  <div matLine fxLayout="row">
+                    <br>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'casillas'">
+                      <div *ngFor="let respuesta of preguntaSeleccionada?.respuestas; let i = index">
+                        <mat-checkbox>{{i+1}}.-{{respuesta.texto}}</mat-checkbox>
+                        <br>
+                      </div>
+                    </div>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'radios'">
+                      <div *ngFor="let respuesta of preguntaSeleccionada?.respuestas; let i = index">
+                        <mat-radio-button value="i">{{i+1}}.-{{respuesta.texto}}</mat-radio-button>
+                        <br>
+                      </div>
+                    </div>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'lista'">
+                      <mat-select placeholder="respuestas">
+                        <mat-option *ngFor="let respuesta of preguntaSeleccionada?.respuestas" [value]="respuesta.texto">
+                          {{ respuesta.texto }}
+                        </mat-option>
+                      </mat-select>
+                    </div>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'puntaje'">
+                      <div class="container">
+                        <div class="rating-wrapper centrar" *ngFor="let item of preguntaSeleccionada?.respuestas">
+                          <input class="rating-input" id="r{{ item }}" type="radio" name="custom" checked>
+                          <label class="rating-star estilo" for="r{{item}}">
+                            <i mz-icon-mdi [icon]="'star'">
+                            </i>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'abierta'">
+                      <textarea matInput placeholder="Respuesta Abierta"></textarea>
+                    </div>
+                    <div *ngIf="preguntaSeleccionada?.respuestas[0].tipoRespuesta == 'si/no'">
+                      <mat-slide-toggle>Si/No</mat-slide-toggle>
+                      <br>
+                    </div>
+                  </div>
+                  <p matLine fxLayout="row">
+                    <a (click)="eliminarPregunta(preguntaSeleccionada)">Descartar Pregunta</a>
+                  </p>
+                </mat-list-item>
+                <br>
+              </mat-list>
+            </div>
+          </div>
+          <mat-icon class="left-right-compare">compare_arrows</mat-icon>
+
+          <div class="list-container" fxLayout="column" fxLayoutAlign="right">
+            <div class="mat-elevation-z4">
+              <mat-toolbar>Lista Preguntas Aprobadas por la comunidad</mat-toolbar>
+              <div *ngIf="cargandoPregunta">
+                <mat-spinner></mat-spinner>
+              </div>
+              <mat-list>
+                <br>
+                <br>
+                <br>
+                <br>
+                <mat-list-item *ngFor="let pregunta of listaPreguntas; let i=index" dnd-draggable [dragEnabled]="true" [dragData]="pregunta"
+                  (OnDragSuccess)="obteniendoPregunta($event)" [dropZones]="['zona-pregunta']">
+                  <br>
+                  <h3 matLine fxLayout="row">{{i+1}}.-{{pregunta?.descripcion}}</h3>
+                  <p matLine fxLayout="row">
+                    <span class="title">Categoria: {{pregunta?.topicos}}</span>
+                    <span class="extra">--{{pregunta?.fecha_creacion | date:"MM/dd/yy" }}</span>
+                  </p>
+                  <br>
+                  <div matLine fxLayout="row">
+                    <br>
+                    <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'casillas'">
+                      <div *ngFor="let respuesta of pregunta?.respuestas; let i = index">
+                        <mat-checkbox>{{i+1}}.-{{respuesta.texto}}</mat-checkbox>
+                      </div>
+                    </div>
+                    <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'radios'">
+                      <div *ngFor="let respuesta of pregunta?.respuestas; let i = index">
+                        <mat-radio-button value="i">{{i+1}}.-{{respuesta.texto}}</mat-radio-button>
+                      </div>
+                    </div>
+                    <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'lista'">
+                      <mat-select placeholder="respuestas">
+                        <mat-option *ngFor="let respuesta of pregunta?.respuestas" [value]="respuesta.texto">
+                          {{ respuesta.texto }}
+                        </mat-option>
+                      </mat-select>
+                    </div>
+                    <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'puntaje'">
+                      <div class="container">
+                        <div class="rating-wrapper centrar" *ngFor="let item of pregunta?.respuestas">
+                          <input class="rating-input" id="r{{ item }}" type="radio" name="custom" checked>
+                          <label class="rating-star estilo" for="r{{item}}">
+                            <i mz-icon-mdi [icon]="'star'">
+                            </i>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'abierta'">
+                      <textarea matInput placeholder="Respuesta Abierta"></textarea>
+
+                    </div>
+                    <div *ngIf="pregunta?.respuestas[0].tipoRespuesta == 'si/no'">
+                      <mat-slide-toggle>Si/No</mat-slide-toggle>
+                    </div>
+                  </div>
+                  <p matLine fxLayout="row">
+                    <a (click)="agregarPregunta(pregunta)">Añadir Pregunta</a>
+                  </p>
+
+                </mat-list-item>
+                <br>
+                <br>
+                <br>
+                <br>
+                <p matLine fxLayout="row">
+                  <a class="btn-flat" (click)="loadPreguntas()">
+                    <i class="material-icons">keyboard_arrow_down</i>Cargar Mas Preguntas</a>
+                </p>
+              </mat-list>
+            </div>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<swal #guardar title="Encuesta actualizada de forma exitosa" text="La encuesta ha sido actualizada de manera exitosa" type="success"
+  [showConfirmButton]="true">
+</swal>
+
+<swal #error title="No se actualizo la encuesta de manera exitosa" text="La encuesta no ha sido actualizada, por problemas con el servidor,
+                por favor comunicarse con soporte tecnico" type="error" [showConfirmButton]="true">
+</swal>
+
+<swal #datosFaltantes title="Existen campos vacios" text="Una encuesta debe estar conformada por al menos un titulo, etiqueta, descripcion y una pregunta"
+  type="info" [showConfirmButton]="true">
+
+</swal>
+
+<swal #preguntaRepetida
+      title="Pregunta ya seleccionada"
+      text="Usted ya selecciono dicha pregunta, no se puede tener dos preguntas iguales en una encuesta"
+      type="info"
+      [showConfirmButton]="true">
+
+</swal>

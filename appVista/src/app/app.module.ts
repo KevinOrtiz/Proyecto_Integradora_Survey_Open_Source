@@ -104,6 +104,8 @@ import { AdministrarEncuestaComponent } from './components/home/administrar-encu
 import { AdministrarDiscusionesEncuestaComponent } from './components/home/administrar-discusiones-encuesta/administrar-discusiones-encuesta.component';
 import { ListadoDiscusionesEncuestaComponent } from './components/home/listado-discusiones-encuesta/listado-discusiones-encuesta.component';
 import { EditarEncuestaComponent } from './components/home/editar-encuesta/editar-encuesta.component';
+import { CompartirEncuestaComponent } from './components/home/compartir-encuesta/compartir-encuesta.component';
+import { EncuestasCompartidasComponent } from './components/home/compartir-encuesta/encuestas-compartidas/encuestas-compartidas.component';
 
 
 export const firebaseConfig = {
@@ -163,7 +165,9 @@ export const firebaseConfig = {
     AdministrarEncuestaComponent,
     AdministrarDiscusionesEncuestaComponent,
     ListadoDiscusionesEncuestaComponent,
-    EditarEncuestaComponent
+    EditarEncuestaComponent,
+    CompartirEncuestaComponent,
+    EncuestasCompartidasComponent
   ],
   imports: [
     BrowserModule,
@@ -221,7 +225,7 @@ export const firebaseConfig = {
     SnackBarMensajesActualizadosComponent, UploadFormComponent,  ListaSubComentariosComponent, VerPreguntaComponent,
     CrearDiscusionComponent, VistaPreviaDiscusionComponent, EditarDiscusionComponent, ListadoDiscusionesPreguntaComponent,
     ValidarPreguntasComponent, MensajeAccionesUsuarioComponent, VerEncuestaComponent, ResumenComponent, CompartirComponent,
-    ListadoDiscusionesEncuestaComponent
+    ListadoDiscusionesEncuestaComponent, CompartirEncuestaComponent
   ],
   providers: [
     LoginService,

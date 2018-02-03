@@ -35,7 +35,6 @@ export class DisenoComponent implements OnInit {
               private snackBar: MatSnackBar) {
           this.servicioEncuesta.loadlistaPreguntasValidas(this.pagina).subscribe((res) => {
             this.listaPreguntas = res;
-            console.log(res);
           });
   }
 
@@ -159,6 +158,7 @@ export class DisenoComponent implements OnInit {
   guardarEncuesta (value, valid) {
     this.servicioEncuesta.setUsuarioID(sessionStorage.getItem('id'));
     this.servicioEncuesta.setHistorialCambios('pregunta creada');
+    console.log(this.servicioEncuesta.getObjectEncuesta());
     if (valid && this.listaPreguntasSeleccionadas.length > 0) {
       this.servicioEncuesta.guardarEncuesta().subscribe((res) => {
         if (res === 200) {

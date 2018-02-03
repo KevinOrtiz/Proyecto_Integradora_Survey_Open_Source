@@ -66,6 +66,14 @@ export class Encuesta {
         this.usuario_ID = idUsuario;
     }
 
+    public setEtiqueta (listaEtiquetas) {
+        this.etiqueta = listaEtiquetas;
+    }
+
+    public setPregunta (listaPreguntas) {
+        this.preguntas = listaPreguntas;
+    }
+
     public setDescripcion (descripcion) {
         console.log(descripcion);
         this.descripcion = descripcion;

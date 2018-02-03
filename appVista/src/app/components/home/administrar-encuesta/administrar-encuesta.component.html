@@ -8,7 +8,7 @@
         <div fxLayout="row" fxLayoutAlign="center center">
           <mat-icon>search</mat-icon>
         </div>
-        <input #input [(ngModel)]="textoBusqueda" [formControl]="searchField" fxFlex type="search" placeholder="Busqueda por titulo de la Encuesta">
+        <input #input [(ngModel)]="textoBusqueda" [formControl]="searchField" fxFlex type="search" placeholder="Busqueda por etiqueta de la Encuesta">
       </div>
 
       <div class="mails-container mat-elevation-z2" fxFlex>
@@ -106,7 +106,12 @@
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="editarEncuesta(encuesta?.id)">
                   <mat-icon>delete</mat-icon>Editar Encuesta</button>
-                <button mat-menu-item [swal]="eliminarEncuestaSwal" (confirm)="eliminarEncuesta(encuesta?.id, encuesta)">
+                <swal #eliminarEncuestaSwal title="Desea eliminar la encuesta seleccionada?" text="Al eliminar su encuesta, se conservaran las discusiones, preguntas y comentarios que otros usuarios
+              han realizado en su contenido, pero se les notificara acerca de la accion que usted llevo
+              a cabo" type="question" [showConfirmButton]="true" [showCancelButton]="true" [focusCancel]="true" (confirm)="eliminarEncuesta(encuesta?.id, encuesta)">
+
+                </swal>
+                <button mat-menu-item [swal]="eliminarEncuestaSwal">
                   <mat-icon>delete</mat-icon>Eliminar Encuesta</button>
                 <button mat-menu-item (click)="compartirEncuesta(encuesta?.id)">
                   <mat-icon>delete</mat-icon>Compartir Encuesta</button>
@@ -131,11 +136,7 @@
   type="error" [showConfirmButton]="true" [focusConfirm]="true">
 </swal>
 
-<swal #eliminarEncuestaSwal title="Desea eliminar la encuesta seleccionada?" text="Al eliminar su encuesta, se conservaran las discusiones, preguntas y comentarios que otros usuarios
-              han realizado en su contenido, pero se les notificara acerca de la accion que usted llevo
-              a cabo" type="question" [showConfirmButton]="true" [showCancelButton]="true" [focusCancel]="true">
 
-</swal>
 
 <swal #eliminarTodasLasEncuestasSwal title="Desea eliminar todas las encuestas que usted ha desarrollado" text="Usted toma conciencia de la accion que esta realizando, ya que al eliminar
               todas estas encuestas, ya no se podran recuperar bajo ningun motivo sin embargo se conservaran

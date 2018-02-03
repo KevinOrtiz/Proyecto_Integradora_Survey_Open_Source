@@ -31,7 +31,7 @@
             </mat-chip>
 
             <input matInput placeholder="Ingrese palabras claves a su encuesta" [matChipInputFor]="EtiquetasEncuestas" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-              (matChipInputTokenEnd)="addEtiqueta($event)" formControlName="etiqueta" id="tag_encuesta" />
+              (matChipInputTokenEnd)="addEtiqueta($event)" formControlName="etiqueta" id="tag_encuesta" [matChipInputAddOnBlur]="addOnBlur" />
           </mat-chip-list>
         </div>
       </div>
