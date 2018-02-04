@@ -111,6 +111,7 @@ module.exports = (app)=> {
     apiRoute.post('/addColaboradorEncuesta',encuesta.addColaborador);
     apiRoute.post('/actualizarColaboradorEncuesta',encuesta.updateRolColaboradorEncuesta);
     apiRoute.get('/deleteColaboradoEncuesta',encuesta.deleteColaboradorEncuesta);
+    apiRoute.get('/loadListaEncuestasCompartidas', encuesta.loadListaEncuestasCompartidas);
    app.use('/apiRest',apiRoute);
 
 

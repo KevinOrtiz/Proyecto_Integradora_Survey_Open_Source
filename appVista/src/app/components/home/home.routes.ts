@@ -13,6 +13,7 @@ import { NotificacionMensajesComponent } from './notificacion-mensajes/notificac
 import { AdministrarEncuestaComponent } from './administrar-encuesta/administrar-encuesta.component';
 import { AdministrarDiscusionesEncuestaComponent } from './administrar-discusiones-encuesta/administrar-discusiones-encuesta.component';
 import { EditarEncuestaComponent } from './editar-encuesta/editar-encuesta.component';
+import { EncuestasCompartidasComponent } from './compartir-encuesta/encuestas-compartidas/encuestas-compartidas.component';
 
 
 export const HOME_ROUTES: Routes = [
@@ -30,5 +31,6 @@ export const HOME_ROUTES: Routes = [
     {path: 'misEncuestas', component: AdministrarEncuestaComponent},
     {path: 'misDiscusionesEncuestas', component: AdministrarDiscusionesEncuestaComponent},
     {path: 'editarEncuesta', component: EditarEncuestaComponent},
+    {path: 'encuestaCompartida', component: EncuestasCompartidasComponent},
     {path: '**', pathMatch: 'full', redirectTo: 'tablero'}
 ];

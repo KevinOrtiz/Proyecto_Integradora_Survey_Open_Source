@@ -855,6 +855,69 @@ exports.deleteColaboradorEncuesta = (req, res, next) => {
         })
 }
 
+exports.loadListaEncuestasCompartidas = (req, res, next) => {
+    var idObjeto = require('mongoose').Types.ObjectId;
+    var listaEncuestasCompartidas = [];
+    colaborador.find({
+        'usuarioColaborador': new idObjeto(req.query.id)
+    })
+    .populate('encuestaCompartida')
+    .then((resultado, error) => {
+        if (error){
+            console.log(error);
+            return res.json({
+                'status':500,
+                'listasCompartidas':null
+            })
+        } else if (resultado.length > 0){
+            let contador = 0;
+            let limiteDocumento = resultado.length;
+
+            asyncloop(resultado, (item, next) => {
+                usuario.findById(item.encuestaCompartida.usuario_ID)
+                       .then((respuesta, error) => {
+                           var compartir = {
+                               'nombre': respuesta.nombre,
+                               'apellido': respuesta.apellido,
+                               'urlImage': respuesta.urlImage,
+                               'usuario_ID': respuesta._id,
+                               'rol':item.rol,
+                               'titulo':item.titulo,
+                               'numeroPreguntas': item.preguntas.length,
+                               'idEncuesta': item.encuestaCompartida._id
+                           }
+                           listaEncuestasCompartidas.push(compartir);
+                           next();
+                           contador ++ ;
+                           if (contador === limiteDocumento){
+                                return res.json({
+                                    'status':200,
+                                    'listasCompartidas':listaEncuestasCompartidas
+                                })
+                           }
+                           
+                       }).catch((error) => {
+                           return res.json({
+                               'status':500,
+                               'listasCompartidas':null
+                           })
+                       })
+            })
+        } else {
+            return res.json({
+                'status': 200,
+                'listasCompartidas':null
+            })
+        }
+    }).catch((error) => {
+        console.log(error);
+        return res.json({
+            'status':500,
+            'listasCompartidas':null
+        })
+    })
+}
+
 
 
 

@@ -11,6 +11,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export class EncuestasService {
   encuestas: Encuesta;
   idEncuesta = '';
+  propietarioEncuesta = '';
   titulo =  new BehaviorSubject<string>(null);
   titulo$ = this.titulo.asObservable();
   descripcion =  new BehaviorSubject<string>(null);
@@ -31,6 +32,14 @@ export class EncuestasService {
   setTitulo (titulo) {
     this.encuestas.setTitulo(titulo);
     this.titulo.next(titulo);
+  }
+
+  setIDPropietarioEncuesta (id) {
+    this.propietarioEncuesta = id;
+  }
+
+  getIDPropietarioEncuesta () {
+    return this.propietarioEncuesta;
   }
 
   gettitulo$ () {
@@ -278,6 +287,15 @@ export class EncuestasService {
     return this.http.get(url, {headers})
                     .map((res: Response) => {
                         return res;
+                    });
+  }
+
+  loadListaEncuestasCompartidas () {
+    const headers = this.getHeaders();
+    const url = '/apiRest/loadListaEncuestasCompartidas/?id=' + sessionStorage.getItem('id');
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                        return ['listasCompartidas'];
                     });
   }
   errorHandler(error) {

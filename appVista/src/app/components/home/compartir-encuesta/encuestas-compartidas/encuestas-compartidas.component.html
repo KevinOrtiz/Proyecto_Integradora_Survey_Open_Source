@@ -1,3 +1,54 @@
-<p>
-  encuestas-compartidas works!
-</p>
+<div class="inbox" fxLayout="column">
+    <div class="header mat-elevation-z2"></div>
+  <div *ngIf="!finished">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="finished">
+    <div *ngFor="let encuesta of listaEncuestaCompartidas" >
+      <mat-card fxFlex="100%">
+        <mat-card-header>
+          <img mat-card-avatar [src]="encuesta?.urlImage">
+          <mat-card-title>{{encuesta?.nombre}} {{encuesta?.apellido}}</mat-card-title>
+          <span fxFlex></span>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="verEncuesta(encuesta?.idEncuesta)">
+                <mat-icon>remove_red_eye</mat-icon>
+                <span>Ver Encuesta</span>
+              </button>
+              <button mat-menu-item (click)="ingresarComentario(encuesta?.idEncuesta)">
+                <mat-icon>open_in_new</mat-icon>
+                <span>Ingresar Comentario</span>
+              </button>
+              <button mat-menu-item (click)="editarEncuesta(encuesta?.idEncuesta, encuesta?.usuario_ID)" *ngIf="encuesta?.rol == 'editar'" >
+                  <mat-icon>open_in_new</mat-icon>
+                  <span>Editar Encuesta</span>
+                </button>
+            </mat-menu>
+        </mat-card-header>
+        <mat-card-content fxLayout="column">
+            <p matLine fxLayout="row">
+                Titulo de la Encuesta: {{encuesta?.titulo}}
+              </p>
+              <div *ngIf="encuesta?.rol == 'ver'">
+              <p matLine fxLayout="row">
+                Usted ha sido designado por {{encuesta?.nombre}} para que pueda comentar y visualizar la encuesta
+                </p>
+              </div>
+              <div *ngIf="encuesta?.rol == 'editar'" >
+                <p matLine fxLayout="row">
+                    Usted ha sido designado por {{encuesta?.nombre}} para que pueda editar, comentar y visualizar la encuesta
+                </p>
+              </div>
+              <p matLine fxLayout="row">
+                Numero de Preguntas: {{encuesta?.numeroPreguntas}}
+              </p>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+  </div>
+</div>

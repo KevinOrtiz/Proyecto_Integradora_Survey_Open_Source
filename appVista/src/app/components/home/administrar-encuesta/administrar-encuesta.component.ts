@@ -102,6 +102,7 @@ export class AdministrarEncuestaComponent implements OnInit {
 
   editarEncuesta(id) {
     this.servicioEncuesta.setIDEncuesta(id);
+    this.servicioEncuesta.setIDPropietarioEncuesta(sessionStorage.getItem('id'));
     this.router.navigate(['/home', 'editarEncuesta' ]);
   }
 
