@@ -44,7 +44,7 @@ exports.sendEmailPreguntaCreada= (receptor,topico) => {
 };
 
 exports.sendEmailEstadoPregunta=(receptor,estado,topico,textoCambio)=>{
-    let contenido = '';
+    var contenido = '';
     if (estado === 'revision'){
         contenido = `<h4>Estado de la pregunta creada</h4>
         <p>La pregunta del Sr ${receptor} con categoria ${topico}
@@ -145,6 +145,69 @@ exports.sendCorreoDiscusionCreada =(receptor,nombre,titulo)=>{
         html: contenidoDiscusion
     };
     transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('mensaje enviando');
+        console.log(info);
+    });
+}
+
+exports.sendCorreoAddColaborador=(duenoEncuesta, tituloEncuesta, correoRemitente, rol, nombre)=>{
+    const compartirEncuesta = `<h4>Te han añadido como colaborador de una encuesta</h4>
+    Estimado ${nombre} el usuario ${duenoEncuesta} te ha añadido como colaborador de su encuesta,
+    el titulo de la Encuesta es ${tituloEncuesta}, en esta encuesta te han asignado el rol de ${rol},
+    en su menu lateral izquierdo en la seccion de encuesta, encontrara un subseccion de encuestas compartida
+    ahi podra acceder a la encuesta que el usuario ${duenoEncuesta} ha compartido con usted.`;
+    let mailOptions = {
+        from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
+        to: correoRemitente,
+        subject: 'Añadido a una encuesta de un usuario',
+        text: 'Reciban un saludo de OSS',
+        html: compartirEncuesta
+    };
+    transporter.sendMail(mailOptions, (error, info)=> {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('mensaje enviando');
+        console.log(info);
+    });
+}
+
+exports.actualizacionRolColaborador = (dueñoEncuesta, correoRemitente, rol, nombre) => {
+    const compartirEncuesta = `<h4>Te han cambiado el rol que tiene sobre una encuesta</h4>
+    Estimado ${nombre} el usuario ${duenoEncuesta} a permitido que puedas  ${rol} su encuesta,
+    en su menu lateral izquierdo en la seccion de encuesta, encontrara un subseccion de encuestas compartida
+    ahi podra acceder a la encuesta que el usuario ${duenoEncuesta} ha compartido con usted.`;
+    let mailOptions = {
+        from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
+        to: correoRemitente,
+        subject: 'Cambio en un rol de una encuesta',
+        text: 'Reciban un saludo de OSS',
+        html: compartirEncuesta
+    };
+    transporter.sendMail(mailOptions, (error, info)=> {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('mensaje enviando');
+        console.log(info);
+    });
+}
+
+exports.eliminacionColaborador = (dueñoEncuesta, correoRemitente, nombre, tituloEncuesta) => {
+    const compartirEncuesta = `<h4>Te han eliminado como colaborador de una encuesta</h4>
+    Estimado ${nombre} el usuario ${duenoEncuesta} te ha eliminado como colaborador de su encuesta,
+    con el titulo ${tituloEncuesta}.`;
+    let mailOptions = {
+        from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
+        to: correoRemitente,
+        subject: 'Eliminado como  colaborador de una encuesta',
+        text: 'Reciban un saludo de OSS',
+        html: compartirEncuesta
+    };
+    transporter.sendMail(mailOptions, (error, info)=> {
         if (error) {
             return console.log(error);
         }

@@ -1,10 +1,10 @@
-
 'use strict';
 let encuesta = require('../models/Encuestas');
 let preguntasValidas = require('../models/preguntasValidadas');
 let asyncloop = require('node-async-loop');
 let usuario = require('../models/Usuarios');
-
+let colaborador = require('../models/Colaboradores');
+let correo = require('../correo');
 
 exports.getListaPreguntasValidas = (req, resp, next) => {
     console.log('entre');
@@ -214,7 +214,7 @@ exports.loadListaMyEncuestas = (req, res, next) => {
         }).catch((error) => {
             console.log(error);
             return res.json({
-                "status":500,
+                "status": 500,
                 "listaMyEncuestas": null,
                 "paginas": 0
 
@@ -530,3 +530,332 @@ exports.updateMyEncuesta = (req, res, next) => {
             })
         })
 }
+
+exports.loadUsuarios = (req, res, next) => {
+    usuario.paginate({
+        'nombre': new RegExp(req.query.nombre, 'i'),
+        '_id': { $ne: req.query.usuario_ID }
+    }, {
+            page: req.query.page,
+            limit: 5
+        })
+        .then((result, error) => {
+            if (error) {
+                return res.json({
+                    'status': 404,
+                    'listaUsuarios': null
+                })
+            } else {
+                return res.json({
+                    'status': 200,
+                    'listaUsuarios': result.docs
+                })
+            }
+
+        }).catch((error) => {
+            console.log(error);
+            return res.json({
+                'status': 500,
+                'listaUsuarios': null
+            })
+        })
+}
+
+exports.loadListaMisColaboradores = (req, res, next) => {
+    var listaColaboradores = [];
+    encuesta.findOne({
+        '_id': req.query.idEncuesta
+    })
+        .populate({
+            path: 'colaboradores',
+            populate: {
+                path: 'usuarioColaborador',
+                model: 'usuario'
+            }
+        })
+        .then((encuesta, error) => {
+            if (error) {
+                console.log(error);
+                return res.json({
+                    'status': 404,
+                    'listaMisColaboradores': null
+                })
+            } else if (encuesta.colaboradores.length > 0) {
+                let contador = 0;
+                let limiteDocumento = encuesta.colaboradores.length;
+                asyncloop(encuesta.colaboradores, (item, next) => {
+                    var colaborador = {
+                        'nombre': item.usuarioColaborador.nombre,
+                        'apellido': item.usuarioColaborador.apellido,
+                        'correo': item.usuarioColaborador.correo,
+                        'urlImage': item.usuarioColaborador.urlImage,
+                        'rol': item.rol,
+                        '_id': item._id,
+                        'idColaborador': item.usuarioColaborador._id
+                    }
+                    listaColaboradores.push(colaborador);
+                    next();
+                    contador++;
+                    if (contador === limiteDocumento) {
+                        return res.json({
+                            'status': 200,
+                            'listaMisColaboradores': listaColaboradores
+                        })
+                    }
+
+                })
+
+            } else {
+                return res.json({
+                    'status': 200,
+                    'listaMisColaboradores': null
+                })
+            }
+
+        }).catch((error) => {
+            console.log(error);
+            return res.json({
+                'status': 500,
+                'listaMisColaboradores': null
+            })
+        })
+}
+
+exports.addColaborador = (req, res, next) => {
+    var existe = false;
+    encuesta.findOne({
+        '_id': req.body.colaborador.idEncuesta
+    })
+        .populate('colaboradores')
+        .then((result, error) => {
+            if (result.colaboradores.length > 0) {
+                asyncloop(result.colaboradores, (item, next) => {
+                    next()
+                    if (item.usuarioColaborador == req.body.colaborador.idColaborador) {
+                        existe = true;
+                        return res.json({
+                            'status': 304,
+                            'encuesta': null
+                        })
+                    }
+                })
+            } else if (existe == false) {
+                let instanceColaborador = new colaborador;
+                instanceColaborador.rol = req.body.colaborador.rol;
+                instanceColaborador.usuarioColaborador = req.body.colaborador.idColaborador;
+                instanceColaborador.encuestaCompartida = req.body.colaborador.idEncuesta;
+                instanceColaborador.save((error) => {
+                    if (error) {
+                        console.log(error);
+                        return res.json({
+                            'status': 500,
+                            'encuesta': null
+                        })
+                    } else {
+                        encuesta.findByIdAndUpdate(req.body.colaborador.idEncuesta, {
+                            $push: { 'colaboradores': instanceColaborador._id }
+                        }).then((encuesta, error) => {
+                            usuario.findByIdAndUpdate(req.body.colaborador.usuario_encuesta, {
+                                $push: { 'colaboradores': instanceColaborador._id }
+                            }).then((usuario, error) => {
+                                if (error) {
+                                    console.log(error);
+                                    return res.json({
+                                        'status': 500,
+                                        'encuesta': null
+                                    })
+                                } else {
+                                    colaborador.findById(instanceColaborador._id)
+                                        .populate('usuarioColaborador')
+                                        .then((usuario_colaborador, error) => {
+                                            var usuario_instance = {
+                                                'nombre': usuario_colaborador.usuarioColaborador.nombre,
+                                                'apellido': usuario_colaborador.usuarioColaborador.apellido,
+                                                'correo': usuario_colaborador.usuarioColaborador.correo,
+                                                'rol': usuario_colaborador.rol,
+                                                '_id': usuario_colaborador._id,
+                                                'urlImage': usuario_colaborador.usuarioColaborador.urlImage,
+                                                'idColaborador': usuario_colaborador.usuarioColaborador.idColaborador
+                                            }
+                                            correo.sendCorreoAddColaborador(usuario.nombre, encuesta.titulo, usuario_colaborador.usuarioColaborador.correo, usuario_colaborador.rol, usuario_colaborador.usuarioColaborador.nombre);
+
+                                            return res.json({
+                                                'status': 200,
+                                                'encuesta': usuario_instance
+                                            })
+
+                                        }).catch((error) => {
+                                            console.log(error);
+                                            return res.json({
+                                                'status': 500,
+                                                'encuesta': null
+                                            })
+                                        })
+
+                                }
+                            }).catch((error) => {
+                                console.log(error);
+                                return res.json({
+                                    'status': 500,
+                                    'encuesta': null
+                                })
+                            })
+                        }).catch((error) => {
+                            console.log(error);
+                            return res.json({
+                                'status': 500,
+                                'encuesta': null
+                            })
+                        })
+                    }
+                })
+
+            }
+
+
+
+        })
+}
+
+
+exports.updateRolColaboradorEncuesta = (req, res, next) => {
+    colaborador.findOne({
+        '_id': req.body.colaborador.id,
+        'usuarioColaborador': req.body.colaborador.idColaborador
+    })
+        .then((result, error) => {
+            if (error) {
+                console.log(error);
+
+            } else {
+                if (result.rol === req.body.colaborador.rol) {
+                    return res.json({
+                        'status': 304
+                    })
+                } else {
+                    colaborador.findByIdAndUpdate(req.body.colaborador.id, {
+                        $set: {
+                            'rol': req.body.colaborador.rol
+                        }
+                    })
+                        .populate('usuarioColaborador')
+                        .populate('encuestaCompartida')
+                        .then((resultado, error) => {
+                            if (error) {
+                                return res.json({
+                                    'status': 500
+                                })
+                            } else {
+                                usuario.findById(req.body.colaborador.usuario_encuesta)
+                                    .then((instance_usuario, error) => {
+                                        if (error) {
+                                            console.log(error);
+                                        }
+                                        correo.actualizacionRolColaborador(instance_usuario.nombre, resultado.usuarioColaborador.correo, req.body.colaborador.rol, resultado.usuarioColaborador.nombre);
+
+                                    })
+
+                                return res.json({
+                                    'status': 200
+                                })
+                            }
+
+                        }).catch((error) => {
+                            console.log(error);
+                            return res.json({
+                                'status': 500
+                            })
+                        })
+
+                }
+            }
+        }).catch((error) => {
+            console.log(error);
+            return res.json({
+                'status': 500
+            })
+        })
+
+}
+
+exports.deleteColaboradorEncuesta = (req, res, next) => {
+    colaborador.findById(req.query.id)
+        .populate('usuarioColaborador')
+        .populate('encuestaCompartida')
+        .then((resultado_colaborador, error) => {
+            if (error) {
+                console.log(error);
+                return res.json({
+                    'status': 500
+                })
+            } else {
+                usuario.findById(req.query.usuario_ID)
+                    .then((resultado, error) => {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            correo.eliminacionColaborador(resultado.nombre, resultado_colaborador.usuarioColaborador.correo, resultado_colaborador.usuarioColaborador.nombre, resultado_colaborador.encuestaCompartida.titulo);
+                        }
+                    });
+
+                colaborador.findByIdAndRemove(req.query.id)
+                    .then((result, error) => {
+                        if (error) {
+                            return res.json({
+                                'status': 500
+                            })
+                        } else {
+                            usuario.findByIdAndUpdate(req.query.usuario_ID, {
+                                $pull: {
+                                    'colaboradores': req.query.id
+                                }
+                            }).then((objeto, error) => {
+                                if (error) {
+                                    return res.json({
+                                        'status': 500
+                                    })
+                                } else {
+                                    encuesta.findByIdAndUpdate(req.query.idEncuesta, {
+                                        $pull: {
+                                            'colaboradores': req.query.id
+                                        }
+                                    }).then((objeto, error) => {
+                                        if (error) {
+                                            console.log(error);
+                                            return res.json({
+                                                'status': 500
+                                            })
+                                        } else {
+                                            return res.json({
+                                                'status': 200
+                                            })
+                                        }
+                                    })
+                                }
+
+                            }).catch((error) => {
+                                console.log(error);
+                                return res.json({
+                                    'status': 500
+                                })
+                            })
+                        }
+
+                    }).catch((error) => {
+                        return res.json({
+                            'status': 500
+                        })
+                    })
+            }
+        }).catch((error) => {
+            console.log(error);
+            return res.json({
+                'status': 500
+            })
+        })
+}
+
+
+
+
+

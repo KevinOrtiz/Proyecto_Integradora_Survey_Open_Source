@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const pagination = require('mongoose-paginate');
+
 const usuarioSchema = new Schema({
     nombre:{
         type: String,
@@ -54,7 +56,8 @@ const usuarioSchema = new Schema({
     }]
 });
 
-
+usuarioSchema.index({'nombre': 'text'});
+usuarioSchema.plugin(pagination);
 const Usuario = mongoose.model('usuario',usuarioSchema);
 
 module.exports = Usuario;

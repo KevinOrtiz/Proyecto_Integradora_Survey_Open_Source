@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material';
 import { VerEncuestaComponent } from '../ver-encuesta/ver-encuesta.component';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { ListadoDiscusionesEncuestaComponent } from '../listado-discusiones-encuesta/listado-discusiones-encuesta.component';
+import { CompartirEncuestaComponent } from '../compartir-encuesta/compartir-encuesta.component';
 
 
 @Component({
@@ -122,6 +123,10 @@ export class AdministrarEncuestaComponent implements OnInit {
   }
 
   compartirEncuesta(id) {
+    this.servicioEncuesta.setIDEncuesta(id);
+    const modalCompartiEncuesta = this.modal.open(CompartirEncuestaComponent, {
+      width : '900px'
+    });
     console.log(id);
   }
 

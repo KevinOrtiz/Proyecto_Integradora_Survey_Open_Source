@@ -47,6 +47,7 @@ exports.setAcciones = (socket, mensaje, obj, io) => {
                             if (error) {
                                 console.log(error);
                             }
+                            console.log(obj)
                             if (obj) {
                                 io.sockets.sockets[obj].emit('acciones', notificacion);
                             }

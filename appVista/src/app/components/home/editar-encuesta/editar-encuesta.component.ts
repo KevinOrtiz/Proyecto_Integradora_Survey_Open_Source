@@ -198,7 +198,6 @@ export class EditarEncuestaComponent implements OnInit {
   actualizarEncuesta (value, valid) {
     this.servicioEncuesta.setUsuarioID(sessionStorage.getItem('id'));
     this.servicioEncuesta.setHistorialCambios('pregunta actualizada');
-    console.log(this.servicioEncuesta.getObjectEncuesta());
     if (valid && this.listaPreguntasSeleccionadas.length > 0) {
       this.servicioEncuesta.updateMyEncuesta().subscribe((res) => {
         if (res === 200) {

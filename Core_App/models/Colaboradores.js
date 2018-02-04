@@ -2,17 +2,15 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const colaboradorSchema = new Schema({
-    mensajes:String,
+    rol: String,
     usuarioColaborador:{
         type:Schema.Types.ObjectId,
         ref:'usuario',
-        index: true
     },
-    listaEncuestas: [{
+    encuestaCompartida: {
         type:Schema.Types.ObjectId,
         ref:'encuesta',
-        index: true
-    }]    
+    }    
 });
 
 

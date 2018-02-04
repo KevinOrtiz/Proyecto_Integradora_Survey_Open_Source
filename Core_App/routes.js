@@ -105,7 +105,12 @@ module.exports = (app)=> {
     apiRoute.get('/deleteAllMyEncuestas',encuesta.deleteAllMyEncuestas);
     apiRoute.get('/deleteEncuesta', encuesta.deleteEncuestaByID);
     apiRoute.get('/loadListadoDiscusionesFromEncuesta',encuesta.loadListadoDiscusionesByEncuesta);
-    apiRoute.post('/updateEncuesta',encuesta.updateMyEncuesta)
+    apiRoute.post('/updateEncuesta',encuesta.updateMyEncuesta);
+    apiRoute.get('/loadListaUsuarios',encuesta.loadUsuarios);
+    apiRoute.get('/loadListaMisColaboradores',encuesta.loadListaMisColaboradores);
+    apiRoute.post('/addColaboradorEncuesta',encuesta.addColaborador);
+    apiRoute.post('/actualizarColaboradorEncuesta',encuesta.updateRolColaboradorEncuesta);
+    apiRoute.get('/deleteColaboradoEncuesta',encuesta.deleteColaboradorEncuesta);
    app.use('/apiRest',apiRoute);
 
 

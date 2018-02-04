@@ -37,10 +37,11 @@
       <mat-divider></mat-divider>
       <mat-card-content fxLayout="column">
         <div>
-          <span class="card-title">{{encuesta?.titulo}}</span>
+          <span class="card-title">Titulo de la Encuesta:{{encuesta?.titulo}}</span>
         </div>
         <div>
           <mat-chip-list class="tag">
+            Etiquetas:
               <mat-chip color="primary" selected="true" *ngFor="let item of encuesta?.etiqueta" >
                 {{item.texto}}
               </mat-chip>
@@ -49,7 +50,7 @@
         <br>
         <br>
         <div>
-            {{ encuesta?.descripcion }}
+            Descripcion de la Encuesta: {{ encuesta?.descripcion }}
             <br>
             <br>
             Cantidad Preguntas : {{encuesta?.numeroPreguntas}}

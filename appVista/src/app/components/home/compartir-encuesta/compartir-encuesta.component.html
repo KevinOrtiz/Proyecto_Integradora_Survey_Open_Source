@@ -1,3 +1,151 @@
-<p>
-  compartir-encuesta works!
-</p>
+<h2 mat-dialog-title>Compartir Encuesta con otros Usuarios</h2>
+<mat-dialog-content>
+  <mat-tab-group>
+    <mat-tab label="Usuarios activos">
+      <div class="search mat-elevation-z2" fxLayout="row">
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-icon>search</mat-icon>
+          </div>
+        <input #input [(ngModel)]="nombre" [formControl]="searchField" fxFlex type="search" placeholder="Busqueda por nombre del Usuario">
+      </div>
+      <div *ngIf="!finished" >
+          <mat-spinner></mat-spinner>
+      </div>
+      <div *ngIf="finished" >
+        <div *ngFor="let usuario of listaUsuarios" >
+          <mat-card fxFlex="100%">
+            <mat-card-header>
+              <img mat-card-avatar [src]="usuario?.urlImage" >
+              <mat-card-title>{{usuario?.nombre}} {{usuario?.apellido}}</mat-card-title>
+              <mat-card-subtitle>Correo: {{usuario?.correo}}</mat-card-subtitle>
+              <span fxFlex></span>
+            </mat-card-header>
+            <mat-divider></mat-divider>
+            <mat-card-content fxLayout="column">
+              <p matLine fxLayout="row">
+                institucion: {{usuario?.institucion}}
+              </p>
+              <p matLine fxLayout="row">
+                grado academico: {{usuario?.grado_academico}}
+              </p>
+              <p matLine fxLayout="row">
+                area academica: {{usuario?.area_academica}}
+              </p>
+            </mat-card-content>
+            <mat-card-actions>
+              <div fxLayout="row">
+                <mat-form-field>
+                  <mat-select [(value)]="rol">
+                    <mat-option>Definir Rol</mat-option>
+                    <mat-option value="ver">Ver y Comentar</mat-option>
+                    <mat-option value="editar">Editar y comentar</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <span fxFlex></span>
+                <button mat-raised-button color="warn" (click)="addColaborador(usuario?._id)">
+                    Añadir Colaborador
+                </button>
+              </div>
+            </mat-card-actions>
+          </mat-card>
+          
+        </div>
+        <p fxLayout="row">
+            <a class="btn-flat" (click)="loadUsuarios()">
+              <i class="material-icons">keyboard_arrow_down</i>
+              Cargar mas Usuarios
+            </a>
+
+          </p>
+      </div>
+
+    </mat-tab>
+    <mat-tab label="Colaboradores de la encuesta">
+      <div *ngIf="!finished">
+          <mat-spinner></mat-spinner>
+      </div>
+      <div *ngIf="finished">
+          <div *ngFor="let colaborador of listaColaboradores">
+            <mat-card fxFlex="100%">
+                <mat-card-header>
+                  <img mat-card-avatar [src]="colaborador?.urlImage" >
+                  <mat-card-title>{{colaborador?.nombre}} {{colaborador?.apellido}}</mat-card-title>
+                  <mat-card-subtitle>Correo: {{colaborador?.correo}}</mat-card-subtitle>
+                  <span fxFlex></span>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content fxLayout="column">
+                  <p matLine fxLayout="row">
+                    Rol :{{colaborador?.rol}}
+                  </p>
+                </mat-card-content>
+                <mat-card-actions>
+                  <div fxLayout="row">
+                    <mat-form-field >
+                        <mat-select [(value)]="rolColaborador">
+                            <mat-option value="ver">Ver y Comentar</mat-option>
+                            <mat-option value="editar">Editar y Comentar</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <span fxFlex></span>
+                    <button mat-raised-button color="warn" (click)="actualizarColaborador(colaborador?._id, colaborador?.idColaborador)">
+                        Actualizar Rol Colaborador
+                    </button>
+                    <button mat-raised-button color="warn" (click)="eliminarColaborador(colaborador?._id)">
+                        Eliminar Colaborador
+                    </button>
+                  </div>
+                </mat-card-actions>
+            </mat-card>
+          </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="warn" [mat-dialog-close]="true">Cerrar</button>
+</mat-dialog-actions>
+
+<swal #actualizarRolColaborador
+      title="Actualizado rol de colaborador"
+      text="El rol del usuario ha sido actualizado con exito"
+      type="success" [showConfirmButton]="true" [focusConfirm]="true">
+
+</swal>
+
+<swal #rolDesignadoUsuario
+      title="Rol ya designado al usuario"
+      text="El rol que usted fijo para el usuario, ya esta designado"
+      type="question" [showConfirmButton]="true" [focusConfirm]="true">
+    
+</swal>
+
+<swal #usuarioEliminadoEncuesta
+      title="Usuario eliminado de la encuesta"
+      text="El usuario ha sido eliminado como colaborador de la encuesta"
+      type="success" [showConfirmButton]="true" [focusConfirm]="true">
+
+</swal>
+
+<swal #addColaboradorEncuesta
+      title="Usuario añadido como colaborador a la encuesta"
+      text="El usuario añadido como colaborador a la encuesta, sera notificado sobre aquella accion"
+      type="success" [showConfirmButton]="true" [focusConfirm]="true">
+    
+</swal>
+
+<swal #errorAccionColaborador
+      title="Error en la accion requerida"
+      text="La accion requerida, no se pudo ejecutar por problemas con el servidor, espere unos minutos
+            o contacte con soporte tecnico"
+      type="error" [showConfirmButton]="true" [focusConfirm]="true">
+
+</swal>
+
+<swal #usuarioAnadidoEncuesta
+        title="Usuario ya añadido como colaborador en la encuesta "
+        text= "El usuario ya ha sido registrado como colaborador en su encuesta,
+              puede visualizarlo en la seccion de 'colaboradores de la encuesta'"
+        type="info">
+
+</swal>

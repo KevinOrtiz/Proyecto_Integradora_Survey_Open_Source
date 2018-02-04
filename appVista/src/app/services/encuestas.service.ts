@@ -219,6 +219,67 @@ export class EncuestasService {
                })
                .catch((error) => Observable.throw(this.errorHandler(error)));
   }
+  loadListaUsuarios (nombre, pagina) {
+    const headers = this.getHeaders();
+    const url = '/apiRest/loadListaUsuarios/?usuario_ID=' + sessionStorage.getItem('id') + '&page=' + pagina + '&nombre=' + nombre;
+    return this.http.get(url, {headers})
+                .map((res: Response) => {
+                  return res['listaUsuarios'];
+
+                })
+                .catch((error) => Observable.throw(this.errorHandler(error)));
+  }
+
+  loadListaMisColaboradores () {
+    const headers = this.getHeaders();
+    const url = '/apiRest/loadListaMisColaboradores/?idEncuesta=' + this.getIDEncuesta();
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      return res['listaMisColaboradores'];
+
+                    }).catch((error) => Observable.throw(this.errorHandler(error)));
+  }
+
+  addUsuarioEncuesta (idColaborador, rol) {
+    const headers = this.getHeaders();
+    const url = '/apiRest/addColaboradorEncuesta';
+    const colaborador = {
+        'usuario_encuesta': sessionStorage.getItem('id'),
+        'idColaborador': idColaborador,
+        'rol': rol,
+        'idEncuesta': this.getIDEncuesta()
+    };
+    return this.http.post(url, {colaborador}, {headers})
+                .map((res: Response) => {
+                  return res;
+                });
+  }
+
+  actualizarRolColaboradorEncuesta (id , idColaborador, rol) {
+    const headers = this.getHeaders();
+    const url = '/apiRest/actualizarColaboradorEncuesta';
+    const colaborador = {
+      'usuario_encuesta': sessionStorage.getItem('id'),
+      'idColaborador': idColaborador,
+      'rol': rol,
+      'id': id,
+      'idEncuesta': this.getIDEncuesta()
+    };
+    return this.http.post(url, {colaborador}, {headers})
+                .map((res: Response) => {
+                    return res;
+                });
+  }
+
+  deletecolaboradorEncuesta(id) {
+    const headers = this.getHeaders();
+    // tslint:disable-next-line:max-line-length
+    const url = '/apiRest/deleteColaboradoEncuesta/?id=' + id + '&usuario_ID=' + sessionStorage.getItem('id') + '&idEncuesta=' + this.getIDEncuesta();
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                        return res;
+                    });
+  }
   errorHandler(error) {
     console.log(error);
   }

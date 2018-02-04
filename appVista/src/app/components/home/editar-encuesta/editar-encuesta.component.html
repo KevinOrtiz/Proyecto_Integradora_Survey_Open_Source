@@ -149,8 +149,6 @@
               <mat-list>
                 <br>
                 <br>
-                <br>
-                <br>
                 <mat-list-item *ngFor="let pregunta of listaPreguntas; let i=index" dnd-draggable [dragEnabled]="true" [dragData]="pregunta"
                   (OnDragSuccess)="obteniendoPregunta($event)" [dropZones]="['zona-pregunta']">
                   <br>
@@ -203,8 +201,6 @@
                   </p>
 
                 </mat-list-item>
-                <br>
-                <br>
                 <br>
                 <br>
                 <p matLine fxLayout="row">

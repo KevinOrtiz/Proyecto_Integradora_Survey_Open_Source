@@ -225,7 +225,7 @@ export const firebaseConfig = {
     SnackBarMensajesActualizadosComponent, UploadFormComponent,  ListaSubComentariosComponent, VerPreguntaComponent,
     CrearDiscusionComponent, VistaPreviaDiscusionComponent, EditarDiscusionComponent, ListadoDiscusionesPreguntaComponent,
     ValidarPreguntasComponent, MensajeAccionesUsuarioComponent, VerEncuestaComponent, ResumenComponent, CompartirComponent,
-    ListadoDiscusionesEncuestaComponent, CompartirEncuestaComponent
+    ListadoDiscusionesEncuestaComponent, CompartirEncuestaComponent, CompartirEncuestaComponent
   ],
   providers: [
     LoginService,
