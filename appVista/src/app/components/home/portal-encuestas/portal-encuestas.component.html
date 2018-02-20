@@ -28,7 +28,7 @@
             <mat-icon>remove_red_eye</mat-icon>
             <span>Ver Encuesta</span>
           </button>
-          <button mat-menu-item (click)="crearDiscusion(encuesta?._id)">
+          <button mat-menu-item (click)="crearDiscusion(encuesta?._id, encuesta?.idUsuario)">
             <mat-icon>open_in_new</mat-icon>
             <span>Crear Discusion</span>
           </button>
@@ -58,12 +58,12 @@
       </mat-card-content>
       <mat-card-actions>
         <div fxLayout="row">
-          <button mat-icon-button (click)="verListaDiscusiones(encuesta?._id)">
+          <button mat-icon-button (click)="verListaDiscusiones(encuesta?._id, encuesta?.idUsuario)">
             <mat-icon>bug_report {{ encuesta?.numeroDiscusiones }} </mat-icon>
             <p class="estiloDiscusiones">{{ encuesta?.numeroDiscusiones }} Discusiones</p>
           </button>
           <span fxFlex></span>
-          <button mat-icon-button (click)="verListadoComentarios(encuesta?._id)">
+          <button mat-icon-button (click)="verListadoComentarios(encuesta?._id, encuesta?.idUsuario)">
             <mat-icon>comment</mat-icon>
             <p class="estiloComentarios"> {{ encuesta?.numeroComentarios}} Comentarios</p>
           </button>

@@ -1,7 +1,7 @@
 <app-menu-desplegable></app-menu-desplegable>
 <div class="main-toolbar mat-elevation-z2 colorFondo">
   <div fxLayout="row" fxLayoutAlign="start center">
-    <button mz-button id="btn-sidenav-app" mat-icon-button>
+    <button  id="btn-sidenav-app" mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
   </div>
@@ -13,76 +13,86 @@
   <audio #audioAccion>
     <source src="assets/audio/acciones.mp3" type="audio/mp3">
   </audio>
-
+  <div fxLayout="row" fxLayoutAlign="start center" fxFlex="500px" fxHide fxShow.gt-md>
+    <app-search-bar-item-routing></app-search-bar-item-routing>
+  </div>
+  
   <span fxFlex></span>
-
-  <button [fxHide]="true" [fxHide.gt-sm]="false" mat-button class="fullscreen-toggle" (click)="toggleFullscreen()">
-    <mat-icon *ngIf="!isFullscreen">fullscreen</mat-icon>
-    <mat-icon *ngIf="isFullscreen">fullscreen_exit</mat-icon>
-  </button>
-
-  <button mat-button id="btn-dropdown-mensaje" (click)="notificacionMensajesUsuarios=0;">
+  <div class="toolbar-button" fxLayout="row" fxLayoutAlign="start center" (clickOutside)="onClickOutside()">
+  <button type="button" mat-button (click)="toggleDropdown()" [class.open]="isOpen">
     <span class="badge bg-danger">{{notificacionMensajesUsuarios}}</span>
-    <mat-icon >notifications
-    </mat-icon>
+    <mat-icon >notifications</mat-icon>
   </button>
-
-
-  <mz-dropdown [id]="'dropdown-mensaje'" [align]="'right'" [belowOrigin]="false"  [dropdownButtonId]="'btn-dropdown-mensaje'"
-    [gutter]="false" [hover]="false" [inDuration]="300" [outDuration]="300" [stopPropagation]="true">
-    <mz-dropdown-item class="mensaje">
-      Mensaje
-    </mz-dropdown-item>
-    <mz-dropdown-divider></mz-dropdown-divider>
-    <mz-dropdown-item>
-      <ul class="collection" *ngIf="listaMensajes">
-        <li class="collection-item avatar" *ngFor="let mensaje of listaMensajes">
-          <img [src]="mensaje?.usuario_emisor[0].urlImage" class="circle">
-          <span class="title">{{mensaje?.usuario_emisor[0].nombre}} :{{mensaje?.usuario_emisor[0].correo}}</span>
-          <p>creado:{{mensaje?.fecha_creacion | date: 'dd/MM/yyyy'}}<br> Mensaje:{{mensaje?.descripcion}}
-          </p>
-        </li>
-      </ul>
-    </mz-dropdown-item>
-  </mz-dropdown>
-
-
-  <button mat-button id="btn-dropdown-notificacion" (click)="notificacionAccionesUsuarios=0">
+  
+  <div class="dropdown mat-elevation-z1" [class.open]="isOpen">
+    <div class="card">
+      <div class="header" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="title">
+          <div class="name">Mensajes</div>
+          <div class="extra">Tu tienes {{notificacionMensajesUsuarios}} mensajes ahora</div>
+        </div>
+      </div>
+      <div class="notification" fxLayout="row" fxLayoutAlign="start center" matRipple *ngFor="let mensaje of listaMensajes" >
+        <img matListAvatar [src]="mensaje?.usuario_emisor[0].urlImage" class="circle">
+        <h3 matLine> {{mensaje?.usuario_emisor[0].nombre}}</h3>
+        <p matLine>
+          <span>Creado:{{mensaje?.fecha_creacion | date: 'fullDate'}}</span>
+        </p>
+        <p matLine>
+          <span>Mensaje: {{mensaje?.descripcion}}</span>
+        </p>
+        <p matLine>
+          <span>Correo: {{mensaje?.usuario_emisor[0].correo}}</span>
+        </p>
+        <div class="divider"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <div class="toolbar-button" fxLayout="row" fxLayoutAlign="start center" (clickOutside)="onClickOutsideAcciones()">
+    <button type="button" mat-button (click)="toggleDropdownAcciones()" [class.open]="isOpenAcciones">
       <span class="badge bg-danger">{{notificacionAccionesUsuarios}}</span>
-    <mat-icon >message
-    </mat-icon>
-  </button>
-
-
-
-  <mz-dropdown [id]="'dropdown-notificacion'" [align]="'right'" [belowOrigin]="false" [constrainWidth]="true" [dropdownButtonId]="'btn-dropdown-notificacion'"
-    [gutter]="true" [hover]="true" [inDuration]="300" [outDuration]="300" [stopPropagation]="true">
-    <mz-dropdown-item class="notificacion">
-      Notificaciones
-    </mz-dropdown-item>
-    <mz-dropdown-divider></mz-dropdown-divider>
-    <mz-dropdown-item>
-      <ul class="collection" *ngIf="listaAcciones">
-        <li class="collection-item avatar" *ngFor="let acciones of listaAcciones">
-          <img [src]="acciones?.usuario_emisor[0].urlImage" class="circle">
-          <span class="title">{{acciones?.usuario_emisor[0].nombre}} :{{acciones?.usuario_emisor[0].correo}}</span>
-          <p>Tipo Notificacion: {{acciones?.tipo}}</p>
-          <p>creado:{{acciones?.fecha_creacion | date: 'dd/MM/yyyy'}}<br> Mensaje:{{acciones?.descripcion}}
+      <mat-icon >message</mat-icon>
+    </button>
+    
+    <div class="dropdown mat-elevation-z1" [class.open]="isOpenAcciones">
+      <div class="card">
+        <div class="header" fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="title">
+            <div class="name">Notificaciones</div>
+            <div class="extra">Tu tienes {{notificacionAccionesUsuarios}} notificaciones ahora</div>
+          </div>
+        </div>
+        <div class="notification" fxLayout="row" fxLayoutAlign="start center" matRipple *ngFor="let acciones of listaAcciones" >
+          <p matLine>
+            <span>Tipo Notificacion: {{acciones?.tipo}}</span>
           </p>
-        </li>
-      </ul>
-    </mz-dropdown-item>
-  </mz-dropdown>
+          <p matLine>
+            <span>Creado:{{acciones?.fecha_creacion | date: 'fullDate'}}</span>
+          </p>
+          <p matLine>
+            <span>Mensaje: {{acciones?.descripcion}}</span>
+          </p>
+          <p matLine>
+            <span>Correo: {{acciones?.usuario_emisor[0].correo}}</span>
+          </p>
+          <div class="divider"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 
   <mz-dropdown [id]="'dropdown-Perfil'" [belowOrigin]="true" [constrainWidth]="true" [dropdownButtonId]="'btn-dropdown-Perfil'"
     [gutter]="2" [hover]="true" [inDuration]="300" [outDuration]="300" [stopPropagation]="true">
     <mz-dropdown-divider></mz-dropdown-divider>
     <mz-dropdown-item>
-      <a href="#!">Mi cuenta</a>
+      <a [routerLink]="['/home','micuenta']">Mi cuenta</a>
     </mz-dropdown-item>
     <mz-dropdown-divider></mz-dropdown-divider>
     <mz-dropdown-item>
-      <a href="#!">Tablero de actividades</a>
+      <a [routerLink]="['/home','tablero']">Tablero de actividades</a>
     </mz-dropdown-item>
     <mz-dropdown-divider></mz-dropdown-divider>
     <mz-dropdown-item>
@@ -91,10 +101,10 @@
   </mz-dropdown>
 
   <button id="btn-dropdown-Perfil">
-      <span fxLayout="row" fxLayoutAlign="start center">
-        <img class="avatar" [src]="imagen">
-        <span class="name" fxHide fxShow.gt-sm>{{nombre}}</span>
-        <mat-icon class="icon" fxHide fxShow.gt-sm>keyboard_arrow_down</mat-icon>
-      </span>
-    </button>
+    <span fxLayout="row" fxLayoutAlign="start center">
+      <img class="avatar" [src]="imagen">
+      <span class="name" fxHide fxShow.gt-sm>{{nombre}}</span>
+      <mat-icon class="icon" fxHide fxShow.gt-sm>keyboard_arrow_down</mat-icon>
+    </span>
+  </button>
 </div>

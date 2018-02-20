@@ -1,135 +1,39 @@
-<div class="row">
-  <div class="col s12 m12 center">
-    <h5> {{informacion}}</h5>
+
+
+
+<div fxLayout="column" fxLayoutAlign="center stretch">
+  
+  <div fxLayout="row" fxLayout.gt-md="row" fxFlex="100%" fxFlex.gt-sm fxLayoutAlign="center">
+    <h5>{{informacion}}</h5>
   </div>
-</div>
-
-<div class="row">
-  <div class="col s12 m12 center">
-    <h5>Tablero de Actividades</h5>
-  </div>
-</div>
-
-<div class="row actividadesPortal">
-  <div class="col s12 m6">
-    <mat-progress-spinner [color]="warn" *ngIf="loadGraficaActividades">
-    </mat-progress-spinner>
-    <div class="card big" *ngIf="!loadGraficaActividades">
-      <div class="card-image waves-effect waves-block waves-light">
-        <img class="activator" src="assets/img/imagen_estadistica.jpg">
-      </div>
-      <div class="card-content">
-        <span class="card-title activator grey-text text-darken-4">Estadistica de mis actividades en el portal</span>
-      </div>
-      <div class="card-reveal">
-        <span class="card-title grey-text text-darken-4">
-          <i class="material-icons right">close</i>
-        </span>
-
-        <canvas baseChart width="400" height="400" [datasets]="barChartDataActivities" [labels]="labels" [options]="Options" [legend]="legend"
-          [chartType]="barChartType"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row actividadesPreguntas">
-  <div class="col s12 m6">
-    <mat-progress-spinner [color]="warn" *ngIf="loadGraficaPreguntas">
-    </mat-progress-spinner>
-    <div class="card big " *ngIf="!loadGraficaPreguntas">
-      <div class="card-image waves-effect waves-block waves-light">
-        <img class="activator" src="assets/img/imagen_estadistica2.jpeg">
-      </div>
-      <div class="card-content">
-        <span class="card-title activator grey-text text-darken-4">Estadisticas de Preguntas Desarrolladas</span>
-      </div>
-      <div class="card-reveal">
-        <span class="card-title grey-text text-darken-4">
-          <i class="material-icons right">close</i>
-        </span>
-
-        <canvas baseChart width="400" height="400" [datasets]="lineDataPreguntasValidasNoValidas" [labels]="labels" [options]="Options"
-          [legend]="legend" [chartType]="lineChartType"></canvas>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row actividadesEncuestas">
-  <div class="col s12 m8">
-    <mat-progress-spinner [color]="warn" *ngIf="loadGraficaEncuestas">
-    </mat-progress-spinner>
-    <div class="card big" *ngIf="!loadGraficaEncuestas">
-      <div class="card-image waves-effect waves-block waves-light">
-        <img class="activator" src="assets/img/imagen_estadistica3.gif">
-      </div>
-      <div class="card-content">
-        <span class="card-title activator grey-text text-darken-4">Encuestas Creadas</span>
-      </div>
-      <div class="card-reveal">
-        <span class="card-title grey-text text-darken-4">
-          <i class="material-icons right">close</i>
-        </span>
-        <canvas baseChart width="400" height="400" [datasets]="lineEncuestasByMonth" [labels]="labels" [options]="Options" [legend]="legend"
-          [chartType]="lineChartType"></canvas>
-
-      </div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="space-between stretch">
+    
+    <div fxLayout="column" fxLayout.gt-md="row" fxFlex="100%" fxFlex.gt-sm>
+      <app-widget-comentarios  [options]="usuarioActivos"  fxFlex="100%" fxFlex.gt-sm></app-widget-comentarios>
+      <app-widget-comentarios  [options]="encuestasVisitadas"  fxFlex="100%" fxFlex.gt-sm></app-widget-comentarios>
 
     </div>
-  </div>
+    
+    <div fxLayout="column" fxLayout.gt-md="row" fxFlex="100%" fxFlex.gt-sm>
+      <app-widget-comentarios  [options]="preguntasComentadas"  fxFlex="100%" fxFlex.gt-sm></app-widget-comentarios>
+      <app-widget-comentarios  [options]="comentariosAcertados"  fxFlex="100%" fxFlex.gt-sm></app-widget-comentarios>
 
-</div>
-
-<div class="row">
-  <div class="col s12 m12">
-    <mat-progress-spinner [color]="warn" *ngIf="loadDiscusiones">
-    </mat-progress-spinner>
-    <div *ngIf="!loadDiscusiones">
-      <div *ngIf="listaDiscusionesByPreguntas">
-        <label>Mis discusiones</label>
-        <ul class="collection">
-          <li class="collection-item avatar" *ngFor="let item of listaDiscusionesByPreguntas">
-            <img [src]="item?.urlImage" class="circle">
-            <span class="title">{{item?.nombreUsuario}}</span>
-            <p *ngIf="item?.institucion">Institucion:
-              <br> {{item?.institucion}}
-            </p>
-            <label *ngIf="item?.titulo">{{item?.titulo}}</label>
-            <label *ngIf="item?.descripcion">{{item?.descripcion}}</label>
-          </li>
-        </ul>
-      </div>
     </div>
+  
   </div>
-
-</div>
-
-<div class="row">
-  <div class="col s12 m12">
-    <mat-progress-spinner [color]="warn" *ngIf="loadComentarios">
-    </mat-progress-spinner>
-    <div *ngIf="!loadComentarios">
-      <div *ngIf="listaComentariosByPreguntas">
-        <label>Mis comentarios</label>
-        <ul class="collection">
-          <li class="collection-item avatar" *ngFor="let comentario of listaComentariosByPreguntas">
-            <img [src]="comentario?.urlImage" class="circle">
-            <span class="title">{{comentario?.nombreUsuario}}</span>
-            <p *ngIf="comentario?.institucion">Institucion:
-              <br> {{comentario?.institucion}}
-            </p>
-            <p>Creado : {{comentario?.fecha_creacion}}
-            </p>
-            <label *ngIf="comentario?.contenido">{{comentario?.contenido}}</label>
-            <i *ngIf="comentario?.likes" class="material-icons secondary-content">thumb-up-outline</i>{{comentario?.likes}}
-            <i *ngIf="comentario?.dislikes" class="material-icons secondary-content">thumb-down-outline</i>{{comentario?.dislikes}}
-            <i *ngIf="comentario?.favoritos" class="material-icons secondary-content">heart-outline</i>{{comentario?.favoritos}}
-          </li>
-        </ul>
-      </div>
-    </div>
+  
+  <div fxLayout="column" fxLayout.gt-md="row" fxLayoutAlign="center stretch">
+    <app-widget-discusiones [options]="preguntas" [id]="idUsuario" fxFlex="49%" fxFlex.gt-sm></app-widget-discusiones>
   </div>
-
+  <div fxLayout="column" fxLayout.gt-md="row" fxLayoutAlign="center stretch">
+    <app-widget-encuestas  [options]="encuesta" [id]="idUsuario" fxFlex="49%" fxFlex.gt-sm></app-widget-encuestas>
+  </div>
+  
+  <div fxLayout="row">
+    <app-widget-colaboradores [id]="idUsuario"></app-widget-colaboradores>
+  </div>
 </div>

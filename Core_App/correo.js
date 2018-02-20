@@ -12,8 +12,6 @@ let transporter = nodemailer.createTransport({
 
 
 exports.sendEmailPreguntaCreada= (receptor,topico) => {
-    console.log(receptor);
-    console.log(topico);
     const contenido = `<h4>De parte del equipo que conforma esta plataforma estamos agradecido
         contigo por usar Open source survey pero debo
         notificarte algo</h4>
@@ -44,7 +42,7 @@ exports.sendEmailPreguntaCreada= (receptor,topico) => {
 };
 
 exports.sendEmailEstadoPregunta=(receptor,estado,topico,textoCambio)=>{
-    var contenido = '';
+    let contenido ;
     if (estado === 'revision'){
         contenido = `<h4>Estado de la pregunta creada</h4>
         <p>La pregunta del Sr ${receptor} con categoria ${topico}
@@ -70,7 +68,7 @@ exports.sendEmailEstadoPregunta=(receptor,estado,topico,textoCambio)=>{
         <p>Saludos Open Source Survey</p>`;
 
     }
-    console.log(estado);
+    console.log(contenido);
     let mailOptions = {
         from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
         to: receptor,
@@ -106,7 +104,7 @@ exports.sendComentarioCreado=(receptor,contenido)=>{
         console.log(info);
     });
 
-}
+};
 
 exports.sendComentarioCreadoEncuesta=(receptor,contenido)=>{
     const contenidoComentario = `<h4>Comentario Creado</h4>
@@ -128,7 +126,7 @@ exports.sendComentarioCreadoEncuesta=(receptor,contenido)=>{
         console.log(info);
     });
 
-}
+};
 
 
 exports.sendCorreoDiscusionCreada =(receptor,nombre,titulo)=>{
@@ -151,7 +149,7 @@ exports.sendCorreoDiscusionCreada =(receptor,nombre,titulo)=>{
         console.log('mensaje enviando');
         console.log(info);
     });
-}
+};
 
 exports.sendCorreoAddColaborador=(duenoEncuesta, tituloEncuesta, correoRemitente, rol, nombre)=>{
     const compartirEncuesta = `<h4>Te han añadido como colaborador de una encuesta</h4>
@@ -173,13 +171,13 @@ exports.sendCorreoAddColaborador=(duenoEncuesta, tituloEncuesta, correoRemitente
         console.log('mensaje enviando');
         console.log(info);
     });
-}
+};
 
-exports.actualizacionRolColaborador = (dueñoEncuesta, correoRemitente, rol, nombre) => {
+exports.actualizacionRolColaborador = (elaboradorEncuesta, correoRemitente, rol, nombre) => {
     const compartirEncuesta = `<h4>Te han cambiado el rol que tiene sobre una encuesta</h4>
-    Estimado ${nombre} el usuario ${duenoEncuesta} a permitido que puedas  ${rol} su encuesta,
+    Estimado ${nombre} el usuario ${elaboradorEncuesta} a permitido que puedas  ${rol} su encuesta,
     en su menu lateral izquierdo en la seccion de encuesta, encontrara un subseccion de encuestas compartida
-    ahi podra acceder a la encuesta que el usuario ${duenoEncuesta} ha compartido con usted.`;
+    ahi podra acceder a la encuesta que el usuario ${elaboradorEncuesta} ha compartido con usted.`;
     let mailOptions = {
         from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
         to: correoRemitente,
@@ -194,11 +192,11 @@ exports.actualizacionRolColaborador = (dueñoEncuesta, correoRemitente, rol, nom
         console.log('mensaje enviando');
         console.log(info);
     });
-}
+};
 
-exports.eliminacionColaborador = (dueñoEncuesta, correoRemitente, nombre, tituloEncuesta) => {
+exports.eliminacionColaborador = (elaboradorEncuesta, correoRemitente, nombre, tituloEncuesta) => {
     const compartirEncuesta = `<h4>Te han eliminado como colaborador de una encuesta</h4>
-    Estimado ${nombre} el usuario ${duenoEncuesta} te ha eliminado como colaborador de su encuesta,
+    Estimado ${nombre} el usuario ${elaboradorEncuesta} te ha eliminado como colaborador de su encuesta,
     con el titulo ${tituloEncuesta}.`;
     let mailOptions = {
         from: '"Open Source Survey" <2017opensourcesurvey@gmail.com>',
@@ -214,4 +212,4 @@ exports.eliminacionColaborador = (dueñoEncuesta, correoRemitente, nombre, titul
         console.log('mensaje enviando');
         console.log(info);
     });
-}
+};

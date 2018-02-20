@@ -1,28 +1,23 @@
 <div class="inbox" fxLayout="column">
-  <div class="header mat-elevation-z2"></div>
-  <div class="container" fxLayout="row">
-
-    <div class="content-container" fxFlex fxLayout="column">
-
-      <div class="search mat-elevation-z2" fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="center center">
-          <mat-icon>search</mat-icon>
-        </div>
-        <input #input [(ngModel)]="textoBusqueda" [formControl]="searchField" fxFlex type="search" placeholder="Busqueda por etiqueta de la Encuesta">
-      </div>
-
-      <div class="mails-container mat-elevation-z2" fxFlex>
+  <div class="header mat-elevation-z2">
+    <h4>Encuestas Creadas por el usuario</h4>
+  </div>
+  <div class="search mat-elevation-z2" fxLayout="row" id="busqueda">
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <mat-icon>search</mat-icon>
+    </div>
+    <input #input [(ngModel)]="textoBusqueda" [formControl]="searchField" fxFlex type="search" placeholder="Busqueda por etiqueta de la Encuesta">
+  </div>
+  <div class="content-container" fxFlex fxLayout="row">
+    
+    <mat-card  fxFlex>
+      <mat-card-title fxLayout="row" fxLayoutAlign="space-between center">
+        <span>Listado de Encuestas</span>
         <div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
-          <button mat-icon-button [swal]="eliminarTodasLasEncuestasSwal" (confirm)="eliminarTodasMisEncuestas()">
+          <button mat-icon-button [swal]="eliminarTodasLasEncuestasSwal" (confirm)="eliminarTodasMisEncuestas()" class="eliminarTodasLasEncuestas">
             <mat-icon>delete</mat-icon> Eliminar todas mis encuestas
           </button>
-
-          <span fxFlex>
-            <!-- fill space -->
-          </span>
-          <span fxFlex>
-            <!-- fill space -->
-          </span>
+    
           <span>{{pageActual}} - 5 de {{numberPages}}</span>
           <div class="chevrons">
             <button mat-icon-button (click)="previous()">
@@ -33,99 +28,68 @@
             </button>
           </div>
         </div>
-
-        <div class="mails">
-          <a class="mail" #mailList fxLayout="row">
-            <div fxHide="true" fxHide.gt-xs="false" class="start-wrapper" fxFlex="180px" fxFlex.gt-sm="270px" fxLayout="row" fxLayoutAlign="start center">
-              <span class="from-name">Titulo</span>
-            </div>
-            <p class="content-wrapper" fxLayout="row" fxLayoutAlign="start center">
-              <span class="subject">Descripcion</span>
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-              <span class="content">Cantidad de Preguntas</span>
-            </p>
-          </a>
-          <a class="mail" #mailList *ngFor="let encuesta of listaMisEncuestas" fxLayout="row">
-            <div fxHide="true" fxHide.gt-xs="false" class="start-wrapper" fxFlex="180px" fxFlex.gt-sm="270px" fxLayout="row" fxLayoutAlign="start center">
-              <span class="from-name">{{ encuesta?.titulo }}</span>
-            </div>
-            <p class="content-wrapper" fxLayout="row" fxLayoutAlign="start center">
-              <span class="subject">{{ encuesta?.descripcion }}</span>
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-
-              <span fxFlex>
-                <!-- fill space -->
-              </span>
-              <span class="content">{{ encuesta?.numeroPreguntas }}</span>
-            </p>
-            <div fxHide="true" fxHide.gt-xs="false" fxFlex="100px" fxFlex.gt-sm="120px" fxLayout="row" fxLayoutAlign="end center">
-              <button fxHide="true" fxHide.gt-sm="false" class="options" [matMenuTriggerFor]="mailOptions" mat-icon-button>
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #mailOptions="matMenu">
-                <button mat-menu-item (click)="verEncuesta(encuesta?.id)">
-                  <mat-icon>markunread_mailbox</mat-icon>Ver Encuesta</button>
-                <button mat-menu-item (click)="verListadoDiscusiones(encuesta?.id)">
-                  <mat-icon>label</mat-icon>Ver Listado de Discusiones</button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="editarEncuesta(encuesta?.id)">
-                  <mat-icon>delete</mat-icon>Editar Encuesta</button>
-                <swal #eliminarEncuestaSwal title="Desea eliminar la encuesta seleccionada?" text="Al eliminar su encuesta, se conservaran las discusiones, preguntas y comentarios que otros usuarios
+      </mat-card-title>
+      <mat-card-content>
+        <table>
+          <thead>
+          <tr>
+            <th>Titulo</th>
+            <th>Descripcion</th>
+            <th>Fecha creacion</th>
+            <th>Etiqueta</th>
+            <th>Cantidad de Preguntas</th>
+            <th>Opciones</th>
+          </tr>
+          </thead>
+          <tbody>
+           <tr *ngFor="let encuesta of listaMisEncuestas">
+             <td>{{encuesta?.titulo}}</td>
+             <td>{{encuesta?.descripcion}}</td>
+             <td>{{encuesta?.fecha_creacion}}</td>
+             <td >
+               <div *ngFor="let etiqueta of encuesta?.labels">
+                 {{etiqueta?.texto}},
+               </div>
+             </td>
+             <td>{{encuesta?.numeroPreguntas}}</td>
+             <td>
+               <button  class="options" [matMenuTriggerFor]="mailOptions" mat-icon-button>
+                 <mat-icon>more_vert</mat-icon>
+               </button>
+               <mat-menu #mailOptions="matMenu">
+                 <button mat-menu-item (click)="verEncuesta(encuesta?.id)">
+                   Ver Encuesta</button>
+                 <button mat-menu-item (click)="verListadoDiscusiones(encuesta?.id)">
+                   Ver Listado de Discusiones</button>
+                 <mat-divider></mat-divider>
+                 <button mat-menu-item (click)="editarEncuesta(encuesta?.id)">
+                   Editar Encuesta</button>
+                 <swal #eliminarEncuestaSwal title="Desea eliminar la encuesta seleccionada?" text="Al eliminar su encuesta, se conservaran las discusiones, preguntas y comentarios que otros usuarios
               han realizado en su contenido, pero se les notificara acerca de la accion que usted llevo
               a cabo" type="question" [showConfirmButton]="true" [showCancelButton]="true" [focusCancel]="true" (confirm)="eliminarEncuesta(encuesta?.id, encuesta)">
-
-                </swal>
-                <button mat-menu-item [swal]="eliminarEncuestaSwal">
-                  <mat-icon>delete</mat-icon>Eliminar Encuesta</button>
-                <button mat-menu-item (click)="compartirEncuesta(encuesta?.id)">
-                  <mat-icon>delete</mat-icon>Compartir Encuesta</button>
-                <button mat-menu-item (click)="responderEncuesta(encuesta?.id)">
-                  <mat-icon>delete</mat-icon>Responder Encuesta</button>
-                <button mat-menu-item (click)="verResultados(encuesta?.id)">
-                  <mat-icon>delete</mat-icon>Ver Resultados</button>
-              </mat-menu>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
+    
+                 </swal>
+                 <button mat-menu-item [swal]="eliminarEncuestaSwal">
+                   Eliminar Encuesta</button>
+                 <button mat-menu-item (click)="compartirEncuesta(encuesta?.id)">
+                   Compartir Encuesta</button>
+                 <button mat-menu-item (click)="responderEncuesta(encuesta?.id)">
+                   Responder Encuesta</button>
+                 <button mat-menu-item (click)="verResultados(encuesta?.id)">
+                   Ver Resultados</button>
+               </mat-menu>
+               
+             </td>
+             
+           </tr>
+          </tbody>
+        </table>
+        
+      </mat-card-content>
+      
+    </mat-card>
   </div>
+  
 </div>
 
 <swal #eliminado title="Encuesta Eliminada" text="Dicha encuesta ha sida eliminada de forma exitosa de la base de datos"

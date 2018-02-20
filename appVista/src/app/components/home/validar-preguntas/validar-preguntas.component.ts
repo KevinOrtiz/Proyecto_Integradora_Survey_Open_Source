@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
-import { FormGroup, FormControl, Validators} from '@angular/forms';
-import { DiscusionesService } from '../../../services/discusiones.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {SwalComponent} from '@toverux/ngx-sweetalert2';
+import {DiscusionesService} from '../../../services/discusiones.service';
+import {NotificacionesService} from '../../../services/notificaciones.service';
 
 
 @Component({
@@ -48,7 +49,7 @@ export class ValidarPreguntasComponent implements OnInit {
       value: 'aceptada', descripcion: 'aceptada'
   }];
   formularioDiscusion: FormGroup;
-  constructor(private discusionesServicio: DiscusionesService) { }
+  constructor(private discusionesServicio: DiscusionesService, private servicioNotificacion: NotificacionesService) { }
 
   ngOnInit() {
     this.formularioDiscusion = new FormGroup({
@@ -71,6 +72,8 @@ export class ValidarPreguntasComponent implements OnInit {
          this.guardado.show();
       }else if (res['status'] === 304) {
         this.registroExistente.show();
+        this.servicioNotificacion.sendNotificacionAccion(this.servicioNotificacion.getIDreceptor(),
+          `su pregunta ha pasado a un estado de ${value.estado}`, 'cambio-estado-pregunta')
       }else {
         this.error.show();
       }

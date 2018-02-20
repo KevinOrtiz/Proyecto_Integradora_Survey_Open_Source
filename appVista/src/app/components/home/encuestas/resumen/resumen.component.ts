@@ -1,13 +1,14 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { EncuestasService } from '../../../../services/encuestas.service';
-import { Subscription } from 'rxjs/Subscription';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs/Subscription';
+import {EncuestasService} from '../../../../services/encuestas.service';
 
 @Component({
   selector: 'app-resumen',
   templateUrl: './resumen.component.html',
   styleUrls: ['./resumen.component.scss']
 })
-export class ResumenComponent implements OnInit, AfterViewInit {
+export class ResumenComponent implements OnInit, AfterViewInit, OnDestroy {
+  
   tituloEncuesta = '';
   descripcionEncuesta = '';
   numeroPreguntas = 0;
@@ -36,5 +37,11 @@ export class ResumenComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit () {
   }
+  ngOnDestroy(): void {
+    this.subscripcionDescripcion.unsubscribe();
+    this.subscripcionTitulo.unsubscribe();
+    this.subscripcionUrl.unsubscribe();
+  }
+  
 
 }

@@ -1,29 +1,45 @@
 
 <div *ngIf="activarCargadorPagina">
-    <app-loader></app-loader>
+    <app-loader [estadoVentana]="'Bienvenido a Open source survey'"></app-loader>
 </div>
 
-<div class = "layout-accounts">
-  <div class="account-wrap">
-      <div class="account-card">
-          <div class="account-content smart-forms">
-                <div class="text-center">
-                    <a href="#"><img src="" alt=""></a>
-                </div>
-                  <div class="form-body">
 
-                      <div class="spacer-b30">
-                          <div class="tagline"><span>Autenticate con Plataforma Sociales</span></div><!-- .tagline -->
-                      </div>                 
+<div fxLayout="row" fxLayoutAlign="center center" style="height: 100%;" *ngIf="!activarCargadorPagina">
+  <div class="login mat-elevation-z12">
+    <div class="login-header" fxLayout="column" fxLayoutAlign="center center">
+      <img src="assets/img/login_opinion.png">
+    </div>
+    <div class="login-content" fxLayout="column" fxLayoutAlign="start stretch">
+      <span fxLayoutAlign="center center">Autenticacion mediante servicios sociales</span>
+      <br>
+      <br>
+      <button mat-raised-button class="color-google" (click)="loginGoogle()">
+        <i mz-icon-mdi [icon]="'google'">
+        </i>
+        Autenticacion por Google
+      </button>
+      <br>
+      <br>
+      <button mat-raised-button class="color-twitter" (click)="loginTwitter()">
+        <i mz-icon-mdi [icon]="'twitter'">
+        </i>
+        Autenticacion por Twitter
+      </button>
+      <br>
+      <br>
+      <button mat-raised-button class="color-github" (click)="loginGithub()">
+        <i mz-icon-mdi [icon]="'github-circle'">
+        </i>
+        Autenticacion por Github
 
-                      <div class="section">
-                        <div class="col col-sm-10">
-                            <a  class="button btn-social googleplus span-left amplitud50" (click)="loginGoogle()"> <span><i class="fab fa-google-plus-g"></i></span> Google+ </a>                            
-                        </div>
-                      </div><!-- end section -->
-                                                 
-                  </div><!-- end .form-body section -->
-          </div>
-      </div>
+      </button>
+      <br>
+    </div>
   </div>
 </div>
+
+<swal #correoFaltante
+      title="Correo inexistente de la cuenta asociada"
+      text="Es necesario que la cuenta que se va asociar a la plataforma
+            tenga un correo valido determinado."
+      [showConfirmButton]="true"></swal>

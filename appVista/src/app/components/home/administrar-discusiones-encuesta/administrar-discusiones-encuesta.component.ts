@@ -1,4 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {MatDialog} from '@angular/material';
+import {Router} from '@angular/router';
+import {SwalComponent} from '@toverux/ngx-sweetalert2';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/take';
+import {ComentariosService} from '../../../services/comentarios.service';
+import {DiscusionesService} from "../../../services/discusiones.service";
+import {EncuestasService} from "../../../services/encuestas.service";
+import {EditarDiscusionEncuestaComponent} from "../editar-discusion-encuesta/editar-discusion-encuesta.component";
+import {VerDiscusionEncuestaComponent} from "../ver-discusion-encuesta/ver-discusion-encuesta.component";
+import {VerEncuestaComponent} from "../ver-encuesta/ver-encuesta.component";
 
 @Component({
   selector: 'app-administrar-discusiones-encuesta',
@@ -6,300 +20,104 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./administrar-discusiones-encuesta.component.scss']
 })
 export class AdministrarDiscusionesEncuestaComponent implements OnInit {
-  shownMails = [
-    {
-      'from': {
-        'name': 'Mccormick Hinton',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'est cillum magna',
-      'content': 'Sint eiusmod pariatur veniam esse dolor exercitation in cillum sunt proident anim. Amet sunt it mollit ',
-      'read': true,
-      'starred': true,
-      'labels': [
-        {
-          'name': 'Private',
-          'color': 'darkgrey'
-        }
-      ],
-      'group': 'promotions',
-      'type': 'sent',
-      'attachments': ['assets/img/backgrounds/1.jpg']
-    },
-    {
-      'from': {
-        'name': 'Rutledge Hammond',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'non non ex',
-      'content': 'Exercitation Lorem laborum veniam ea fugiat esse fugiat commodo cupidatat. Laborum dolore labore quis consectetur ex.',
-      'read': false,
-      'starred': true,
-      'labels': [
-      ],
-      'group': 'social',
-      'type': 'trash',
-      'attachments': ['assets/img/backgrounds/2.jpg']
-    },
-    {
-      'from': {
-        'name': 'Vilma Russo',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'veniam ipsum irure',
-      'content': 'Mollit voluptate ea nostrud minim deserunt laborum quis proident adipisicing culpa. Excepteur reprehenderit dolore non ',
-      'read': true,
-      'starred': false,
-      'labels': [
-      ],
-      'group': 'promotions',
-      'type': 'spam',
-      'attachments': ['assets/img/backgrounds/1.jpg']
-    },
-    {
-      'from': {
-        'name': 'Blankenship Clarke',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'consectetur qui irure',
-      'content': 'Ex labore culpa eu quis commodo nulla ',
-      'read': true,
-      'starred': true,
-      'labels': [
-        {
-          'name': 'Project X',
-          'color': '#4CA9BB'
-        }
-      ],
-      'group': 'primary',
-      'type': 'none',
-      'attachments': ['assets/img/backgrounds/1.jpg']
-    },
-    {
-      'from': {
-        'name': 'Harper Deleon',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'ad laborum duis',
-      'content': 'Dolore consequat',
-      'read': true,
-      'starred': false,
-      'labels': [
-      ],
-      'group': 'primary',
-      'type': 'spam',
-      'attachments': ['assets/img/backgrounds/2.jpg']
-    },
-    {
-      'from': {
-        'name': 'Jimmie Hicks',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'do sit amet',
-      'content': 'nulo',
-      'read': true,
-      'starred': false,
-      'labels': [
-        {
-          'name': 'Priority!',
-          'color': '#4BAE4F'
-        }
-      ],
-      'group': 'promotions',
-      'type': 'none',
-      'attachments': ['assets/img/backgrounds/2.jpg']
-    },
-    {
-      'from': {
-        'name': 'Valentine Ray',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'nulla adipisicing consectetur',
-      'content': 'nulo',
-      'read': false,
-      'starred': true,
-      'labels': [
-      ],
-      'group': 'social',
-      'type': 'draft',
-      'attachments': ['assets/img/backgrounds/2.jpg']
-    },
-    {
-      'from': {
-        'name': 'Kristi Burch',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'id ad qui',
-      'content': 'nulo',
-      'read': false,
-      'starred': false,
-      'labels': [
-        {
-          'name': 'Private',
-          'color': '#4BAE4F'
-        }
-      ],
-      'group': 'promotions',
-      'type': 'sent',
-      'attachments': ['assets/img/backgrounds/2.jpg', 'assets/img/backgrounds/3.jpg']
-    },
-    {
-      'from': {
-        'name': 'Gay Herrera',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'tempor occaecat est',
-      'content': 'nulo',
-      'read': false,
-      'starred': false,
-      'labels': [
-        {
-          'name': 'Outreach',
-          'color': 'darkgrey'
-        }
-      ],
-      'group': 'primary',
-      'type': 'spam',
-      'attachments': ['assets/img/backgrounds/2.jpg']
-    },
-    {
-      'from': {
-        'name': 'Lynnette Williamson',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'quis ex elit',
-      'content': 'nulo',
-      'read': false,
-      'starred': true,
-      'labels': [
-      ],
-      'group': 'primary',
-      'type': 'sent',
-      'attachments': ['assets/img/backgrounds/2.jpg', 'assets/img/backgrounds/3.jpg']
-    },
-    {
-      'from': {
-        'name': 'Erna Clemons',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'nostrud minim veniam',
-      'content': 'nulo',
-      'read': true,
-      'starred': true,
-      'labels': [
-        {
-          'name': 'Private',
-          'color': 'red'
-        }
-      ],
-      'group': 'social',
-      'type': 'trash',
-      'attachments': ['assets/img/backgrounds/2.jpg', 'assets/img/backgrounds/3.jpg']
-    },
-    {
-      'from': {
-        'name': 'Delia Robbins',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'qui et elit',
-      'content': 'nulo',
-      'read': false,
-      'starred': true,
-      'labels': [
-      ],
-      'group': 'promotions',
-      'type': 'spam',
-      'attachments': ['assets/img/backgrounds/2.jpg', 'assets/img/backgrounds/3.jpg']
-    },
-    {
-      'from': {
-        'name': 'Vicki Atkinson',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'id voluptate exercitation',
-      'content': 'nulo',
-      'read': false,
-      'starred': true,
-      'labels': [
-      ],
-      'group': 'primary',
-      'type': 'sent',
-      'attachments': ['assets/img/backgrounds/1.jpg']
-    },
-    {
-      'from': {
-        'name': 'Marian Newman',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'adipisicing sint commodo',
-      'content': 'culto',
-      'read': true,
-      'starred': false,
-      'labels': [
-      ],
-      'group': 'social',
-      'type': 'spam',
-      'attachments': ['assets/img/backgrounds/1.jpg']
-    },
-    {
-      'from': {
-        'name': 'Foley Prince',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'occaecat et eiusmod',
-      'content': 'nulo',
-      'read': true,
-      'starred': true,
-      'labels': [
-      ],
-      'group': 'social',
-      'type': 'sent',
-      'attachments': ['assets/img/backgrounds/2.jpg', 'assets/img/backgrounds/3.jpg']
-    },
-    {
-      'from': {
-        'name': 'Shaw Sanford',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'eu magna ut',
-      'content': 'magia',
-      'read': false,
-      'starred': false,
-      'labels': [
-      ],
-      'group': 'social',
-      'type': 'none',
-      'attachments': ['assets/img/backgrounds/2.jpg', 'assets/img/backgrounds/3.jpg']
-    },
-    {
-      'from': {
-        'name': 'Fernandez Wilcox',
-        'mail': 'demo@justademomail.com'
-      },
-      'subject': 'ut aliqua reprehenderit',
-      'content': 'Dolor ',
-      'read': false,
-      'starred': true,
-      'labels': [
-      ],
-      'group': 'promotions',
-      'type': 'sent',
-      'attachments': ['assets/img/backgrounds/2.jpg']
-    }
-  ];
-  constructor() { }
+  numberPages=1;
+  pageActual = 1;
+  listadiscusionEncuesta =[];
+  searchField: FormControl;
+  BusquedaFinalizada = false;
+  textoBusqueda = '';
+  @ViewChild('eliminado') private eliminado: SwalComponent;
+  @ViewChild('error') private error: SwalComponent;
+  constructor(private servicioDiscusion: DiscusionesService,
+              private servicioEncuesta: EncuestasService,
+              private servicioComentario: ComentariosService,
+              private dialog: MatDialog,
+              private router: Router) { }
 
   ngOnInit() {
+    this.servicioDiscusion.setTipoDiscusion('encuesta');
+    this.searchField = new FormControl;
+    this.searchField.valueChanges
+      .debounceTime(400)
+      .distinctUntilChanged()
+      .switchMap(etiqueta => this.servicioDiscusion.loadListaMisDiscusiones(1, etiqueta))
+      .subscribe((res)=>{
+        this.listadiscusionEncuesta = res['listadiscusionEncuesta'];
+        this.numberPages = res['pages'];
+        this.BusquedaFinalizada = true;
+      })
+  }
+  
+  next(){
+    this.pageActual = this.pageActual + 1;
+    this.servicioDiscusion.loadListaMisDiscusiones(this.pageActual, this.textoBusqueda)
+      .subscribe((res)=>{
+        this.listadiscusionEncuesta = res['listadiscusionEncuesta'];
+        this.numberPages = res['pages'];
+      })
+  }
+  
+  previous(){
+    if (this.pageActual > 1){
+      this.pageActual = this.pageActual - 1;
+      this.servicioDiscusion.loadListaMisDiscusiones(this.pageActual, this.textoBusqueda)
+        .subscribe((res) => {
+          this.listadiscusionEncuesta = res['listadiscusionEncuesta'];
+          this.numberPages = res['pages'];
+        })
+    }
+  }
+  
+  verEncuesta(id){
+    this.servicioEncuesta.setIDEncuesta(id);
+    const modalEncuesta = this.dialog.open(VerEncuestaComponent, {
+      width: '1000px'
+    });
+    modalEncuesta.afterClosed().subscribe(result => {
+    
+    });
+  }
+  
+  verDiscusion(id) {
+    this.servicioDiscusion.setIdCuerpoDiscusion(id);
+    const modalDiscusion = this.dialog.open(VerDiscusionEncuestaComponent, {
+      width: '800px'
+    });
+    modalDiscusion.afterClosed().subscribe(result => {
+      console.log('ventana cerrada');
+    });
+  }
+  editarDiscusion(id) {
+    this.servicioDiscusion.setIdCuerpoDiscusion(id);
+    const editarDiscusion = this.dialog.open(EditarDiscusionEncuestaComponent, {
+      width: '960px',
+      height: '683px'
+    });
+    editarDiscusion.afterClosed().subscribe(result => {
+      console.log('ventana cerrada');
+    });
+  }
+  verComentarios(id) {
+    this.servicioComentario.setidCategoria(id);
+    this.servicioComentario.setTipoComentario('discusionEncuesta');
+    this.router.navigate(['/home', 'verComentarios']);
+  }
+  eliminarDiscusion(id, encuestaID, discusion) {
+    this.servicioDiscusion.setTipoDiscusion('encuesta');
+    this.servicioDiscusion.eliminarDiscusion(id, encuestaID).subscribe((res) => {
+      if (res['status'] === 200) {
+        this.eliminado.show();
+        const index = this.listadiscusionEncuesta.indexOf(discusion);
+        if (index !== -1){
+          this.listadiscusionEncuesta.splice(index, 1);
+        }
+      }else {
+        this.error.show();
+      }
+    });
   }
 
 
-  toggleSelectAllThreads() {
-    console.log('evento para seleccionar todos los elementos de mi encuesta');
-  }
-
-  isSelected(mail) {
-    console.log('mail');
-  }
 
 
 }

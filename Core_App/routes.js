@@ -52,7 +52,7 @@ module.exports = (app)=> {
     apiRoute.get('/cargarPerfil',usuarios.cargarPerfilUsuario);
     apiRoute.get('/cargarColaboradores',usuarios.cargarListaMisColaboradores);
     apiRoute.get('/cargarNotificaciones',usuarios.cargarNotificaciones);
-    apiRoute.post('/editarInformacion',usuarios.editarInformacionUsuario);
+    apiRoute.post('/actualizarInformacionUsuario',usuarios.editarInformacionUsuario);
 
     /**
      * Todos estos endpoint solo funcionaran si el usuario envia el token de autenticacion
@@ -87,11 +87,8 @@ module.exports = (app)=> {
     apiRoute.get('/eliminarPregunta', preguntas.removePregunta);
     apiRoute.get('/cerrarDiscusionPregunta',discusion.cerrarDiscusionPregunta);
     apiRoute.post('/validarPregunta',discusion.validarPregunta);
-    apiRoute.get('/loadSummaryDiscusionesPregunta',usuarios.getDiscusionesByPreguntas);
-    apiRoute.get('/loadSummaryCommentsByPreguntas',usuarios.loadFirstCommentsByPreguntas);
     apiRoute.get('/loadChartEncuestasByMonth',usuarios.getNumeroEncuestasByMonth);
     apiRoute.get('/loadSummaryPreguntasValidasNoValidas',usuarios.getNumeroPreguntasValidasNoValidasByMonth);
-    apiRoute.get('/loadSummaryActivitiesByMonth',usuarios.getNumeroActividadesByMonth);
     apiRoute.get('/listEncuestas',encuesta.loadListaEncuestas);
     apiRoute.get('/queryEncuestas',encuesta.queryEncuestas);
     apiRoute.get('/getListaMyEncuestas',encuesta.loadListaMyEncuestas);
@@ -112,6 +109,15 @@ module.exports = (app)=> {
     apiRoute.post('/actualizarColaboradorEncuesta',encuesta.updateRolColaboradorEncuesta);
     apiRoute.get('/deleteColaboradoEncuesta',encuesta.deleteColaboradorEncuesta);
     apiRoute.get('/loadListaEncuestasCompartidas', encuesta.loadListaEncuestasCompartidas);
+    apiRoute.get('/getListaMisColaboradores', usuarios.cargarListaMisColaboradores);
+    apiRoute.get('/getCountComentariosAcertados', usuarios.getCountCommentsAcertados);
+    apiRoute.get('/getCountEncuestasComentadas', usuarios.getCountCommentsByEncuestas);
+    apiRoute.get('/getCountPreguntasComentadas', usuarios.getCountCommentsByPreguntas);
+    apiRoute.get('/getCountOnlineUsers', usuarios.getOnlineUsers);
+    apiRoute.get('/cerrarDiscusionEncuesta', discusion.cerrarDiscusionEncuesta);
+    apiRoute.get('/actualizarEstadoDiscusionEncuesta', discusion.actualizarEstadoDiscusionEncuesta);
+
+
    app.use('/apiRest',apiRoute);
 
 

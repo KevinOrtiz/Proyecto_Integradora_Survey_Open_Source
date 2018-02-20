@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const pagination = require('mongoose-paginate');
 
 const EncuestaSchema = new Schema({
+    identificador:{type:Number, default:0},
     titulo:String,
     descripcion:String,
     usuario_ID:{type: String, index:true},
@@ -42,8 +43,8 @@ const EncuestaSchema = new Schema({
 
 
 
-EncuestaSchema.index({'etiqueta.texto': 'text'})
-EncuestaSchema.plugin(pagination)
+EncuestaSchema.index({'etiqueta.texto': 'text'});
+EncuestaSchema.plugin(pagination);
 const Encuesta = mongoose.model('encuesta',EncuestaSchema);
 
 module.exports = Encuesta;

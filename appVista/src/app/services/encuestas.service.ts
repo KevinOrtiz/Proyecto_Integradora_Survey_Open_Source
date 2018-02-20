@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import 'rxjs/add/operator/map';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/catch';
-import { Encuesta } from '../models/encuesta';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import 'rxjs/add/operator/map';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Observable} from 'rxjs/Observable';
+import {Encuesta} from '../models/encuesta';
 
 
 @Injectable()
@@ -295,7 +295,8 @@ export class EncuestasService {
     const url = '/apiRest/loadListaEncuestasCompartidas/?id=' + sessionStorage.getItem('id');
     return this.http.get(url, {headers})
                     .map((res: Response) => {
-                        return ['listasCompartidas'];
+                        console.log(res);
+                        return res['listasCompartidas'];
                     });
   }
   errorHandler(error) {

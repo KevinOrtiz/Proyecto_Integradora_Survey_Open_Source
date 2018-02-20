@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { EncuestasService } from '../../../../services/encuestas.service';
-import { MatDialog } from '@angular/material';
-import { VerEncuestaComponent } from '../../ver-encuesta/ver-encuesta.component';
-import { ComentariosService } from '../../../../services/comentarios.service';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material';
+import {Router} from '@angular/router';
+import {ComentariosService} from '../../../../services/comentarios.service';
+import {EncuestasService} from '../../../../services/encuestas.service';
+import {VerEncuestaComponent} from '../../ver-encuesta/ver-encuesta.component';
 
 @Component({
   selector: 'app-encuestas-compartidas',
@@ -17,6 +17,7 @@ export class EncuestasCompartidasComponent implements OnInit {
               private servicioComentario: ComentariosService, private router: Router) {
       this.servicioEncuesta.loadListaEncuestasCompartidas().subscribe((res) => {
         this.listaEncuestaCompartidas = res;
+        console.log(this.listaEncuestaCompartidas);
         this.finished = true;
       });
    }

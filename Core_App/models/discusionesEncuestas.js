@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const pagination = require('mongoose-paginate');
+
+
 
 const discusionEncuestaSchema = new Schema({
     titulo:String,
     descripcion:String,
     creador_ID:{type: String, index: true},
     etiquetas:[{
-        texto:{
             type:String
-        }
     }],
     asignados:[{
         Usuario_ID:{
@@ -29,7 +30,8 @@ const discusionEncuestaSchema = new Schema({
 });
 
 
-
+discusionEncuestaSchema.index({'etiquetas':'text'});
+discusionEncuestaSchema.plugin(pagination);
 const discusionEncuesta = mongoose.model('discusionEncuesta',discusionEncuestaSchema);
 
 module.exports = discusionEncuesta;

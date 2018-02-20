@@ -1,58 +1,89 @@
-<div class="container mat-elevation-z8">
-    <div class="example-header">
-      <mat-form-field>
-        <input matInput (keyup)="filtrarDatos($event.target.value)" placeholder="Filter">
-      </mat-form-field>
-    </div>
-    <mat-table #table [dataSource]="dataSource" matSort>
+ 
+ <div class="inbox" fxLayout="column">
+   <div class="header mat-elevation-z2"></div>
+   <div class="search mat-elevation-z2" fxLayout="row" id="busqueda">
+     <div fxLayout="row" fxLayoutAlign="center center">
+       <mat-icon>search</mat-icon>
+     </div>
+     <input #input [(ngModel)]="textoBusqueda" [formControl]="searchField" fxFlex type="search" placeholder="Busqueda por etiqueta la Pregunta">
+   </div>
+   <div class="content-container" fxFlex fxLayout="row">
   
-      <ng-container matColumnDef="etiquetas">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Etiquetas</mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.etiquetas}} </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="descripcion">
-        <mat-header-cell *matHeaderCellDef>Descripcion</mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.descripcion}} </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="opciones">
-        <mat-header-cell *matHeaderCellDef>Opciones</mat-header-cell>
-        <mat-cell *matCellDef="let row">
+     <mat-card  fxFlex>
+       <mat-card-title fxLayout="row" fxLayoutAlign="space-between center">
+         <span>Preguntas creadas por Mi</span>
+         <div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex>
+            <!-- fill space -->
+          </span>
+           <span>{{pageActual}} - 5 de {{numberPages}}</span>
+           <div class="chevrons">
+             <button mat-icon-button (click)="previous()">
+               <mat-icon>chevron_left</mat-icon>
+             </button>
+             <button mat-icon-button (click)="next()">
+               <mat-icon>chevron_right</mat-icon>
+             </button>
+           </div>
+         </div>
+    
+       </mat-card-title>
+       <mat-card-content>
+         <table >
+           <thead>
+           <tr>
+             <th>Descripcion</th>
+             <th>fecha_creacion</th>
+             <th>Topico</th>
+             <th>estado</th>
+             <th>Opciones</th>
+        
+           </tr>
+           </thead>
+           <tbody>
+           <tr *ngFor="let pregunta of listaPreguntas">
+             <td>{{pregunta?.descripcion}}</td>
+             <td>{{pregunta?.fecha_creacion}}</td>
+             <td>{{pregunta?.etiquetas}}</td>
+             <td>{{pregunta?.estado}}</td>
+             <td>
+               <button mat-icon-button [matMenuTriggerFor]="menu">
+                 <mat-icon>more_vert</mat-icon>
+               </button>
+               <mat-menu #menu="matMenu">
+                 <button mat-menu-item (click)="verPregunta(pregunta?._id)">
+                   <mat-icon>remove_red_eye</mat-icon>
+                   <span>Ver pregunta</span>
+                 </button>
+                 <button mat-menu-item (click)="verDiscusion(pregunta?._id)">
+                   <mat-icon>open_in_new</mat-icon>
+                   <span>Ver Discusion</span>
+                 </button>
+                 <button mat-menu-item (click)="editarPregunta(pregunta?._id)">
+                   <mat-icon>open_in_new</mat-icon>
+                   <span>Editar Pregunta</span>
+                 </button>
+                 <button mat-menu-item (click)="verComentarios(pregunta?._id)">
+                   <mat-icon>open_in_new</mat-icon>
+                   <span>Ver Comentarios</span>
+                 </button>
+                 <button mat-menu-item (click)="eliminarPreguntas(pregunta?._id, pregunta)">
+                   <mat-icon>open_in_new</mat-icon>
+                   <span>Eliminar Pregunta</span>
+                 </button>
+               </mat-menu>
+          
+             </td>
+           </tr>
+           </tbody>
+      
+         </table>
+       </mat-card-content>
   
-          <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="verPregunta(row)">
-              <mat-icon>remove_red_eye</mat-icon>
-              <span>Ver pregunta</span>
-            </button>
-            <button mat-menu-item (click)="verDiscusion(row)">
-              <mat-icon>open_in_new</mat-icon>
-              <span>Ver Discusion</span>
-            </button>
-            <button mat-menu-item (click)="editarPregunta(row)">
-              <mat-icon>open_in_new</mat-icon>
-              <span>Editar Pregunta</span>
-            </button>
-            <button mat-menu-item (click)="verComentarios(row)">
-              <mat-icon>open_in_new</mat-icon>
-              <span>Ver Comentarios</span>
-            </button>
-            <button mat-menu-item (click)="eliminarPregunta(row)">
-              <mat-icon>open_in_new</mat-icon>
-              <span>Eliminar Pregunta</span>
-            </button>
-          </mat-menu>
-        </mat-cell>
-      </ng-container>
-  
-      <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
-  
-    </mat-table>
-    <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]">
-    </mat-paginator>
-  </div>
+     </mat-card>
+   </div>
+   
+ </div>
   <swal #eliminado title="Discusion eliminada con exito" text="Se ha eliminado de forma exitosa determinada discusion"
     type="success" [showConfirmButton]="true">
   </swal>
@@ -61,4 +92,3 @@
           de la pregunta que usted ha seleccionado" type="error" [showConfirmButton]="true">
   
   </swal>
-  

@@ -1,73 +1,98 @@
 <div class="inbox" fxLayout="column">
   <div class="header mat-elevation-z2"></div>
-  <div class="container" fxLayout="row">
-
-    <div class="content-container" fxFlex fxLayout="column">
-
-      <div class="search mat-elevation-z2" fxLayout="row">
-        <div fxLayout="row" fxLayoutAlign="center center">
-          <mat-icon>search</mat-icon>
-        </div>
-        <input fxFlex type="search" placeholder="Search...">
-      </div>
-
-      <div class="mails-container mat-elevation-z2" fxFlex>
+  <div class="search mat-elevation-z2" fxLayout="row" id="busqueda">
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <mat-icon>search</mat-icon>
+    </div>
+    <input #input [(ngModel)]="textoBusqueda" [formControl]="searchField" fxFlex type="search" placeholder="Busqueda por etiqueta la discusion de la Pregunta">
+  </div>
+  <div class="content-container" fxFlex fxLayout="row">
+    <mat-card fxFlex>
+      <mat-card-title fxLayout="row" fxLayoutAlign="space-between center">
+        <span>Discusiones de Encuesta Creadas por Mi</span>
         <div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
-          <button mat-icon-button>
-            <mat-icon>delete</mat-icon> Eliminar todas mis discusiones
-          </button>
-
           <span fxFlex>
 
           </span>
           <span fxFlex>
 
           </span>
-          <span>1 - 25 of 100</span>
+          <span>{{pageActual}} - 5 de {{numberPages}}</span>
           <div class="chevrons">
-            <button mat-icon-button>
+            <button mat-icon-button (click)="previous()">
               <mat-icon>chevron_left</mat-icon>
             </button>
-            <button mat-icon-button>
+            <button mat-icon-button (click)="next()">
               <mat-icon>chevron_right</mat-icon>
             </button>
           </div>
         </div>
-
-        <div class="mails">
-          <a class="mail" #mailList *ngFor="let mail of shownMails" fxLayout="row" [class.read]="mail.read">
-            <div fxHide="true" fxHide.gt-xs="false" class="start-wrapper" fxFlex="180px" fxFlex.gt-sm="270px" fxLayout="row" fxLayoutAlign="start center">
-              <img fxHide="true" fxHide.gt-sm="false" class="from-avatar" src="//placehold.it/40x40">
-              <span class="from-name">{{ mail.from.name }}</span>
-            </div>
-            <p class="content-wrapper" fxLayout="row" fxLayoutAlign="start center">
-              <span class="labels">
-                <span class="label" *ngFor="let label of mail.labels" [style.background]="label.color">{{ label.name }}</span>
-              </span>
-              <span class="subject">{{ mail.subject }}</span>
-              <span class="middot">&middot;</span>
-              <span class="content">{{ mail.content }}</span>
-            </p>
-            <div fxHide="true" fxHide.gt-xs="false" fxFlex="100px" fxFlex.gt-sm="200px" class="end-wrapper" fxLayout="row" fxLayoutAlign="end center">
-              <button fxHide="true" fxHide.gt-sm="false" class="options" [matMenuTriggerFor]="mailOptions" mat-icon-button>
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #mailOptions="matMenu">
-                <button mat-menu-item>
-                  <mat-icon>markunread_mailbox</mat-icon>Ver Encuesta</button>
-                <button mat-menu-item>
-                  <mat-icon>label</mat-icon>Ver discusion</button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item>
-                  <mat-icon>delete</mat-icon>Ver Comentarios</button>
-                <button mat-menu-item>
-                  <mat-icon>delete</mat-icon>Eliminar Discusion</button>
-              </mat-menu>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-
+        
+      </mat-card-title>
+      <mat-card-content>
+        <table class="table table-hover table-condensed">
+          <thead>
+          <tr>
+            <th>Titulo</th>
+            <th>Etiquetas</th>
+            <th>fecha creacion</th>
+            <th>estado</th>
+            <th>Opciones</th>
+          </tr>
+          
+          </thead>
+          <tbody>
+           <tr *ngFor="let discusion of listadiscusionEncuesta">
+             <td>{{discusion?.titulo}}</td>
+             <td>{{discusion?.etiquetas}}</td>
+             <td>{{discusion?.fecha_creacion}}</td>
+             <td>{{discusion?.estado}}</td>
+             <td>
+  
+               <button mat-icon-button [matMenuTriggerFor]="menu">
+                 <mat-icon>more_vert</mat-icon>
+               </button>
+               <mat-menu #menu="matMenu">
+                 <button mat-menu-item (click)="verEncuesta(discusion?.encuesta_ID)">
+                   <mat-icon>remove_red_eye</mat-icon>
+                   <span>Ver Encuesta</span>
+                 </button>
+                 <button mat-menu-item (click)="verDiscusion(discusion?._id)">
+                   <mat-icon>open_in_new</mat-icon>
+                   <span>Ver Discusion</span>
+                 </button>
+                 <button mat-menu-item (click)="editarDiscusion(discusion?._id)" *ngIf="discusion?.estado === 'revision'" >
+                   <mat-icon>open_in_new</mat-icon>
+                   <span>Editar Discusion</span>
+                 </button>
+                 <button mat-menu-item (click)="verComentarios(discusion?._id)">
+                   <mat-icon>open_in_new</mat-icon>
+                   <span>Ver Comentarios</span>
+                 </button>
+                 <button mat-menu-item (click)="eliminarDiscusion(discusion?._id, discusion?.encuesta_ID, discusion)">
+                   <mat-icon>open_in_new</mat-icon>
+                   <span>Eliminar Discusion</span>
+                 </button>
+               </mat-menu>
+               
+             </td>
+             
+           </tr>
+          
+          </tbody>
+        </table>
+        
+      </mat-card-content>
+    </mat-card>
+    
   </div>
 </div>
+
+<swal #eliminado title="Discusion eliminada con exito" text="Se ha eliminado de forma exitosa determinada discusion"
+      type="success" [showConfirmButton]="true">
+</swal>
+
+<swal #error title="Error en la eliminacion de la discusion" text="Existe un problema en la eliminacion de la discusion
+        de la pregunta que usted ha seleccionado" type="error" [showConfirmButton]="true">
+
+</swal>

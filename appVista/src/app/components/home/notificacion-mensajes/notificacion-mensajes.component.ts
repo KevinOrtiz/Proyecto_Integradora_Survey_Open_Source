@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { NotificacionesService } from '../../../services/notificaciones.service';
+import {Component, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs/Subscription';
+import {LoginService} from '../../../services/login.service';
+import {NotificacionesService} from '../../../services/notificaciones.service';
 
 @Component({
   selector: 'app-notificacion-mensajes',
@@ -8,10 +10,18 @@ import { NotificacionesService } from '../../../services/notificaciones.service'
 })
 export class NotificacionMensajesComponent implements OnInit {
   listaMensajes = [];
-  constructor(private servicioNotificacion: NotificacionesService) {
-    this.servicioNotificacion.loadListaMensajes().subscribe((res) => {
-      console.log(res);
-      this.listaMensajes = res;
+  subscripcionIDUsuario: Subscription;
+  constructor(private servicioNotificacion: NotificacionesService, private servicioLogin: LoginService) {
+    this.subscripcionIDUsuario = this.servicioLogin.getIDUsuario().subscribe((res) => {
+      let idUsuario = '';
+      if (res) {
+        idUsuario = res;
+      } else {
+        idUsuario = sessionStorage.getItem('id');
+      }
+      this.servicioNotificacion.loadListaMensajes(idUsuario).subscribe((respuesta) => {
+        this.listaMensajes = respuesta;
+      });
     });
   }
 

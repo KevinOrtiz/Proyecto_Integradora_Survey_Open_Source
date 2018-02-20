@@ -1,7 +1,8 @@
-const Comentario = require('../models/Comentarios');
 const Pregunta = require('../models/Preguntas');
+const Encuesta = require('../models/Encuestas');
 const Usuario = require('../models/Usuarios');
 const discusionPregunta = require('../models/discusionesPregutas');
+const discusionEncuesta = require('../models/discusionesEncuestas');
 const correo = require('../correo');
 const preguntasValidas = require('../models/preguntasValidadas');
 let asyncloop = require('node-async-loop');
@@ -9,7 +10,7 @@ let asyncloop = require('node-async-loop');
 exports.guardarDiscusion = (req, resp, next) => {
     let idUsuario = '';
     if (req.body.tipoDiscusion === 'pregunta') {
-        var objetoPregunta = new discusionPregunta(req.body.respuestaDiscusion);
+        let objetoPregunta = new discusionPregunta(req.body.respuestaDiscusion);
         objetoPregunta.save()
             .then((res) => {
                 console.log(res);
@@ -49,14 +50,66 @@ exports.guardarDiscusion = (req, resp, next) => {
                     "status": 500
                 })
             });
+    }else if (req.body.tipoDiscusion === 'encuesta'){
+        let objetodiscusionEncuesta = {
+            titulo: req.body.respuestaDiscusion.titulo,
+            descripcion: req.body.respuestaDiscusion.descripcion,
+            etiquetas: req.body.respuestaDiscusion.etiquetas,
+            creador_ID: req.body.respuestaDiscusion.creador_ID,
+            estado: req.body.respuestaDiscusion.estados[0].texto,
+            fecha_creacion: req.body.respuestaDiscusion.fecha_creacion,
+            fecha_cierre: req.body.respuestaDiscusion.fecha_cierre,
+            encuesta_ID: req.body.respuestaDiscusion.pregunta_ID
+        };
+        let objetoEncuesta = new discusionEncuesta(objetodiscusionEncuesta);
+        objetoEncuesta.save()
+            .then((res) => {
+                Encuesta.findByIdAndUpdate({
+                    '_id': req.body.idCuerpoDiscusion,
+                    'registroActual':true
+                },{
+                    $push:{
+                        'discusiones':objetoEncuesta
+                    }
+                },{
+                    'new':true,
+                    'upsert':true
+                }).then((encuesta, error) => {
+                    Usuario.findOne({
+                        '_id': encuesta.usuario_ID
+                    }).then((usuario, error) => {
+                        idUsuario = encuesta.usuario_ID;
+                        correo.sendCorreoDiscusionCreada(usuario.correo, usuario.nombre, req.body.respuestaDiscusion.titulo);
+                    });
+                    if (error){
+                        console.log(error);
+                        return resp.json({
+                            "status":500
+                        })
+                    }else {
+                        return resp.json({
+                            "status": 200,
+                            "idUsuario": idUsuario
+                        });
+                    }
+                });
+
+            }).catch((error) => {
+                console.log(error);
+            return resp.json({
+                "status":500
+            })
+        });
+
     }
-}
+};
 
 exports.loadListaDiscusiones = (req, resp, next) => {
-    if (req.query.tipoDiscusion == 'pregunta') {
+    if (req.query.tipoDiscusion === 'pregunta') {
         const listaDiscusiones = [];
         Pregunta.findOne({
-                "_id": req.query.idcuerpodiscusion
+                "_id": req.query.idcuerpodiscusion,
+                "registroActual":true
             })
             .populate('discusiones')
             .then((pregunta, error) => {
@@ -75,7 +128,7 @@ exports.loadListaDiscusiones = (req, resp, next) => {
                                 '_id': item.creador_ID
                             })
                             .then((usuario, error) => {
-                                var discusion = {
+                                let discusion = {
                                     creador: usuario.nombre + usuario.apellido,
                                     urlUsuario: usuario.urlImage,
                                     titulo: item.titulo,
@@ -87,11 +140,11 @@ exports.loadListaDiscusiones = (req, resp, next) => {
                                     fecha_cierre: item.fecha_cierre,
                                     creador_ID: item.creador_ID,
                                     estados: item.estados[0].texto
-                                }
+                                };
                                 listaDiscusiones.unshift(discusion);
                                 next();
                                 contador++;
-                                if (contador == totalDocumento) {
+                                if (contador === totalDocumento) {
                                     return resp.json({
                                         'discusiones': listaDiscusiones,
                                         "status": 200
@@ -114,15 +167,83 @@ exports.loadListaDiscusiones = (req, resp, next) => {
                     "status": 500
                 })
             });
+    }else if(req.query.tipoDiscusion === 'encuesta'){
+        let listaDiscusionEncuesta = [];
+        Encuesta.findOne({
+            "_id": req.query.idcuerpodiscusion,
+            "registroActual":true
+        })
+            .populate('discusiones')
+            .then((encuesta, error) => {
+                if (error) {
+                    console.log(error);
+                    return resp.json({
+                        "status": 500,
+                        "messaje": "ha existido en el error de la consulta",
+                        "discusiones": null
+                    })
+                } else {
+                    let contador = 0;
+                    let totalDocumento = encuesta.discusiones.length;
+                    asyncloop(encuesta.discusiones, (item, next) => {
+                        Usuario.findOne({
+                            '_id': item.creador_ID
+                        })
+                            .then((usuario, error) => {
+                                let discusion = {
+                                    creador: usuario.nombre + usuario.apellido,
+                                    urlUsuario: usuario.urlImage,
+                                    titulo: item.titulo,
+                                    etiquetas: item.etiquetas,
+                                    descripcion: item.descripcion,
+                                    _id: item._id,
+                                    numeroComentarios: item.comentarios.length,
+                                    fecha_creacion: item.fecha_creacion,
+                                    fecha_cierre: item.fecha_cierre,
+                                    creador_ID: item.creador_ID,
+                                    estados: item.estado
+                                };
+                                listaDiscusionEncuesta.unshift(discusion);
+                                next();
+                                contador++;
+                                if (contador === totalDocumento) {
+                                    return resp.json({
+                                        'discusiones': listaDiscusionEncuesta,
+                                        "status": 200
+                                    });
+
+                                }
+                            }).catch((error) => {
+                            console.log(error);
+                            return resp.json({
+                                "discusiones": null,
+                                "status": 500
+                            })
+                        })
+                    });
+                }
+            }).catch((error) => {
+            console.log(error);
+            return resp.json({
+                "discusiones": null,
+                "status": 500
+            })
+        });
+
+
     }
-}
+};
 
 exports.loadListaMisDiscusiones = (req, resp, next) => {
-    if (req.query.tipoDiscusion == 'pregunta') {
-        discusionPregunta.find({
+    if (req.query.tipoDiscusion === 'pregunta') {
+        discusionPregunta.paginate({
+                'etiquetas': new RegExp(req.query.topico, 'i'),
                 'creador_ID': req.query.id,
+            },{
+                page: req.query.page,
+                limit: 5,
+                sort:{fecha_creacion: -1}
             })
-            .where("titulo").ne("Pregunta-propuesta")
             .then((discusion, error) => {
                 if (error) {
                     return resp.json({
@@ -131,43 +252,91 @@ exports.loadListaMisDiscusiones = (req, resp, next) => {
                     })
                 } else {
                     let listaDiscusion = [];
-                    let numeroElementosDiscusion = discusion.length;
+                    let numeroElementosDiscusion = discusion.docs.length;
                     let contador = 0;
-                    asyncloop(discusion, (item, next) => {
-                        var objectDiscusionPregunta = {
+                    asyncloop(discusion.docs, (item, next) => {
+                         let objectDiscusionPregunta = {
                             _id: item._id,
                             titulo: item.titulo,
                             etiquetas: item.etiquetas,
                             fecha_creacion: item.fecha_creacion,
                             fecha_cierre: item.fecha_cierre,
+                             estados: item.estados[0].texto,
                             pregunta_ID: item.pregunta_ID
-                        }
+                        };
                         listaDiscusion.push(objectDiscusionPregunta);
                         next();
                         contador++;
                         console.log(listaDiscusion);
-                        if (contador == numeroElementosDiscusion) {
+                        if (contador === numeroElementosDiscusion) {
                             return resp.json({
                                 "listadiscusionPregunta": listaDiscusion,
-                                "status": 200
+                                "status": 200,
+                                "pages":discusion.pages
                             })
                         }
                     });
                 }
             }).catch((error) => {
                 console.log(error);
-                return resp.json({"status":500})
+                return resp.json({"status":500, "pages":0})
             });
+    }else if (req.query.tipoDiscusion === 'encuesta'){
+        discusionEncuesta.paginate({
+            'etiquetas': new RegExp(req.query.topico, 'i'),
+            'creador_ID':req.query.id
+        },{
+            page: req.query.page,
+            limit: 5,
+            sort: {fecha_creacion: -1}
+        }).then((respuesta, error) => {
+            if (error){
+                return resp.json({
+                    "status":500,
+                    "messaje": 'error en la obtencion de datos del usuario'
+                })
+            }else {
+                let listaDiscusionEncuesta = [];
+                let numeroElementos = respuesta.docs.length;
+                let contador = 0;
+                asyncloop(respuesta.docs, (item, next) => {
+                    let objectDiscusionEncuesta = {
+                        _id: item._id,
+                        titulo: item.titulo,
+                        etiquetas: item.etiquetas,
+                        fecha_creacion: item.fecha_creacion,
+                        fecha_cierre: item.fecha_cierre,
+                        estado:item.estado,
+                        encuesta_ID: item.encuesta_ID
+                    };
+                    listaDiscusionEncuesta.push(objectDiscusionEncuesta);
+                    next();
+                    contador++;
+                    if (contador === numeroElementos) {
+                        return resp.json({
+                            "listadiscusionEncuesta": listaDiscusionEncuesta,
+                            "status": 200,
+                            "pages":respuesta.pages
+                        })
+                    }
+                });
+
+            }
+
+        }).catch((error) => {
+            console.log(error);
+            return resp.json({"status":500, "pages":0})
+        })
     }
-}
+};
+
 
 exports.loadMyDiscusion = (req, resp, next) => {
-    if (req.query.tipoDiscusion == 'pregunta') {
+    if (req.query.tipoDiscusion === 'pregunta') {
         discusionPregunta.findOne({
                 '_id': req.query.id
             })
             .then((discusion, error) => {
-                console.log(discusion);
                 if (error) {
                     console.log(error);
                     return resp.json({"status":500})
@@ -193,11 +362,42 @@ exports.loadMyDiscusion = (req, resp, next) => {
                     "status":500
                 })
             });
+    } else if (req.query.tipoDiscusion === 'encuesta'){
+        discusionEncuesta.findOne({
+            '_id':req.query.id
+        }).then((discusion, error) => {
+            if (error){
+                return resp.json({
+                    "status":500
+                })
+            }else {
+                return resp.json({
+                    "status":200,
+                    "discusion":{
+                        titulo: discusion.titulo,
+                        fecha_creacion: discusion.fecha_creacion,
+                        descripcion: discusion.descripcion,
+                        etiquetas: discusion.etiquetas,
+                        numeroComentarios: discusion.comentarios.length,
+                        encuesta_ID: discusion.encuesta_ID,
+                        fecha_cierre: discusion.fecha_cierre,
+                        estados: discusion.estado
+                    }
+                })
+            }
+
+        }).catch((error)=> {
+            console.log(error);
+            return resp.json({
+                "status":500
+            })
+        })
+
     }
-}
+};
 
 exports.editMyDiscusion = (req, resp, next) => {
-    if (req.body.tipoDiscusion == 'pregunta') {
+    if (req.body.tipoDiscusion === 'pregunta') {
         discusionPregunta.findOneAndUpdate({
                 '_id': req.body.id
             }, req.body.respuestaDiscusion, {
@@ -210,18 +410,34 @@ exports.editMyDiscusion = (req, resp, next) => {
                     "discusionActualizada": discusion
                 })
             }).catch((error) => {
-                console.log("no se pudo actualizar la discusion");
                 console.log(error);
                 return resp.json({
                     "status":500
                 })
             });
+    }else if (req.body.tipoDiscusion === 'encuesta'){
+        discusionEncuesta.findOneAndUpdate({
+            '_id': req.body.id
+        }, req.body.respuestaDiscusion, {
+            upsert: true,
+            new: true
+        })
+            .then((resultado, error) => {
+                return resp.json({
+                    "status": 200,
+                    "discusionActualizada": resultado
+                })
+            }).catch((error) => {
+            return resp.json({
+                "status":500
+            })
+        });
     }
-}
+};
+
 
 exports.removeMyDiscusion = (req, resp, next) => {
-    console.log(req.query);
-    if (req.query.tipoDiscusion == 'pregunta') {
+    if (req.query.tipoDiscusion === 'pregunta') {
         discusionPregunta.findByIdAndRemove({
                 '_id': req.query.id
             })
@@ -229,6 +445,7 @@ exports.removeMyDiscusion = (req, resp, next) => {
                 console.log(discusion);
                 Pregunta.findByIdAndUpdate({
                         '_id': req.query.pregunta_ID,
+                        'registroActual':true
                     }, {
                         $pull: {
                             'discusiones': req.query.id
@@ -262,8 +479,48 @@ exports.removeMyDiscusion = (req, resp, next) => {
                     "messaje": 'error en el servidor'
                 })
             });
+    } else if (req.query.tipoDiscusion === 'encuesta'){
+        discusionEncuesta.findByIdAndRemove({
+            "_id":req.query.id
+        }).then((discusion, error) => {
+            console.log(discusion);
+            Encuesta.findByIdAndUpdate({
+                "_id":req.query.encuesta_ID,
+                "registroActual":true
+            },{
+                $pull:{
+                    'discusiones':req.query.id
+                }
+            }).then((resultado, error)=>{
+                if (error){
+                    return resp.json({
+                        "status":500
+                    })
+
+                }else{
+                    return resp.json({
+                        "status":200
+                    })
+                }
+            }).catch((error)=>{
+                console.log(error);
+                return resp.json({
+                    "status":500
+                })
+            })
+
+        }).catch((error)=> {
+            console.log(error);
+            return resp.json({
+                "status":500,
+                "messaje": "error en el servidor"
+            })
+
+        })
+
+
     }
-}
+};
 
 exports.loadListaDiscusionByPregunta = (req, resp, next) => {
     Pregunta.findOne({
@@ -281,27 +538,42 @@ exports.loadListaDiscusionByPregunta = (req, resp, next) => {
                 let numeroElementosDiscusiones = preguntas.discusiones.length;
                 let contador = 0;
                 asyncloop(preguntas.discusiones, (item, next) => {
-                    var objetoDiscusion = {
-                        titulo: item.titulo,
-                        fecha_creacion: item.fecha_creacion,
-                        descripcion: item.descripcion,
-                        etiquetas: item.etiquetas,
-                        numeroComentarios: item.comentarios.length,
-                        fecha_cierre: item.fecha_cierre
-                    }
-                    listaDiscusiones.unshift(objetoDiscusion);
-                    next();
-                    contador++;
-                    if (contador == numeroElementosDiscusiones) {
-                        return resp.json({
-                            "listaDiscusiones": listaDiscusiones,
-                            "status": 200
-                        })
-                    }
+                    Usuario.findOne({
+                        '_id': item.creador_ID
+                    }).then((usuario, error) => {
+                        let objetoDiscusion = {
+                            titulo: item.titulo,
+                            estado: item.estados[0].texto,
+                            fecha_creacion: item.fecha_creacion,
+                            descripcion: item.descripcion,
+                            etiquetas: item.etiquetas,
+                            numeroComentarios: item.comentarios.length,
+                            fecha_cierre: item.fecha_cierre,
+                            nombre: usuario.nombre,
+                            apellido: usuario.apellido,
+                            urlImage: usuario.urlImage
+                        };
+                        listaDiscusiones.unshift(objetoDiscusion);
+                        next();
+                        contador++;
+                        if (contador === numeroElementosDiscusiones) {
+                            return resp.json({
+                                "listaDiscusiones": listaDiscusiones,
+                                "status": 200
+                            })
+                        }
+
+                    }).catch((error)=> {
+                        console.log(error);
+                       return resp.json({
+                           "status": 500,
+                           "listaDiscusiones":null
+                       })
+                    });
+
                 });
             }
         }).catch((error) => {
-            console.log()
             console.log(error);
             return resp.json({
                 "status": 500,
@@ -312,8 +584,8 @@ exports.loadListaDiscusionByPregunta = (req, resp, next) => {
 };
 
 exports.cerrarDiscusionPregunta = (req, resp, next) => {
-    var dateClosed = new Date();
-    dateClosed = dateClosed.toString()
+    let dateClosed = new Date();
+    dateClosed = dateClosed.toString();
     discusionPregunta.findByIdAndUpdate({
             "_id": req.query.id
         }, {
@@ -349,7 +621,77 @@ exports.cerrarDiscusionPregunta = (req, resp, next) => {
             })
         });
 
-}
+};
+
+exports.cerrarDiscusionEncuesta = (req, res, next)=> {
+    let dateClosed = new Date();
+    dateClosed = dateClosed.toString();
+    discusionEncuesta.findByIdAndUpdate({
+        "_id": req.query.id
+    }, {
+        $set: {
+            "estado": "cerrado",
+            "fecha_cierre": dateClosed
+        }
+    }, {
+        "new": true
+    })
+        .then((respuesta, error) => {
+            if (error) {
+                return resp.json({
+                    "status": 500,
+                    "messaje": error,
+                    "fecha_cierre": ''
+                })
+            } else {
+                return resp.json({
+                    "status": 200,
+                    "messaje": "actualizado con exito",
+                    "fecha_cierre": dateClosed,
+                    "idUsuario": respuesta.creador_ID,
+                    "estados": "cerrado"
+                })
+            }
+
+        }).catch((error) => {
+        console.log(error);
+        return resp.json({
+            "status": 500,
+            "messaje": error
+        })
+    });
+};
+
+exports.actualizarEstadoDiscusionEncuesta = (req, resp, next)=>{
+    discusionEncuesta.findByIdAndUpdate({
+        "_id":req.query.id
+    },{
+        $set:{
+            "estado":req.query.estado
+        }
+    },{
+        "new":true
+    }).then((resultado,error)=>{
+        if(error){
+            return resp.json({
+                "status":500,
+                "messaje":error
+            })
+        }else {
+            return resp.json({
+                "status":200,
+                "messaje": 'actualizado con exito',
+                "idUsuario":resultado.creador_ID
+            })
+
+        }
+    }).catch((error)=>{
+        return resp.json({
+            "status":500,
+            "messaje":error
+        })
+    })
+};
 
 exports.validarPregunta = (req, resp, next) => {
     discusionPregunta.findOne({
@@ -385,7 +727,7 @@ exports.validarPregunta = (req, resp, next) => {
                                 'discusiones': discusion
                             },
                             $set: {
-                                'estado': discusion.estados.texto
+                                'estado': discusion.estados[0].texto
                             }
                         }, {
                             'new': true,

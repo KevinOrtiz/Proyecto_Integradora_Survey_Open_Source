@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
-import { Preguntas } from '../preguntas';
-import { TablePreguntas } from '../models/table-preguntas';
+import {Observable} from 'rxjs/Observable';
 
 
 @Injectable()
@@ -123,16 +121,17 @@ export class PreguntasService {
     const url = '/apiRest/queryPreguntas/?topico=' + categoria + '&page=' + page;
     return this.http.get(url, {headers})
                     .map((res: Response) => {
+                      console.log(res);
                       return res;
                     });
   }
-  loadListaMisPreguntas (): Observable<TablePreguntas[]> {
+  loadListaMisPreguntas (topico,page){
     const headers = this.getHeaders();
     const id = sessionStorage.getItem('id');
-    const url = 'apiRest/loadListaMisPreguntas/?id=' + id;
-    return this.http.get<TablePreguntas[]>(url, {headers})
-                    .map((res) => {
-                      return res['listaPreguntas'];
+    const url = 'apiRest/loadListaMisPreguntas/?id=' + id + '&topico=' + topico + '&page=' + page;
+    return this.http.get(url, {headers})
+                    .map((res: Response) => {
+                      return res;
                     });
   }
   loadDiscusionesByPreguntas (): Observable<Object[]> {

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const pagination = require('mongoose-paginate');
+
 
 const discusionPreguntaSchema = new Schema({
     titulo:String,
@@ -26,7 +28,8 @@ const discusionPreguntaSchema = new Schema({
 });
 
 
-
+discusionPreguntaSchema.index({'etiquetas':'text'});
+discusionPreguntaSchema.plugin(pagination);
 
 const discusionPregunta = mongoose.model('discusionPregunta',discusionPreguntaSchema);
 

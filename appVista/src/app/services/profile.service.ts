@@ -1,11 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 
 
 @Injectable()
 export class ProfileService {
-  private urlServicio = '/apiRest/crearUsuario/cargarPerfil/' + sessionStorage.getItem('_id') ;
-  private objectProfile: any;
+  idUsuario;
   constructor( private http: HttpClient) { }
 
   private getHeaders(): HttpHeaders {
@@ -16,53 +15,28 @@ export class ProfileService {
   }
   getProfileInformationUser(): any {
     const headers = this.getHeaders();
-    return this.http.get(this.urlServicio , { headers });
+    const url = '/apiRest/cargarPerfil/?id=' + this.getIDUsuario();
+    return this.http.get(url, { headers })
+      .map((res:Response) => {
+        return res['usuario'];
+      });
   }
-  getCantidadColaboradores(listaColaboradores: any[]): any {
-    return listaColaboradores.length;
+  actualizarInformacionUsuario(objetoUsuario) {
+    const headers = this.getHeaders();
+    const url = '/apiRest/actualizarInformacionUsuario';
+    return this.http.post(url, {id: sessionStorage.getItem('id'),usuario:objetoUsuario},{headers})
+      .map((res: Response) => {
+          return res['status'];
+      });
+    
   }
-
-  getCantidadNotificacionesAcciones(listaNotificaciones: any[]) {
-    let contador = 0;
-    const arrayAcciones: any[] = null;
-    if (listaNotificaciones.length === 0) {
-        return 0;
-    }else {
-      for (const notificacion of listaNotificaciones) {
-        if (notificacion.tipo === 'acciones' && notificacion.leido === false ) {
-          contador = contador + 1;
-          arrayAcciones.push(notificacion);
-        }
-      }
-      const respuesta = {
-        'cantidad': contador,
-        'acciones': arrayAcciones
-      };
-      return respuesta;
-    }
+  
+  setIDUsuario (id){
+    this.idUsuario = id;
   }
-
-  getCantidadNotificacionesMensajes(listaNotificaciones: any[]) {
-    let contador = 0;
-    const arrayMensajes: any[] = null;
-    if (listaNotificaciones.length === 0) {
-      return 0;
-    }else {
-
-      for (const mensaje of listaNotificaciones) {
-        if ( mensaje.tipo === 'mensaje' && mensaje.leido === false) {
-          contador = contador + 1;
-          arrayMensajes.push(mensaje);
-        }
-      }
-      const respuesta = {
-        'cantidad': contador,
-        'mensajes': arrayMensajes
-      };
-      return respuesta;
-    }
-  }
-  actualizarInformacionUsuario(objetoUsuario: any) {
+  
+  getIDUsuario () {
+    return this.idUsuario;
   }
 
 

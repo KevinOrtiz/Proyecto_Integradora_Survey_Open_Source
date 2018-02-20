@@ -1,19 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { EncuestasService } from '../../../../services/encuestas.service';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
-import { FormGroup, FormControl, Validators} from '@angular/forms';
-import {MatChipInputEvent} from '@angular/material';
-import { UploadService } from '../../../../uploads/shared/upload.service';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import { UploadFormComponent } from '../../../uploads/upload-form/upload-form.component';
-import {ENTER, COMMA} from '@angular/cdk/keycodes';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {MatChipInputEvent, MatDialog, MatSnackBar} from '@angular/material';
+import {SwalComponent} from '@toverux/ngx-sweetalert2';
+import {EncuestasService} from '../../../../services/encuestas.service';
+import {UploadService} from '../../../../uploads/shared/upload.service';
+import {UploadFormComponent} from '../../../uploads/upload-form/upload-form.component';
 
 @Component({
   selector: 'app-diseno',
   templateUrl: './diseno.component.html',
   styleUrls: ['./diseno.component.scss']
 })
-export class DisenoComponent implements OnInit {
+export class DisenoComponent implements OnInit, OnDestroy {
   @ViewChild('guardar') private guardar: SwalComponent;
   @ViewChild('error') private error: SwalComponent;
   @ViewChild('datosFaltantes') private datosFaltantes: SwalComponent;
@@ -130,7 +129,7 @@ export class DisenoComponent implements OnInit {
   deletePhoto() {
     this.servicioUpload.deleteUpload(this.servicioUpload.getfileImage());
     this.imagen = 'assets/img/no_available.jpg';
-    this.servicioEncuesta.setImagen('');
+    this.servicioEncuesta.setImagen(null);
     this.fotoEliminada = false;
 
   }
@@ -170,6 +169,11 @@ export class DisenoComponent implements OnInit {
     } else {
        this.datosFaltantes.show();
     }
+  }
+  
+  ngOnDestroy(): void {
+    this.servicioUpload.setfileImage(null);
+    this.servicioEncuesta.setImagen(null);
   }
 
 

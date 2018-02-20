@@ -1,16 +1,15 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {AngularFireModule} from 'angularfire2';
+import {AngularFireDatabase} from 'angularfire2/database';
 import * as firebase from 'firebase';
-import { AngularFireModule } from 'angularfire2';
-import { AngularFireDatabase } from 'angularfire2/database';
-import { Upload } from './upload';
-import { PreguntasService } from '../../services/preguntas.service';
+import {Upload} from './upload';
 
 @Injectable()
 export class UploadService {
   private basePath = '/uploads';
   private uploadTask: firebase.storage.UploadTask;
   private fileImage;
-  constructor(private af: AngularFireModule, private db: AngularFireDatabase, private pregunta: PreguntasService) { }
+  constructor(private af: AngularFireModule, private db: AngularFireDatabase) { }
 
   pushUpload( upload: Upload) {
     const  storageRef = firebase.storage().ref();
@@ -25,7 +24,6 @@ export class UploadService {
       console.log(this.uploadTask);
       upload.url = this.uploadTask.snapshot.downloadURL;
       upload.name = upload.file.name;
-      this.pregunta.setListaImagenes(upload.url);
       this.saveFileData(upload);
       this.setfileImage(upload);
       }

@@ -1,9 +1,7 @@
 <div class="container">
-  <form class="formulario" class="row" [formGroup]="formularioDiscusion" (ngSubmit)="guardarDiscusion(formularioDiscusion.value,formularioDiscusion.valid)">
+  <form  class="row formulario" [formGroup]="formularioDiscusion" (ngSubmit)="guardarDiscusion(formularioDiscusion.value,formularioDiscusion.valid)">
     <div class="col sm12 m12">
-      <mat-form-field class="titulo-discusion">
-        <input matInput placeholder="Ingrese un titulo para su discusion" formControlName="titulo">
-      </mat-form-field>
+        <input  placeholder="Ingrese un titulo para su discusion" formControlName="titulo">
     </div>
     <div class="col sm12 m12">
         <label>Etiquetas</label>
@@ -25,8 +23,8 @@
                                       [{ 'header': 1 }, { 'header': 2 }],['formula'],
                                       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                                       [{ 'color': [] }, { 'background': [] }]]}"
-                          placeholder= "Ingrese una descripcion de minimo 80 palabras y maximo 160 palabras" 
-                          formControlName="descripcion" 
+                          placeholder= "Ingrese una descripcion de minimo 80 palabras y maximo 160 palabras"
+                          formControlName="descripcion"
                           (onContentChanged)="setTexto($event)">
             </quill-editor>
           </div>
@@ -46,7 +44,7 @@
 <swal
       #guardado
       title="Discusion generada con exito"
-      text="Se ha generado una discusion de la pregunta seleccionada 
+      text="Se ha generado una discusion de la pregunta seleccionada
             y se le ha notificado al creador de la pregunta
             acerca de esta discusion"
       type="success"

@@ -1,62 +1,93 @@
-<div class="container mat-elevation-z8">
-  <div class="example-header">
-    <mat-form-field>
-      <input matInput (keyup)="filtrarDatos($event.target.value)" placeholder="Filter">
-    </mat-form-field>
+
+<div class="inbox" fxLayout="column">
+  <div class="header mat-elevation-z2"></div>
+  <div class="search mat-elevation-z2"  id="busqueda" fxLayout="row">
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <mat-icon>search</mat-icon>
+    </div>
+    <input #input [(ngModel)]="textoBusqueda" [formControl]="searchField" fxFlex type="search" placeholder="Busqueda por etiqueta la discusion de la Pregunta">
   </div>
-  <mat-table #table [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="titulo">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Titulo</mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.titulo}} </mat-cell>
-    </ng-container>
+  <div class="content-container" fxFlex fxLayout="row">
+  
+    <mat-card  fxFlex>
+    <mat-card-title fxLayout="row" fxLayoutAlign="space-between center">
+      <span>Discusiones Creadas por Mi</span>
+      <div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
+          <span fxFlex>
+            <!-- fill space -->
+          </span>
+        <span>{{pageActual}} - 5 de {{numberPages}}</span>
+        <div class="chevrons">
+          <button mat-icon-button (click)="previous()">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <button mat-icon-button (click)="next()">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+    
+    </mat-card-title>
+    <mat-card-content>
+      <table >
+        <thead>
+        <tr>
+          <th>Titulo</th>
+          <th>etiquetas</th>
+          <th>fecha_creacion</th>
+          <th>estado</th>
+          <th>Opciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let discusion of listadiscusion">
+          <td>{{discusion?.titulo}}</td>
+          <td>{{discusion?.etiquetas}}</td>
+          <td>{{discusion?.fecha_creacion}}</td>
+          <td>{{discusion?.estados}}</td>
+          <td>
+            
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="verPregunta(discusion?.pregunta_ID)">
+                <mat-icon>remove_red_eye</mat-icon>
+                <span>Ver pregunta</span>
+              </button>
+              <button mat-menu-item (click)="verDiscusion(discusion?._id)">
+                <mat-icon>open_in_new</mat-icon>
+                <span>Ver Discusion</span>
+              </button>
+              <button mat-menu-item (click)="editarDiscusion(discusion?._id)" *ngIf="discusion?.estados === 'revision'" >
+                <mat-icon>open_in_new</mat-icon>
+                <span>Editar Discusion</span>
+              </button>
+              <button mat-menu-item (click)="verComentarios(discusion?._id)">
+                <mat-icon>open_in_new</mat-icon>
+                <span>Ver Comentarios</span>
+              </button>
+              <button mat-menu-item (click)="eliminarDiscusion(discusion?._id, discusion?.pregunta_ID, discusion)">
+                <mat-icon>open_in_new</mat-icon>
+                <span>Eliminar Discusion</span>
+              </button>
+            </mat-menu>
+          
+          </td>
+        
+        </tr>
+        </tbody>
+      </table>
+    </mat-card-content>
+  
+  </mat-card>
 
-    <ng-container matColumnDef="fecha_creacion">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>fecha creacion</mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.fecha_creacion}} </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="etiquetas">
-      <mat-header-cell *matHeaderCellDef>etiquetas</mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.etiquetas}} </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="opciones">
-      <mat-header-cell *matHeaderCellDef>Opciones</mat-header-cell>
-      <mat-cell *matCellDef="let row">
 
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="verPregunta(row)">
-            <mat-icon>remove_red_eye</mat-icon>
-            <span>Ver pregunta</span>
-          </button>
-          <button mat-menu-item (click)="verDiscusion(row)">
-            <mat-icon>open_in_new</mat-icon>
-            <span>Ver Discusion</span>
-          </button>
-          <button mat-menu-item (click)="editarDiscusion(row)" *ngIf="row.fecha_cierre === '' && row.estados === 'revision'" >
-            <mat-icon>open_in_new</mat-icon>
-            <span>Editar Discusion</span>
-          </button>
-          <button mat-menu-item (click)="verComentarios(row)">
-            <mat-icon>open_in_new</mat-icon>
-            <span>Ver Comentarios</span>
-          </button>
-          <button mat-menu-item (click)="eliminarDiscusion(row)">
-            <mat-icon>open_in_new</mat-icon>
-            <span>Eliminar Discusion</span>
-          </button>
-        </mat-menu>
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
-
-  </mat-table>
-  <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]">
-  </mat-paginator>
 </div>
+
+</div>
+
+
 <swal #eliminado title="Discusion eliminada con exito" text="Se ha eliminado de forma exitosa determinada discusion"
   type="success" [showConfirmButton]="true">
 </swal>

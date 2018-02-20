@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { UploadService } from '../../../uploads/shared/upload.service';
-import { Upload } from '../../../uploads/shared/upload';
+import {Component, OnInit} from '@angular/core';
+import {MatDialogRef} from '@angular/material';
 import * as _ from 'lodash';
-import { MatDialogRef } from '@angular/material';
+import {Upload} from '../../../uploads/shared/upload';
+import {UploadService} from '../../../uploads/shared/upload.service';
 
 @Component({
   selector: 'app-upload-form',
@@ -10,7 +10,6 @@ import { MatDialogRef } from '@angular/material';
   styleUrls: ['./upload-form.component.css']
 })
 export class UploadFormComponent implements OnInit {
-
   selectedFiles: FileList;
   currentUpload: Upload;
   // tslint:disable-next-line:no-inferrable-types
@@ -44,5 +43,9 @@ export class UploadFormComponent implements OnInit {
       this.instanceUpload.pushUpload(this.currentUpload);
     });
   }
-
+  
+  
+  
+  
+  
 }

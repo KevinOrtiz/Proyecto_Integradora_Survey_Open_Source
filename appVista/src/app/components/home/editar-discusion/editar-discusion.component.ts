@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators} from '@angular/forms';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
-import { DiscusionesService } from '../../../services/discusiones.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {SwalComponent} from '@toverux/ngx-sweetalert2';
+import {DiscusionesService} from '../../../services/discusiones.service';
 
 
 @Component({
@@ -44,13 +44,10 @@ export class EditarDiscusionComponent implements OnInit {
   formularioDiscusion: FormGroup;
   constructor(private servicioDiscusion: DiscusionesService) {
     this.servicioDiscusion.loadMiDiscusionPregunta(this.servicioDiscusion.getIdCuerpoDiscusion()).subscribe((res) => {
-      console.log(res);
-      console.log('******');
       this.discusion['titulo'] = res['titulo'];
       this.discusion['descripcion'] = res['descripcion'];
       this.discusion['etiquetas'] = res['etiquetas'];
       this.discusionActualizada['pregunta_ID'] = res['pregunta_ID'];
-      console.log(this.discusionActualizada);
     this.formularioDiscusion.setValue(this.discusion);
     });
    }
@@ -61,11 +58,9 @@ export class EditarDiscusionComponent implements OnInit {
       descripcion: new FormControl('', [Validators.required, Validators.minLength(20)]),
       etiquetas: new FormControl('', [Validators.required])
     });
-    console.log(this.discusion);
   }
 
   actualizarDiscusion(value, valido) {
-    console.log('entreeeee');
     this.discusionActualizada['etiquetas'] = value.etiquetas;
     this.discusionActualizada['titulo'] = value.titulo;
     this.discusionActualizada['descripcion'] = value.descripcion;

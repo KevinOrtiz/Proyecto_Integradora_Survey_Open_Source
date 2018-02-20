@@ -1,16 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
-import { VerEncuestaComponent } from '../ver-encuesta/ver-encuesta.component';
-import { FormControl } from '@angular/forms';
+import {Component, ElementRef, OnInit, Renderer, ViewChild} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {MatDialog} from '@angular/material';
+import {Router} from '@angular/router';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/do';
-import { Router } from '@angular/router';
-import { EncuestasService } from '../../../services/encuestas.service';
-import { ComentariosService } from '../../../services/comentarios.service';
-import { DiscusionesService } from '../../../services/discusiones.service';
-import { MatDialog } from '@angular/material';
+import {ComentariosService} from '../../../services/comentarios.service';
+import {DiscusionesService} from '../../../services/discusiones.service';
+import {EncuestasService} from '../../../services/encuestas.service';
+import {NotificacionesService} from '../../../services/notificaciones.service';
+import {CrearDiscusionComponent} from "../crear-discusion/crear-discusion.component";
+import {VerEncuestaComponent} from '../ver-encuesta/ver-encuesta.component';
 
 
 @Component({
@@ -31,12 +33,13 @@ export class PortalEncuestasComponent implements OnInit {
               private discusionesServicio: DiscusionesService,
               private renderer: Renderer,
               private modal: MatDialog,
-              private router: Router) { }
+              private router: Router,
+              private servicioNotificacion: NotificacionesService) { }
 
   ngOnInit() {
     this.searchField = new FormControl;
     this.searchField.valueChanges
-        .debounceTime(400)
+        .debounceTime(100)
         .distinctUntilChanged()
         .do((value) => {
           if (this.textoBusqueda === '' ) {
@@ -89,16 +92,26 @@ export class PortalEncuestasComponent implements OnInit {
         });
   }
 
-  crearDiscusion (idEncuestas) {
+  crearDiscusion (idEncuestas, idUsuario) {
+    this.servicioNotificacion.setIDreceptor(idUsuario);
+    this.discusionesServicio.setTipoDiscusion('encuesta');
+    this.discusionesServicio.setIdCuerpoDiscusion(idEncuestas);
+    const dialogoDiscusion = this.modal.open(CrearDiscusionComponent,{
+      width: '960px',
+      height: '683px'
+    });
+    dialogoDiscusion.afterClosed().subscribe(res => console.log(res));
     console.log(idEncuestas);
   }
 
-  verListaDiscusiones(idEncuesta) {
+  verListaDiscusiones(idEncuesta, idUsuario) {
+    this.servicioNotificacion.setIDreceptor(idUsuario);
     this.discusionesServicio.setTipoDiscusion('encuesta');
     this.discusionesServicio.setIdCuerpoDiscusion(idEncuesta);
     this.router.navigate(['/home', 'listadoDiscusiones']);
   }
-  verListadoComentarios(idEncuesta) {
+  verListadoComentarios(idEncuesta, idUsuario) {
+    this.servicioNotificacion.setIDreceptor(idUsuario);
     this.servicioComentario.setidCategoria(idEncuesta);
     this.servicioComentario.setTipoComentario('encuesta');
     this.router.navigate(['/home', 'verComentarios']);

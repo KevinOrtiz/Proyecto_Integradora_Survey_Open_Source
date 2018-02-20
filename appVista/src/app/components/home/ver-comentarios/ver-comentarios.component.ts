@@ -1,12 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { ComentariosService } from '../../../services/comentarios.service';
-import { MatDialog } from '@angular/material';
-import { ListaSubComentariosComponent } from '../lista-sub-comentarios/lista-sub-comentarios.component';
-import { AccionesUsuarioService } from '../../../services/acciones-usuario.service';
-import { MatSnackBar } from '@angular/material';
-import { MensajeAccionesUsuarioComponent } from '../mensaje-acciones-usuario/mensaje-acciones-usuario.component';
-import { NotificacionesService } from '../../../services/notificaciones.service';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog, MatSnackBar} from '@angular/material';
+import {AccionesUsuarioService} from '../../../services/acciones-usuario.service';
+import {ComentariosService} from '../../../services/comentarios.service';
+import {NotificacionesService} from '../../../services/notificaciones.service';
+import {ListaSubComentariosComponent} from '../lista-sub-comentarios/lista-sub-comentarios.component';
+import {MensajeAccionesUsuarioComponent} from '../mensaje-acciones-usuario/mensaje-acciones-usuario.component';
 
 
 @Component({
@@ -59,7 +57,7 @@ export class VerComentariosComponent implements OnInit {
       this.snackBar.openFromComponent(MensajeAccionesUsuarioComponent, {
         duration: 500
       });
-      this.servicioNotificacion.sendNotificacionAccion(res['comentarios']['idUsuario'],
+      this.servicioNotificacion.sendNotificacionAccion(this.servicioNotificacion.getIDreceptor(),
       `se ha creado un comentario a una ${this.servicioComentario.getTipoComentario()}`, 'comentario');
 
       this.contenido = '';

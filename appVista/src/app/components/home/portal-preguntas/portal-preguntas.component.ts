@@ -1,19 +1,19 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
-import { PreguntasService } from '../../../services/preguntas.service';
-import { MatDialog } from '@angular/material';
-import { VerPreguntaComponent } from '../ver-pregunta/ver-pregunta.component';
-import { FormControl } from '@angular/forms';
+import {Component, ElementRef, OnInit, Renderer, ViewChild} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {MatDialog} from '@angular/material';
+import {Router} from '@angular/router';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/do';
-import { ComentariosService } from '../../../services/comentarios.service';
-import { VerComentariosComponent } from '../ver-comentarios/ver-comentarios.component';
-import { Router } from '@angular/router';
-import { DiscusionesService } from '../../../services/discusiones.service';
-import { CrearDiscusionComponent } from '../crear-discusion/crear-discusion.component';
-import { ValidarPreguntasComponent } from '../validar-preguntas/validar-preguntas.component';
+import {ComentariosService} from '../../../services/comentarios.service';
+import {DiscusionesService} from '../../../services/discusiones.service';
+import {NotificacionesService} from '../../../services/notificaciones.service';
+import {PreguntasService} from '../../../services/preguntas.service';
+import {CrearDiscusionComponent} from '../crear-discusion/crear-discusion.component';
+import {ValidarPreguntasComponent} from '../validar-preguntas/validar-preguntas.component';
+import {VerPreguntaComponent} from '../ver-pregunta/ver-pregunta.component';
 
 @Component({
   selector: 'app-portal-preguntas',
@@ -33,13 +33,14 @@ export class PortalPreguntasComponent implements OnInit {
   paginaActual = 1;
   constructor(private servicioPregunta: PreguntasService,
               private dialog: MatDialog, private comentarios: ComentariosService,
-              private router: Router, private discusiones: DiscusionesService, public renderer: Renderer) {
+              private router: Router, private discusiones: DiscusionesService,
+              public renderer: Renderer, private servicioNotificacion: NotificacionesService) {
   }
 
   ngOnInit() {
     this.searchField = new FormControl;
     this.searchField.valueChanges
-      .debounceTime(400)
+      .debounceTime(100)
       .distinctUntilChanged()
       .do((value) => {
         if (this.textoBusqueda === '') {
@@ -97,7 +98,8 @@ export class PortalPreguntasComponent implements OnInit {
             this.preguntas = res['preguntas'];
         });
   }
-  crearDiscusion(idPregunta) {
+  crearDiscusion(idPregunta, idUsuario) {
+    this.servicioNotificacion.setIDreceptor(idUsuario);
     this.discusiones.setTipoDiscusion('pregunta');
     this.discusiones.setIdCuerpoDiscusion(idPregunta);
     const dialogoDiscusion = this.dialog.open(CrearDiscusionComponent, {
@@ -106,7 +108,8 @@ export class PortalPreguntasComponent implements OnInit {
     });
     dialogoDiscusion.afterClosed().subscribe(res => console.log(res));
   }
-  validarPregunta(idPregunta) {
+  validarPregunta(idPregunta, idUsuario) {
+    this.servicioNotificacion.setIDreceptor(idUsuario);
     this.discusiones.setTipoDiscusion('pregunta');
     this.discusiones.setIdCuerpoDiscusion(idPregunta);
     const validarPregunta = this.dialog.open(ValidarPreguntasComponent, {
@@ -117,7 +120,7 @@ export class PortalPreguntasComponent implements OnInit {
 
   }
 
-  verListaDiscusiones(idPregunta) {
+  verListaDiscusiones(idPregunta, idUsuario) {
     this.discusiones.setTipoDiscusion('pregunta');
     this.discusiones.setIdCuerpoDiscusion(idPregunta);
     this.router.navigate(['/home', 'listadoDiscusiones']);
@@ -127,7 +130,8 @@ export class PortalPreguntasComponent implements OnInit {
    * Aqui se abrira un modal donde se pasara el idPregunta y el IdComentario
    * @param idPregunta
    */
-  verListadoComentarios(idPregunta) {
+  verListadoComentarios(idPregunta, idUsuario) {
+    this.servicioNotificacion.setIDreceptor(idUsuario);
     this.comentarios.setidCategoria(idPregunta);
     this.comentarios.setTipoComentario('pregunta');
     this.router.navigate(['/home', 'verComentarios']);

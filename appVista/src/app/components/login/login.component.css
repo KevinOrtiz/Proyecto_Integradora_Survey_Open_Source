@@ -1,16 +1,53 @@
-.amplitud50{
-    width: 300px;
-    position: relative;
-    left: 90px;
-}
+:host {
+  display: block;
+  background: #02be6a url("../../../assets/img/imagen_login_fondo.png") no-repeat center center fixed;
+  background-size: cover;
+  height: 100%;
+  width: 100%; }
 
-a.button{
-    color:white;
-}
-a.googleplus{
-    background-color:#2f475f;
-}
-a.googleplus:hover{
-    background-color:#2f475f;
-    color:white;    
-}
+.login {
+  position: relative;
+  bottom: 90px;
+  background: white;
+  width: 380px; }
+  .login .login-header {
+    background: #fffbf4;
+    padding: 24px; }
+  .login .login-content {
+    padding: 24px 42px 42px; }
+    .login .login-content mat-form-field {
+      width: 100%;
+      margin: 6px 0; }
+    .login .login-content .extra-options {
+      margin: 16px 0 32px; }
+      .login .login-content .extra-options .remember-me {
+        color: #777; }
+    .login .login-content a {
+      text-decoration: none;
+      color: #2196F3; }
+      .login .login-content a:hover {
+        text-decoration: underline; }
+    .login .login-content .note {
+      color: #777;
+      margin: 24px 0 0;
+      text-align: center; }
+
+button {
+  font-family: 'Merriweather', serif; }
+
+span {
+  font-family: 'Merriweather', serif; }
+
+.color-google {
+  color: white;
+  background-color: #3242b4; }
+
+.color-twitter {
+  color: white;
+  background-color: #47e9ff; }
+
+.color-github {
+  color: white;
+  background-color: #c0a16b; }
+
+/*# sourceMappingURL=login.component.css.map */

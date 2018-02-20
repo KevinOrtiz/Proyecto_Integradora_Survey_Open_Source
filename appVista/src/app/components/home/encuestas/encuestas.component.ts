@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { EncuestasService } from '../../../services/encuestas.service';
-import { ResumenComponent } from './resumen/resumen.component';
-import { CompartirComponent } from './compartir/compartir.component';
-import { MatDialog } from '@angular/material';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material';
+import {EncuestasService} from '../../../services/encuestas.service';
+import {CompartirComponent} from './compartir/compartir.component';
+import {ResumenComponent} from './resumen/resumen.component';
 
 @Component({
   selector: 'app-encuestas',
@@ -29,5 +29,7 @@ export class EncuestasComponent implements OnInit {
     });
 
   }
-
+  
+  
+  
 }

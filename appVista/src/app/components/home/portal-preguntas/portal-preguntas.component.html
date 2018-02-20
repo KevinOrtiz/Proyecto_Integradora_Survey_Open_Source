@@ -32,11 +32,11 @@
           <mat-icon>remove_red_eye</mat-icon>
           <span>Ver pregunta</span>
         </button>
-        <button mat-menu-item (click)="crearDiscusion(pregunta?._id)">
+        <button mat-menu-item (click)="crearDiscusion(pregunta?._id,pregunta?.idUsuario)">
           <mat-icon>open_in_new</mat-icon>
           <span>Crear Discusion</span>
         </button>
-        <button mat-menu-item (click)="validarPregunta(pregunta?._id)" *ngIf="rol == 'comite'">
+        <button mat-menu-item (click)="validarPregunta(pregunta?._id,pregunta?.idUsuario)" *ngIf="rol == 'comite'">
           <mat-icon>open_in_new</mat-icon>
           <span>Validar Pregunta</span>
         </button>
@@ -48,12 +48,12 @@
     </mat-card-content>
     <mat-card-actions>
       <div fxLayout="row">
-        <button mat-icon-button (click)="verListaDiscusiones(pregunta?._id)">
+        <button mat-icon-button (click)="verListaDiscusiones(pregunta?._id,pregunta?.idUsuario)">
           <mat-icon>bug_report {{ pregunta?.numeroDiscusiones }} </mat-icon>
           <p class="estiloDiscusiones">{{ pregunta?.numeroDiscusiones }} Discusiones</p>
         </button>
         <span fxFlex></span>
-        <button mat-icon-button (click)="verListadoComentarios(pregunta?._id)">
+        <button mat-icon-button (click)="verListadoComentarios(pregunta?._id,pregunta?.idUsuario)">
           <mat-icon>comment</mat-icon>
           <p class="estiloComentarios"> {{ pregunta?.numeroComentarios}} Comentarios</p>
         </button>

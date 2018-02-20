@@ -5,6 +5,7 @@ const pagination = require('mongoose-paginate');
 const PreguntaSchema = new Schema({
     descripcion:String,
     usuario_ID: {type: String, index: true},
+    identificador:{type: Number, default:0},
     historial_cambios:[{
         texto:{
             type: String, index: true

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const usuario = require("../models/Usuarios");
 const jwt = require('jsonwebtoken');
 const config = require("../config");
@@ -6,10 +6,10 @@ const momento = require('moment');
 const comentarios = require('../models/Comentarios');
 const preguntas = require('../models/Preguntas');
 const preguntasValidas = require('../models/preguntasValidadas');
-const discusionesPreguntas = require('../models/discusionesPregutas');
 const encuesta = require('../models/Encuestas');
 let asyncloop = require('node-async-loop');
-let _ = require('underscore-node');
+let redis = require('redis');
+let client = redis.createClient();
 
 const meses = [{
     'nombre': 'Enero',
@@ -83,13 +83,11 @@ const meses = [{
  */
 
 exports.crearUsuario = (req, resp, next) => {
-    if (validoDatosUsuario(req.body.usuario)) {
         usuario.findOne({
-                nombre: req.body.usuario.nombre,
-                apellido: req.body.usuario.apellido
+                correo: req.body.usuario.correo
             })
             .then((response, err) => {
-                let token = definirToken(req.body.usuario);
+                let token = definirToken(req.body.token);
                 if (err) {
                     return resp.json({
                         "messaje": "error en la base de datos",
@@ -104,8 +102,9 @@ exports.crearUsuario = (req, resp, next) => {
                                 "status": 400
                             });
                         } else {
+                            console.log('entro al final');
                             return resp.json({
-                                "messaje": "Te Damos la Bienvenida, " + req.body.usuario.nombre + req.body.usuario.apellido,
+                                "messaje": "Te Damos la Bienvenida, " + nuevoUsuario.nombre + nuevoUsuario.apellido,
                                 "token": token,
                                 "status": 200,
                                 "_id": nuevoUsuario._id,
@@ -115,7 +114,7 @@ exports.crearUsuario = (req, resp, next) => {
                     });
                 } else {
                     return resp.json({
-                        "messaje": "Nos alegra que hayas regresado, " + req.body.usuario.nombre + req.body.usuario.apellido,
+                        "messaje": "Nos alegra que hayas regresado, " + response.nombre + req.apellido,
                         "token": token,
                         "status": 200,
                         "_id": response._id,
@@ -128,12 +127,7 @@ exports.crearUsuario = (req, resp, next) => {
                 return resp.json({"status":500})
             });
 
-    } else {
-        return resp.json({
-            "messaje": "el tipos de datos enviados no son correctos",
-            "status": 407
-        });
-    }
+
 };
 
 
@@ -145,13 +139,11 @@ exports.crearUsuario = (req, resp, next) => {
  */
 exports.editarInformacionUsuario = (req, resp, next) => {
         usuario.findOneAndUpdate({
-            "_id": req.body.usuario._id
+            "_id": req.body.id
         }, {
             $set: {
                 "nombre": req.body.usuario.nombre,
                 "apellido": req.body.usuario.apellido,
-                "correo": req.body.usuario.correo,
-                "urlImage": req.body.usuario.urlImage,
                 "institucion": req.body.usuario.institucion,
                 "grado_academico": req.body.usuario.grado_academico,
                 "area_academica": req.body.usuario.area_academica
@@ -209,7 +201,7 @@ exports.cargarPerfilUsuario = (req, resp, next) => {
                     console.log(error);
                     return resp.json({"status":500})
                 }else{
-                    return resp.json({"status":200,"usuarioObject":usuario})
+                    return resp.json({"status":200,"usuario":usuario})
                 }
            }).catch((error) => {
                 console.log(error);
@@ -269,7 +261,13 @@ exports.cargarListaMisColaboradores = (req, resp, next) => {
                 populate: {
                     path: 'usuarioColaborador',
                     model:'usuario'
-                }
+                },
+            }).populate({
+                path: 'colaboradores',
+                populate: {
+                path: 'encuestaCompartida',
+                model:'encuesta'
+            },
             })
             .then((datosUsuario, err) => {
                 if (err) {
@@ -312,11 +310,11 @@ let validoDatosUsuario = (datosUsuario) => {
  * @param {*} datosUsuario 
  */
 
-let definirToken = (datosUsuario) => {
+let definirToken = (tokenSession) => {
     let payload = {
-        user: datosUsuario.nombre + datosUsuario.apellido
+        user: tokenSession
     };
-    var token = jwt.sign(payload, config.secret, {
+    let token = jwt.sign(payload, config.secret, {
         expiresIn: 86400
     });
     return token;
@@ -324,64 +322,9 @@ let definirToken = (datosUsuario) => {
 
 
 
-exports.getNumeroActividadesByMonth = (req, res, next) => {
-    var comentariosByMonth = []
-    let contador = 0;
-    let limiteDocumento = meses.length;
-    asyncloop(meses, (item, next) => {
-        comentarios.find({
-                'creador.0.ID': req.query.id,
-                'fecha_creacion': {
-                    $gte: item.fecha_inicio,
-                    $lt: item.fecha_fin
-                }
-            })
-            .then((comentarios, err) => {
-                if (err) {
-                    return res.json({
-                        "status": 500
-                    });
-                } else {
-                    let c_likes = _.reduce(comentarios, (memo, reading) => {
-                        return memo + reading.likes;
-                    }, 0);
-                    let c_dislike = _.reduce(comentarios, (memo, reading) => {
-                        return memo + reading.dislikes;
-                    }, 0);
-                    let c_favoritos = _.reduce(comentarios, (memo, reading) => {
-                        return memo + reading.favoritos;
-                    }, 0);
-                    var comentarioChart = {
-                        'mes': item.nombre,
-                        'indice': item.indice,
-                        'cantidadComentarios': comentarios.length,
-                        'cantidadLikes': c_likes,
-                        'cantidadDislike': c_dislike,
-                        'cantidadFavoritos': c_favoritos
-                    }
-                    comentariosByMonth.push(comentarioChart);
-                    next();
-                    contador++;
-                    if (contador === limiteDocumento) {
-                        return res.json({
-                            "status": 200,
-                            "chartComentarios": comentariosByMonth
-                        });
-                    }
-                }
-            }).catch((error) => {
-                console.log(error);
-                return res.json({
-                    "status": 500,
-                    "messaje": "problemas en la obtencio de datos del"
-                })
-            });
-    });
-}
-
 
 exports.getNumeroPreguntasValidasNoValidasByMonth = (req, res, next) => {
-    var listaPreguntasByMonth = []
+    var listaPreguntasByMonth = [];
     let contador = 0;
     let limiteDocumento = meses.length;
     asyncloop(meses, (item, next) => {
@@ -418,11 +361,12 @@ exports.getNumeroPreguntasValidasNoValidasByMonth = (req, res, next) => {
                                     'indice': item.indice,
                                     'cantidadpreguntas': preguntas,
                                     'cantidadpreguntasvalidas': preguntasValidas
-                                }
+                                };
                                 listaPreguntasByMonth.push(preguntasChart);
                                 next();
                                 contador++;
                                 if (contador === limiteDocumento) {
+                                    console.log(listaPreguntasByMonth);
                                     return res.json({
                                         "status": 200,
                                         "listaPreguntas": listaPreguntasByMonth
@@ -449,7 +393,7 @@ exports.getNumeroPreguntasValidasNoValidasByMonth = (req, res, next) => {
 };
 
 exports.getNumeroEncuestasByMonth = (req, res, next) => {
-    var listaEncuestasByMonth = []
+    var listaEncuestasByMonth = [];
     let contador = 0;
     let limiteDocumento = meses.length;
     asyncloop(meses, (item, next) => {
@@ -471,7 +415,7 @@ exports.getNumeroEncuestasByMonth = (req, res, next) => {
                         'mes': item.nombre,
                         'indice': item.indice,
                         'cantidadEncuesta': encuestas
-                    }
+                    };
                     listaEncuestasByMonth.push(encuestasChart);
                     next();
                     contador++;
@@ -490,153 +434,163 @@ exports.getNumeroEncuestasByMonth = (req, res, next) => {
             })
     })
 
-}
+};
 
-exports.loadFirstCommentsByPreguntas = (req, res, next) => {
-    var listaComentariosByPreguntas = [];
-    preguntas.find({
-            'usuario_ID': req.query.id
-        })
-        .slice('comentarios', 5)
-        .sort({
-            'fecha_creacion': -1
-        })
-        .limit(5)
-        .populate('comentarios', ['creador', 'contenido', 'fecha_creacion', 'likes', 'dislikes', 'favoritos'])
-        .then((preguntas, error) => {
+exports.getOnlineUsers = (req, res, next) => {
+    client.select(1, function (err, result) {
+        client.multi()
+            .keys('*', function(err, replies){
+                console.log(replies);
+                if (err) {
+                    return res.json({
+                        'status':500,
+                        'valor':0
+                    })
+                }else{
+                    return res.json({
+                        'status':200,
+                        'valor': replies.length
+                    })
+                }
+
+            }).exec(function (err, replies) {});
+    });
+};
+
+exports.getCountCommentsByPreguntas = (req, res, next) => {
+    preguntas.find({'usuario_ID':req.query.id})
+        .populate('comentarios')
+        .then((resultado, error) => {
             if (error) {
-                return res.json({
-                    "status": 500
-                })
-            } else {
-                contador = 0;
-                limiteDocumento = preguntas.length;
-                asyncloop(preguntas, (item, next) => {
-                    asyncloop(item.comentarios, (itemComentario, nextComentario) => {
-                        usuario.findOne({
-                                "_id": itemComentario.creador.ID
-                            }, 'nombre apellido urlImage institucion grado_academico')
-                            .then((usuario, error) => {
-                                if (error) {
-                                    nextComentario()
-                                    return res.json({
-                                        "status": 500
-                                    })
-                                } else {
-                                    var comentariosPreguntas = {
-                                        'nombreUsuario': usuario.nombre + usuario.apellido,
-                                        'urlImage': usuario.urlImage,
-                                        'institucion': usuario.institucion,
-                                        'grado_academico': usuario.grado_academico,
-                                        'contenido': itemComentario.contenido,
-                                        'fecha_creacion': itemComentario.fecha_creacion,
-                                        'likes': itemComentario.likes,
-                                        'dislikes': itemComentario.dislikes,
-                                        'favoritos': itemComentario.favoritos,
-                                        'pregunta': item.descripcion,
-                                        'topico': item.topicos.texto
-                                    }
-                                    listaComentariosByPreguntas.push(comentariosPreguntas);
-                                    nextComentario();
-                                    if (contador === limiteDocumento) {
-                                        return res.json({
-                                            "status": 200,
-                                            "listaComentarios": listaComentariosByPreguntas
-                                        })
-                                    }
-                                }
-                            }).catch((error) => {
-                                return res.json({
-                                    "status": 500
-                                })
-                            });
-                    }, (errorLoopInterno) => {
-                        if (errorLoopInterno) {
-                            console.log(errorLoopInterno)
-                        }
+                console.log(error);
+            }else{
+                if (resultado[0].comentarios === undefined){
+                    return res.json({
+                        'valor': 0
+                    })
+                }
+                else {
+                    let contadorComentariosPreguntas = 0;
+                    let limiteDocumento = resultado.length;
+                    let contador = 0;
+                    asyncloop(resultado, (item, next) => {
+                        contadorComentariosPreguntas = contadorComentariosPreguntas + item.comentarios.length;
+                        contador ++;
                         next();
-                        contador++;
+                        if (limiteDocumento === contador){
+                            console.log('entre');
+                            return res.json({
+                                "valor":contadorComentariosPreguntas
+                            })
+
+                        }
+
+                    },(error) => {
+                        console.log(error);
+                        if (error){
+                            return res.json({
+                                "valor":0
+                            })
+                        }
+
                     });
-                }, (error) => {
-                    console.log(error);
-                });
+
+                }
             }
+
+
+        }).catch((error) => {
+            console.log(error);
+            return res.json({
+                "status":500,
+                "messaje": error,
+                "valor":0
+            })
+    })
+};
+
+
+
+
+exports.getCountCommentsByEncuestas = (req, res, next) => {
+    encuesta.find({'usuario_ID':req.query.id})
+        .populate('comentarios')
+        .then((encuesta, error) => {
+            if (error) {
+                console.log(error);
+            }else {
+                if (encuesta[0].comentarios === undefined) {
+                    return res.json({
+                        'valor': 0
+                    })
+                }else {
+                    let contadorComentarios = 0;
+                    let contador = 0;
+                    let limiteDocumento = encuesta.length;
+                    asyncloop(encuesta, (item, next) => {
+                        contadorComentarios = contadorComentarios + item.comentarios.length;
+                        contador ++;
+                        next();
+                        if (limiteDocumento === contadorComentarios){
+                            return res.json({
+                                'valor':  contadorComentarios
+                            })
+                        }
+                    },(error) => {
+                        if (error) {
+                            return res.json({
+                                'valor':0
+                            })
+                        }
+                    });
+
+                }
+            }
+
         }).catch((error) => {
             return res.json({
-                "status": 500
+                "status":500,
+                "messaje":error,
+                'valor':0
             })
-        });
-}
-
-exports.getDiscusionesByPreguntas = (req, res, next) => {
-    var listaDiscusionesCreadasByPregunta = [];
-    preguntas.find({
-        'usuario_ID': req.query.id
-    })
-    .slice('discusiones', 5)
-    .sort({
-        'fecha_creacion': 1
-    })
-    .limit(5)
-    .populate('discusiones', ['titulo', 'descripcion'])
-    .then((preguntas, error) => {
-        if (error) {
-            return res.json({
-                "status": 500
-            })
-        } else {
-            contador = 0;
-            limiteDocumento = preguntas.length;
-            asyncloop(preguntas, (item, next) => {
-                asyncloop(item.discusiones, (itemDiscusiones, nextDiscusion) => {
-                    usuario.findOne({
-                            "_id": itemDiscusiones.creador_ID
-                        }, 'nombre apellido urlImage institucion grado_academico')
-                        .then((usuario, error) => {
-                            if (error) {
-                                nextDiscusion()
-                                return res.json({
-                                    "status": 500
-                                })
-                            } else {
-                                var discusionPreguntas = {
-                                    'nombreUsuario': usuario.nombre + usuario.apellido,
-                                    'urlImage': usuario.urlImage,
-                                    'institucion': usuario.institucion,
-                                    'grado_academico': usuario.grado_academico,
-                                    'titulo': itemDiscusiones.titulo,
-                                    'descripcion': itemDiscusiones.descripcion
-                                }
-                                listaDiscusionesCreadasByPregunta.push(discusionPreguntas);
-                                nextDiscusion();
-                                if (contador === limiteDocumento) {
-                                    return res.json({
-                                        "status": 200,
-                                        "listaDiscusiones": listaDiscusionesCreadasByPregunta
-                                    })
-                                }
-                            }
-                        }).catch((error) => {
-                            return res.json({
-                                "status": 500
-                            })
-                        });
-                }, (errorLoopInterno) => {
-                    if (errorLoopInterno) {
-                        console.log(errorLoopInterno)
-                    }
-                    next();
-                    contador++;
-                });
-            }, (error) => {
-                console.log(error);
-            });
-        }
-    }).catch((error) => {
-        return res.json({
-            "status": 500
-        })
     });
 
-}
+};
+
+exports.getCountCommentsAcertados = (req, res, next) => {
+  preguntas.find({'usuario_ID':req.query.id})
+      .populate('comentarios')
+      .then((pregunta, error) => {
+          if (error) {
+              console.log(error);
+          }else {
+              let contadorLikes = 0;
+              let contadorRegistro = 0;
+              let limiteDocumento = pregunta.comentarios.length;
+              asyncloop(pregunta.comentarios, (item, next) => {
+                  contadorLikes = contadorLikes + item.likes;
+                  contadorRegistro ++;
+                  next();
+                  if (contadorRegistro == limiteDocumento) {
+                      return res.json({
+                          'valor':contadorLikes
+                      })
+                  }
+              },(error) => {
+                  if (error) {
+                      return res.json({
+                          'valor': 0
+                      })
+                  }
+              })
+          }
+
+      }).catch((error) => {
+          console.log(error);
+          return res.json({
+              'valor':0
+          })
+
+  })
+};
 

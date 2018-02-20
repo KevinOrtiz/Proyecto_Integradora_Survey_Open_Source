@@ -1,9 +1,10 @@
-import { Injectable, Optional } from '@angular/core';
-import { AngularFireAuth } from 'angularfire2/auth';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {AngularFireAuth} from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
-import { Observable } from 'rxjs/Observable';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/map';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Observable} from 'rxjs/Observable';
 
 
 @Injectable()
@@ -12,6 +13,10 @@ export class LoginService {
   private currentUser: firebase.User = null;
   private usuarioInformation: Usuario;
   private urlServicio = '/apiRest/crearUsuario' ;
+  private messaje = new BehaviorSubject<string>(null);
+  private idUsuario = new BehaviorSubject<string>(null);
+  private messaje$ = this.messaje.asObservable();
+  private idUsuario$ = this.idUsuario.asObservable();
   constructor(private afAuth: AngularFireAuth, private http: HttpClient) {
     this.usuario = this.afAuth.authState;
     this.usuario.subscribe( user => {
@@ -22,8 +27,30 @@ export class LoginService {
       }
     });
    }
+
+   setMessaje (descripcion) {
+    this.messaje.next(descripcion);
+   }
+   getMessaje () {
+      return this.messaje$;
+   }
+   getIDUsuario () {
+      return this.idUsuario$;
+   }
+
+   setIDUsuario (id) {
+     this.idUsuario.next(id);
+   }
   login() {
     return this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+  }
+  
+  loginTwitter() {
+    return this.afAuth.auth.signInWithPopup(new firebase.auth.TwitterAuthProvider());
+  }
+  
+  loginGithub() {
+    return this.afAuth.auth.signInWithPopup(new firebase.auth.GithubAuthProvider());
   }
 
   logout() {
@@ -42,9 +69,9 @@ export class LoginService {
  getUserInformation() {
   return  this.usuarioInformation;
   }
-  setSessionTokenId(token, id): void {
-    sessionStorage.setItem('token', token);
-    sessionStorage.setItem('id', id);
+  setSessionTokenId(token, id) {
+   sessionStorage.setItem('token', token);
+   sessionStorage.setItem('id', id);
   }
 
   removeSession(): void {
@@ -55,8 +82,8 @@ export class LoginService {
     sessionStorage.removeItem('id');
   }
 
-  crearUsuario() {
-    return this.http.post(this.urlServicio, {usuario: this.getUserInformation()})
+  crearUsuario(tokenID) {
+    return this.http.post(this.urlServicio, {usuario: this.getUserInformation(), token: tokenID})
                     .map((res: Response) => {
                       this.setSessionTokenId(res['token'], res['_id']);
                       this.setRolesUsuario(res['roles'][0]['rol'], res['roles'][0]['Acciones'][0], res['messaje']);
@@ -64,7 +91,6 @@ export class LoginService {
                     });
   }
   setRolesUsuario (rol, acciones, mensaje) {
-    console.log('entre a roles de usuario');
     sessionStorage.setItem('rol', rol);
     sessionStorage.setItem('Acciones', acciones);
     sessionStorage.setItem('messaje', mensaje);

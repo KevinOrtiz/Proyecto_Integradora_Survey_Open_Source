@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
 
 
@@ -14,49 +14,72 @@ export class StadisticalActivitiesService {
     return headers;
   }
 
-  getActivitiesByMonth() {
+  
+
+  getChartPreguntasValidasNoValidas (id) {
     const headers = this.getHeaders();
-    const url = 'apiRest/loadSummaryActivitiesByMonth/?id=' + sessionStorage.getItem('id');
+    const url = 'apiRest/loadSummaryPreguntasValidasNoValidas/?id=' + id;
     return this.http.get(url, {headers})
                     .map((res: Response) => {
                       return res;
                     });
   }
 
-  getChartPreguntasValidasNoValidas () {
+  getChartEncuestasByMonth (id) {
     const headers = this.getHeaders();
-    const url = 'apiRest/loadSummaryPreguntasValidasNoValidas/?id=' + sessionStorage.getItem('id');
+    const url = 'apiRest/loadChartEncuestasByMonth/?id=' + id;
     return this.http.get(url, {headers})
                     .map((res: Response) => {
                       return res;
                     });
   }
 
-  getChartEncuestasByMonth () {
+  
+  
+  getCountOnlineUsers() {
     const headers = this.getHeaders();
-    const url = 'apiRest/loadChartEncuestasByMonth/?id=' + sessionStorage.getItem('id');
+    const url = 'apiRest/getCountOnlineUsers';
     return this.http.get(url, {headers})
-                    .map((res: Response) => {
-                      return res;
-                    });
+                .map((res: Response) => {
+                return res;
+                });
   }
 
-  getSummaryCommentsByPreguntas () {
+  
+  
+  getCountCommentsByPreguntas(idUsuario2: string) {
     const headers = this.getHeaders();
-    const url = 'apiRest/loadSummaryCommentsByPreguntas/?id=' + sessionStorage.getItem('id');
+    const url = 'apiRest/getCountPreguntasComentadas/?id=' +idUsuario2;
     return this.http.get(url, {headers})
-                    .map((res: Response) => {
-                      return res;
-                    });
+      .map((res:Response) => {
+        return res;
+      }) ;
   }
-
-  getSummaryDiscusionesPregunta () {
+  
+  getCountCommentsByEncuestas (id) {
     const headers = this.getHeaders();
-    const url = 'apiRest/loadSummaryDiscusionesPregunta/?id=' + sessionStorage.getItem('id');
+    const url = 'apiRest/getCountEncuestasComentadas/?id=' + id;
     return this.http.get(url, {headers})
-                    .map((res: Response) => {
-                      return res;
-                    });
+      .map((res:Response) => {
+        return res;
+      });
   }
-
+  
+  getCountCommentsAcertados (id) {
+    const headers = this.getHeaders();
+    const url = 'apiRest/getCountComentariosAcertados/?id=' + id;
+    return this.http.get(url, {headers})
+      .map((res: Response) => {
+          return res;
+      });
+  }
+  
+  getListColaboradores (id) {
+    const headers = this.getHeaders();
+    const url = 'apiRest/getListaMisColaboradores/?id=' + id;
+    return this.http.get(url, {headers})
+      .map((res: Response) => {
+          return res;
+      });
+  }
 }

@@ -61,7 +61,7 @@ exports.getListaPreguntasValidas = (req, resp, next) => {
 }
 
 exports.guardarEncuesta = (req, res, next) => {
-    var preguntas = []
+    var preguntas = [];
     var contador = 0;
     let limiteDocumento = req.body.encuesta.preguntas.length;
     asyncloop(req.body.encuesta.preguntas, (item, next) => {
@@ -186,7 +186,7 @@ exports.loadListaMyEncuestas = (req, res, next) => {
                             numeroPreguntas: item.preguntas.length,
                             logo: item.contenido_multimedia.url,
                             labels: item.etiqueta
-                        }
+                        };
                         listaMyEncuestas.push(encuesta)
                         next();
                         contador++;
@@ -223,7 +223,7 @@ exports.loadListaMyEncuestas = (req, res, next) => {
 }
 
 exports.queryEncuestas = (req, res, next) => {
-    var encuestas = []
+    var encuestas = [];
     encuesta.paginate({
         "etiqueta.texto": new RegExp(req.query.topico, 'i'),
         "registroActual": true
@@ -262,6 +262,7 @@ exports.queryEncuestas = (req, res, next) => {
                                 var encuesta = {
                                     _id: item._id,
                                     urlUsuario: usuario.urlImage,
+                                    idUsuario: item.usuario_ID,
                                     usuario: usuario.nombre + usuario.apellido,
                                     fecha_creacion: item.fecha_creacion,
                                     titulo: item.titulo,
@@ -309,7 +310,7 @@ exports.queryEncuestas = (req, res, next) => {
 }
 
 exports.loadListaEncuestas = (req, res, next) => {
-    var encuestas = []
+    let encuestas = [];
     encuesta.paginate({
         registroActual: true
     }, {
@@ -331,7 +332,7 @@ exports.loadListaEncuestas = (req, res, next) => {
                     usuario.findOne({
                         _id: item.usuario_ID
                     })
-                        .then((usuario, err) => {
+                        .then((usuario) => {
                             var encuesta = {
                                 _id: item._id,
                                 urlUsuario: usuario.urlImage,
@@ -434,7 +435,7 @@ exports.deleteEncuestaByID = (req, res, next) => {
 }
 
 exports.loadListadoDiscusionesByEncuesta = (req, res, next) => {
-    let listadoDiscusionesByEncuesta = []
+    let listadoDiscusionesByEncuesta = [];
     encuesta.findOne({
         "_id": req.query.id,
         "registroActual": true
@@ -451,25 +452,26 @@ exports.loadListadoDiscusionesByEncuesta = (req, res, next) => {
             let totalRegistros = encuesta.discusiones.length;
             if (totalRegistros > 0) {
 
-                asyncloop(encuesta.discusiones, (discusion, next) => {
+                asyncloop(encuesta.discusiones, (item, next) => {
                     usuario.findOne({
-                        "_id": discusion.creador_ID
+                        "_id": item.creador_ID
                     }).then((usuario, error) => {
                         var discusion = {
-                            'titulo': discusion.titulo,
-                            'descripcion': discusion.descripcion,
-                            'etiquetas': discusion.etiquetas,
-                            'estado': discusion.estado,
-                            'fecha_creacion': discusion.fecha_creacion,
-                            'fecha_cierre': discusion.fecha_cierre,
-                            'numeroComentarios': discusion.comentarios.length,
+                            '_id': item._id,
+                            'titulo': item.titulo,
+                            'descripcion': item.descripcion,
+                            'etiquetas': item.etiquetas,
+                            'estado': item.estado,
+                            'fecha_creacion': item.fecha_creacion,
+                            'fecha_cierre': item.fecha_cierre,
+                            'numeroComentarios': item.comentarios.length,
                             'nombre': usuario.nombre,
                             'apellido': usuario.apellido,
                             'urlImage': usuario.urlImage
-                        }
+                        };
                         listadoDiscusionesByEncuesta.unshift(discusion);
                         contador++;
-                        next()
+                        next();
                         if (contador === totalRegistros) {
                             return res.json({
                                 "status": 200,
@@ -592,7 +594,7 @@ exports.loadListaMisColaboradores = (req, res, next) => {
                         'rol': item.rol,
                         '_id': item._id,
                         'idColaborador': item.usuarioColaborador._id
-                    }
+                    };
                     listaColaboradores.push(colaborador);
                     next();
                     contador++;
@@ -719,11 +721,12 @@ exports.addColaborador = (req, res, next) => {
 
 
 exports.updateRolColaboradorEncuesta = (req, res, next) => {
+    console.log(req.body);
     colaborador.findOne({
-        '_id': req.body.colaborador.id,
-        'usuarioColaborador': req.body.colaborador.idColaborador
+        '_id': req.body.colaborador.id
     })
         .then((result, error) => {
+            console.log(result);
             if (error) {
                 console.log(error);
 
@@ -748,16 +751,23 @@ exports.updateRolColaboradorEncuesta = (req, res, next) => {
                             } else {
                                 usuario.findById(req.body.colaborador.usuario_encuesta)
                                     .then((instance_usuario, error) => {
+                                        console.log(instance_usuario);
                                         if (error) {
                                             console.log(error);
                                         }
                                         correo.actualizacionRolColaborador(instance_usuario.nombre, resultado.usuarioColaborador.correo, req.body.colaborador.rol, resultado.usuarioColaborador.nombre);
+                                        return res.json({
+                                            'status': 200
+                                        })
 
-                                    })
+                                    }).catch((error_usuario) => {
+                                        console.log(error_usuario);
+                                        return res.json({
+                                            'status': 500
+                                        });
+                                    });
 
-                                return res.json({
-                                    'status': 200
-                                })
+
                             }
 
                         }).catch((error) => {
@@ -776,7 +786,7 @@ exports.updateRolColaboradorEncuesta = (req, res, next) => {
             })
         })
 
-}
+};
 
 exports.deleteColaboradorEncuesta = (req, res, next) => {
     colaborador.findById(req.query.id)
@@ -853,11 +863,11 @@ exports.deleteColaboradorEncuesta = (req, res, next) => {
                 'status': 500
             })
         })
-}
+};
 
 exports.loadListaEncuestasCompartidas = (req, res, next) => {
     var idObjeto = require('mongoose').Types.ObjectId;
-    var listaEncuestasCompartidas = [];
+    let listaEncuestasCompartidas = [];
     colaborador.find({
         'usuarioColaborador': new idObjeto(req.query.id)
     })
@@ -872,8 +882,8 @@ exports.loadListaEncuestasCompartidas = (req, res, next) => {
         } else if (resultado.length > 0){
             let contador = 0;
             let limiteDocumento = resultado.length;
-
             asyncloop(resultado, (item, next) => {
+                console.log(item);
                 usuario.findById(item.encuestaCompartida.usuario_ID)
                        .then((respuesta, error) => {
                            var compartir = {
@@ -882,21 +892,22 @@ exports.loadListaEncuestasCompartidas = (req, res, next) => {
                                'urlImage': respuesta.urlImage,
                                'usuario_ID': respuesta._id,
                                'rol':item.rol,
-                               'titulo':item.titulo,
-                               'numeroPreguntas': item.preguntas.length,
+                               'titulo':item.encuestaCompartida.titulo,
+                               'numeroPreguntas': item.encuestaCompartida.preguntas.length,
                                'idEncuesta': item.encuestaCompartida._id
-                           }
+                           };
                            listaEncuestasCompartidas.push(compartir);
                            next();
                            contador ++ ;
                            if (contador === limiteDocumento){
-                                return res.json({
+                               return res.json({
                                     'status':200,
                                     'listasCompartidas':listaEncuestasCompartidas
                                 })
                            }
                            
                        }).catch((error) => {
+                           console.log(error);
                            return res.json({
                                'status':500,
                                'listasCompartidas':null
@@ -916,7 +927,7 @@ exports.loadListaEncuestasCompartidas = (req, res, next) => {
             'listasCompartidas':null
         })
     })
-}
+};
 
 
 

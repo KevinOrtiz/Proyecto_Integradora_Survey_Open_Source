@@ -1,24 +1,29 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
+import {Observable} from 'rxjs/Observable';
 import * as io from 'socket.io-client';
-import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class NotificacionesService {
   private socket: SocketIOClient.Socket;
-  idemisor;
-  nombre;
-  token;
+  private token;
+  private idReceptor;
 
   constructor(private http: HttpClient) {
-    this.idemisor = sessionStorage.getItem('id');
-    this.nombre = sessionStorage.getItem('nombre');
     this.token = sessionStorage.getItem('token');
 
    }
 
-   private getHeaders(): HttpHeaders {
+   setIDreceptor(id) {
+     this.idReceptor = id;
+   }
+
+   getIDreceptor () {
+     return this.idReceptor;
+   }
+
+   private static getHeaders(): HttpHeaders {
     const headers = new HttpHeaders({
       'x-access-token': '' +  sessionStorage.getItem('token')
     });
@@ -26,73 +31,93 @@ export class NotificacionesService {
   }
 
 
-  connect () {
-    this.socket = io('http://localhost:3001', {query: 'id=' + this.idemisor + '&name=' + this.nombre});
+  connect (idConexion) {
+    if (idConexion == null) {
+      idConexion = sessionStorage.getItem('id');
+    }
+    this.socket = io('http://localhost:3001', {query: 'id=' + idConexion});
 
   }
 
    sendNotificacionAccion (idReceptor, mensaje, tipoMensaje) {
-     this.socket.emit('recibir-accion', {receptor: idReceptor, texto: mensaje, emisor: this.idemisor, tipo: tipoMensaje});
+     this.socket.emit('recibir-accion', {receptor: idReceptor, texto: mensaje, emisor: sessionStorage.getItem('id'), tipo: tipoMensaje});
    }
 
     recibirAccionesUsuarios() {
-     const observable = new Observable(observer => {
+     return  new Observable(observer => {
         this.socket.on('acciones', (datos) => {
           console.log('recibi la notificacion');
           observer.next(datos);
         });
      });
-     return observable;
    }
 
-   loadListaMensajes () {
-     const headers = this.getHeaders();
-     const url = 'apiRest/loadListaMensajes/?id=' + sessionStorage.getItem('id');
+   loadListaMensajes (id) {
+    if (id === null) {
+      id = sessionStorage.getItem('id');
+    }
+     const headers = NotificacionesService.getHeaders();
+     const url = 'apiRest/loadListaMensajes/?id=' + id;
      return this.http.get(url, {headers})
                      .map((res: Response) => {
                         return res['listaMensajes'];
                      });
    }
 
-   loadListaAcciones () {
-     const headers = this.getHeaders();
-     const url = 'apiRest/loadListaAcciones/?id=' + sessionStorage.getItem('id');
+   loadListaAcciones (id) {
+     if (id === null) {
+       id = sessionStorage.getItem('id');
+     }
+     const headers = NotificacionesService.getHeaders();
+     const url = 'apiRest/loadListaAcciones/?id=' + id;
      return this.http.get(url, {headers})
                      .map((res: Response) => {
                         return res['listaAcciones'];
                      });
    }
 
-   getNumeroMensajes () {
-     const headers = this.getHeaders();
-     const url = 'apiRest/numeroMensajes/?id=' + sessionStorage.getItem('id');
+   getNumeroMensajes (id) {
+    if (id === null) {
+      id = sessionStorage.getItem('id');
+    }
+     const headers = NotificacionesService.getHeaders();
+     const url = 'apiRest/numeroMensajes/?id=' + id;
      return this.http.get(url, {headers})
                      .map((res: Response) => {
                         return res['numeroMensajes'];
                      });
    }
 
-   getNumeroAcciones () {
-     const headers = this.getHeaders();
-     const url = 'apiRest/numeroAcciones/?id=' + sessionStorage.getItem('id');
+   getNumeroAcciones (id) {
+    if (id === null) {
+      id = sessionStorage.getItem('id');
+    }
+     const headers = NotificacionesService.getHeaders();
+     const url = 'apiRest/numeroAcciones/?id=' + id;
      return this.http.get(url, {headers})
                      .map((res: Response) => {
                         return res['numeroNotificaciones'];
                      });
    }
 
-   loadFiveMensajes() {
-     const headers = this.getHeaders();
-     const url = 'apiRest/loadFiveMensajes/?id=' + sessionStorage.getItem('id');
+   loadFiveMensajes(id) {
+     if (id === null) {
+       id = sessionStorage.getItem('id');
+     }
+     const headers = NotificacionesService.getHeaders();
+     const url = 'apiRest/loadFiveMensajes/?id=' + id;
      return this.http.get(url, {headers})
                      .map((res: Response) => {
                         return res['listaMensajes'];
                      });
    }
 
-   loadFiveAcciones() {
-     const headers = this.getHeaders();
-     const url = 'apiRest/loadFiveAcciones/?id=' + sessionStorage.getItem('id');
+   loadFiveAcciones(id) {
+     if (id === null) {
+       id = sessionStorage.getItem('id');
+     }
+     const headers = NotificacionesService.getHeaders();
+     const url = 'apiRest/loadFiveAcciones/?id=' + id;
      return this.http.get(url, {headers})
                      .map((res: Response) => {
                        return res['listaAcciones'];

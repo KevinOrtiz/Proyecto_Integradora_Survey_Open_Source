@@ -1,9 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 @import "~normalize.css/normalize.css";
-$fa-font-path: "../node_modules/font-awesome/fonts";
-@import "~font-awesome/scss/font-awesome.scss";
-
 @import "~highlight.js/styles/androidstudio.css";
 @import "assets/styles/_var.scss";
 @import 'assets/styles/_tables.scss';
@@ -40,4 +37,3 @@ $fa-font-path: "../node_modules/font-awesome/fonts";
     z-index: 9999;
     pointer-events: none;
   }
-  

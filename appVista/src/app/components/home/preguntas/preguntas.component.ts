@@ -1,23 +1,18 @@
-import {
-  Component, OnInit, ViewChild, ViewContainerRef,
-  ComponentFactoryResolver, ComponentFactory, Type
-} from '@angular/core';
-import { CasillaComponent } from './respuesta/casilla/casilla.component';
-import { RadioComponent } from './respuesta/radio/radio.component';
-import { ListaDesplegableComponent } from './respuesta/lista-desplegable/lista-desplegable.component';
-import { RespuestasService } from '../../../services/respuestas.service';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
-import { CategoriasPreguntas } from '../../../categorias-preguntas';
-import { EtiquetasPreguntas } from '../../../etiquetas-preguntas';
-import { CategoriasEtiquetasService } from '../../../services/categorias-etiquetas.service';
-import {MatSnackBar} from '@angular/material';
-import {MatDialog} from '@angular/material';
-import { PreguntasService } from '../../../services/preguntas.service';
-import { isFakeMousedownFromScreenReader } from '@angular/cdk/a11y';
-import { SnackBarEliminarPreguntaComponent } from './snack-bar-eliminar-pregunta/snack-bar-eliminar-pregunta.component';
-import { UploadFormComponent } from '../../uploads/upload-form/upload-form.component';
-import { VerPreguntaComponent } from '../ver-pregunta/ver-pregunta.component';
-import { UploadService } from '../../../uploads/shared/upload.service';
+import {Component, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {MatDialog, MatSnackBar} from '@angular/material';
+import {SwalComponent} from '@toverux/ngx-sweetalert2';
+import {CategoriasPreguntas} from '../../../categorias-preguntas';
+import {EtiquetasPreguntas} from '../../../etiquetas-preguntas';
+import {CategoriasEtiquetasService} from '../../../services/categorias-etiquetas.service';
+import {PreguntasService} from '../../../services/preguntas.service';
+import {RespuestasService} from '../../../services/respuestas.service';
+import {UploadService} from '../../../uploads/shared/upload.service';
+import {UploadFormComponent} from '../../uploads/upload-form/upload-form.component';
+import {VerPreguntaComponent} from '../ver-pregunta/ver-pregunta.component';
+import {CasillaComponent} from './respuesta/casilla/casilla.component';
+import {ListaDesplegableComponent} from './respuesta/lista-desplegable/lista-desplegable.component';
+import {RadioComponent} from './respuesta/radio/radio.component';
+import {SnackBarEliminarPreguntaComponent} from './snack-bar-eliminar-pregunta/snack-bar-eliminar-pregunta.component';
 
 
 @Component({
@@ -26,7 +21,8 @@ import { UploadService } from '../../../uploads/shared/upload.service';
   templateUrl: './preguntas.component.html',
   styleUrls: ['./preguntas.component.scss']
 })
-export class PreguntasComponent implements OnInit {
+export class PreguntasComponent implements OnInit, OnDestroy {
+  
   @ViewChild('casillaComponent', { read: ViewContainerRef }) casillaComponent: ViewContainerRef;
   @ViewChild('radioComponent', { read: ViewContainerRef }) radioComponent: ViewContainerRef;
   @ViewChild('listaComponent', { read: ViewContainerRef }) listaComponent: ViewContainerRef;
@@ -223,6 +219,8 @@ export class PreguntasComponent implements OnInit {
 
   eliminarImagen() {
     if (this.uploadService.deleteUpload(this.imgPregunta)) {
+      this.preguntaServicio.setListaImagenes('');
+      this.uploadService.setfileImage(null);
       this.imagenEliminada.show();
       this.imgPregunta = null;
     } else {
@@ -251,6 +249,7 @@ export class PreguntasComponent implements OnInit {
     });
     dialogCategorias.afterClosed().subscribe(result => {
      this.imgPregunta = this.uploadService.getfileImage();
+     this.preguntaServicio.setListaImagenes(this.imgPregunta.url);
     });
   }
   visualizarPregunta() {
@@ -259,6 +258,11 @@ export class PreguntasComponent implements OnInit {
     });
     dialogVerPregunta.afterClosed().subscribe(result => {
     });
+  }
+  
+  ngOnDestroy(): void {
+    this.uploadService.setfileImage(null);
+    this.preguntaServicio.setListaImagenes('');
   }
 
 }

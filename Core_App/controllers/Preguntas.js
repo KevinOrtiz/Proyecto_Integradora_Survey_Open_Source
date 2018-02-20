@@ -10,7 +10,6 @@ let asyncloop = require('node-async-loop');
  * @param res
  * @param next
  */
-var listaPregunta = [];
 
 exports.crear = (req, res, next) => {
     const fecha_actual = new Date();
@@ -30,6 +29,7 @@ exports.crear = (req, res, next) => {
     let pregunta = {
         descripcion: req.body.pregunta.descripcion,
         usuario_ID: req.body.pregunta.usuario_ID,
+        identificador:0,
         historial_cambios: req.body.pregunta.historial_cambios,
         registroActual: req.body.pregunta.registroActual,
         listaImagen: req.body.pregunta.listaImagen,
@@ -41,51 +41,68 @@ exports.crear = (req, res, next) => {
         },
         estado: 'revision',
         respuestas: req.body.pregunta.respuestas
-    }
-    let nuevaPregunta = new modelpregunta(pregunta);
-    discusionPregunta.pregunta_ID = nuevaPregunta.toJSON()._id;
-    let nuevaDiscusion = new discusionesPregunta(discusionPregunta);
-    nuevaDiscusion.save((error) => {
-        if (error) {
-            console.log(error);
-            return res.json({
-                "mensaje": "no se ha generado la discusion automatica",
-                "status": 400
-            });
-        } else {
-            usuario.findOne({
-                    _id: req.body.pregunta.usuario_ID
+    };
+    modelpregunta.count({'usuario_ID': req.body.pregunta.usuario_ID})
+        .then((valor, error)=> {
+            if(error){
+                console.log(error);
+                return res.json({
+                    "status":500
                 })
-                .then((usuario, err) => {
-                    if (err) {
-                        console.log('error en la consulta de usuario');
-                    } else {
-                        console.log('entre');
-                        correo.sendEmailPreguntaCreada(usuario.correo, req.body.pregunta.topicos);
-                    }
-                }).catch((err) => {
-                    console.log('error en el servidor');
-                    console.log(err);
-                    return res.json({
-                        "status": 500
-                    })
-
-                });
-            nuevaPregunta.discusiones.push(nuevaDiscusion);
-            nuevaPregunta.save((error) => {
+            }
+            pregunta.identificador = valor + 1;
+            let nuevaPregunta = new modelpregunta(pregunta);
+            discusionPregunta.pregunta_ID = nuevaPregunta.toJSON()._id;
+            let nuevaDiscusion = new discusionesPregunta(discusionPregunta);
+            nuevaDiscusion.save((error) => {
                 if (error) {
-                    console.log('error' + error);
+                    console.log(error);
                     return res.json({
-                        "status": 500
-                    })
+                        "mensaje": "no se ha generado la discusion automatica",
+                        "status": 400
+                    });
                 } else {
-                    return res.json({
-                        "messaje": "pregunta guardada correctamente",
-                        "status": 200
+                    usuario.findOne({
+                        _id: req.body.pregunta.usuario_ID
                     })
+                        .then((usuario, err) => {
+                            if (err) {
+                                console.log('error en la consulta de usuario');
+                            } else {
+                                console.log('entre');
+                                correo.sendEmailPreguntaCreada(usuario.correo, req.body.pregunta.topicos);
+                            }
+                        }).catch((err) => {
+                        console.log('error en el servidor');
+                        console.log(err);
+                        return res.json({
+                            "status": 500
+                        })
+
+                    });
+                    nuevaPregunta.discusiones.push(nuevaDiscusion);
+                    nuevaPregunta.save((error) => {
+                        if (error) {
+                            console.log('error' + error);
+                            return res.json({
+                                "status": 500
+                            })
+                        } else {
+                            return res.json({
+                                "messaje": "pregunta guardada correctamente",
+                                "status": 200
+                            })
+                        }
+                    });
                 }
             });
-        }
+
+        }).catch((error)=> {
+            console.log(error);
+            return res.json({
+                "status":500
+            })
+
     });
 };
 
@@ -130,6 +147,59 @@ exports.verPregunta = (req, res, next) => {
  */
 
 exports.editar = (req, res, next) => {
+    modelpregunta.findOne({
+        '_id':req.body.id,
+        'registroActual': true
+    }).then((pregunta, error)=> {
+        if (error){
+            console.log(error);
+            return res.json({
+                "status":500
+            })
+        }
+        req.body.pregunta.identificador = pregunta.identificador;
+        req.body.pregunta.registroActual = true;
+        modelpregunta.update({'_id':req.body.id,'registroActual':true},
+                             { $set:{
+                                 'registroActual':false
+                             }}).then((preguntaAnterior, error)=> {
+                                 if(error){
+                                     console.log(error);
+                                     return res.json({
+                                         "status":500
+                                     })
+                                 }
+                                 req.body.pregunta.comentarios = preguntaAnterior.comentarios;
+                                 req.body.pregunta.discusiones = preguntaAnterior.discusiones;
+                                 let preguntaActualizada = new modelpregunta(req.body.pregunta);
+                                 preguntaActualizada.save((error)=>{
+                                        if (error){
+                                            console.log(error);
+                                            return res.json({
+                                                "status":500
+                                            })
+                                        }else {
+                                            return res.json({
+                                                "status":200
+                                            })
+                                        }
+                                 });
+
+
+                            }).catch((error)=> {
+                                console.log(error);
+                                return res.json({
+                                    "status":500
+                                })
+
+                            });
+
+    }).catch((error)=>{
+        console.log(error);
+        return res.json({
+            "status":500
+        })
+    })
 
 };
 
@@ -143,11 +213,11 @@ exports.editar = (req, res, next) => {
  */
 
 exports.listPreguntas = (req, res, next) => {
-    var preguntas = [];
+    let preguntas = [];
     modelpregunta.paginate({registroActual: true}, {
             page: req.query.page,
             limit: 5,
-            sort: {fecha_creacion: 1}
+            sort: {fecha_creacion: -1}
         })
         .then((result) => {
             let contador = 0;
@@ -157,7 +227,7 @@ exports.listPreguntas = (req, res, next) => {
                         _id: item.usuario_ID
                     })
                     .then((usuario, err) => {
-                        var pregunta = {
+                        let pregunta = {
                             _id: item._id,
                             urlUsuario: usuario.urlImage,
                             creador: usuario.nombre + usuario.apellido,
@@ -165,9 +235,10 @@ exports.listPreguntas = (req, res, next) => {
                             etiquetas: item.etiquetas,
                             descripcion: item.descripcion,
                             estado: item.estado,
+                            fecha_creacion: item.fecha_creacion,
                             numeroDiscusiones: item.discusiones.length,
                             numeroComentarios: item.comentarios.length
-                        }
+                        };
                         preguntas.unshift(pregunta);
                         next();
                         contador++;
@@ -206,15 +277,14 @@ exports.listPreguntas = (req, res, next) => {
 
 exports.QueryPreguntas = (req, res, next) => {
     // hago una busqueda por topico : Inteligencia Artificial
-    var preguntas = [];
-    console.log(req.query.topico);
+    let preguntas = [];
     modelpregunta.paginate({
             "topicos.texto": new RegExp(req.query.topico, 'i'),
             "registroActual": true
         }, {
             page: req.query.page,
             limit: 5,
-            sort: {fecha_creacion: 1}
+            sort: {fecha_creacion: -1}
         })
         .then((result) => {
             let contador = 0;
@@ -224,17 +294,20 @@ exports.QueryPreguntas = (req, res, next) => {
                         _id: item.usuario_ID
                     })
                     .then((usuario, err) => {
-                        var pregunta = {
+                        console.log(usuario);
+                        let pregunta = {
                             _id: item._id,
                             urlUsuario: usuario.urlImage,
+                            idUsuario: item.usuario_ID,
                             creador: usuario.nombre + usuario.apellido,
                             topicos: item.topicos,
                             etiquetas: item.etiquetas,
                             estado: item.estado,
                             descripcion: item.descripcion,
+                            fecha_creacion: item.fecha_creacion,
                             numeroDiscusiones: item.discusiones.length,
                             numeroComentarios: item.comentarios.length
-                        }
+                        };
                         preguntas.push(pregunta);
                         next();
                         contador++;
@@ -271,39 +344,67 @@ exports.QueryPreguntas = (req, res, next) => {
  */
 
 exports.loadHistoryChange = (req, res, next) => {
+    modelpregunta.find({
+        'identificador':req.query.identificador,
+        'usuario_ID':req.query.usuario_ID
+    }).then((pregunta, error)=>{
+        if (error){
+            console.log(error);
+            return res.json({
+                "status":500
+            })
+        }
+        return res.json({
+            "status":200,
+            'historialPreguntas':pregunta
+        })
+
+    }).catch((error)=>{
+        console.log(error);
+        return res.json({
+            "status":500
+        })
+    });
 
 };
 
 exports.loadListaMisPreguntas = (req, resp, next) => {
-    modelpregunta.find({
+    modelpregunta.paginate({
+            'topicos.texto': new RegExp(req.query.topico, 'i'),
             'usuario_ID': req.query.id,
             "registroActual": true
+        },{
+            page: req.query.page,
+            limit: 5,
+            sort: {fecha_creacion: -1}
         })
-        .sort({'fecha_creacion':1})
-        .then((preguntas, error) => {
+        .then((result, error) => {
             if (error) {
                 console.log(error);
                 return resp.json({
-                    "status": 500
+                    "status": 500,
+                    "pages":0
                 })
             } else {
                 let listaPreguntas = [];
-                let numeroElementosPreguntas = preguntas.length;
+                let numeroElementosPreguntas = result.docs.length;
                 let contador = 0;
-                asyncloop(preguntas, (item, next) => {
-                    var objetoPregunta = {
+                asyncloop(result.docs, (item, next) => {
+                    let objetoPregunta = {
                         _id: item._id,
                         etiquetas: item.topicos.texto,
                         descripcion: item.descripcion,
-                        estado: item.estado
-                    }
-                    listaPreguntas.unshift(objetoPregunta);
+                        estado: item.estado,
+                        fecha_creacion: item.fecha_creacion
+                    };
+                    listaPreguntas.push(objetoPregunta);
                     next();
                     contador++;
-                    if (contador == numeroElementosPreguntas) {
+                    if (contador === numeroElementosPreguntas) {
                         return resp.json({
                             "listaPreguntas": listaPreguntas,
-                            "status": 200
+                            "status": 200,
+                            "pages": result.pages
                         })
                     }
                 });
@@ -313,14 +414,19 @@ exports.loadListaMisPreguntas = (req, resp, next) => {
             console.log("error en la consulta de mis preguntas");
             console.log(error);
             return resp.json({
-                "status":500
+                "status":500,
+                "pages":0
             })
         });
-}
+};
 
 exports.removePregunta = (req, resp, next) => {
-    modelpregunta.findByIdAndRemove({
+    modelpregunta.findByIdAndUpdate({
             '_id': req.query.id
+        },{
+            $set:{
+                'registroActual':false
+            }
         })
         .then((pregunta, error) => {
             if (error) {
@@ -341,4 +447,4 @@ exports.removePregunta = (req, resp, next) => {
                 "messaje": error
             })
         });
-}
+};

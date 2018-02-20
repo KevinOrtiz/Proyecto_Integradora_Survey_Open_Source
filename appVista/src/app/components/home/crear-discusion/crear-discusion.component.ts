@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { DiscusionesService } from '../../../services/discusiones.service';
-import { FormGroup, FormControl, Validators} from '@angular/forms';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
-import { NotificacionesService } from '../../../services/notificaciones.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {SwalComponent} from '@toverux/ngx-sweetalert2';
+import {DiscusionesService} from '../../../services/discusiones.service';
+import {NotificacionesService} from '../../../services/notificaciones.service';
 
 @Component({
   selector: 'app-crear-discusion',
@@ -61,7 +61,8 @@ export class CrearDiscusionComponent implements OnInit {
     this.servicioDiscusion.guardarDiscusion(this.discusion).subscribe((res) => {
       if (res['status'] === 200) {
          this.guardado.show();
-         this.servicioNotificacion.sendNotificacionAccion(res['idUsuario'], 'Se ha creado una discusion', 'creacion-discusion');
+         this.servicioNotificacion.sendNotificacionAccion(this.servicioNotificacion.getIDreceptor(),
+              `Se ha creado una discusion de una pregunta con el titulo ${value.titulo}`, 'creacion-discusion');
       }else {
         this.error.show();
       }

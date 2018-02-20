@@ -1,42 +1,41 @@
 <div class="container-fluid">
     <form class="formulario" class="row" [formGroup]="formularioDiscusion" (ngSubmit)="actualizarDiscusion(formularioDiscusion.value,formularioDiscusion.valid)">
-      <div class="col-8">
-        <mat-form-field class="titulo-discusion">
-          <input matInput placeholder="Ingrese un titulo para su discusion" formControlName="titulo">
-        </mat-form-field>
+      <div class="col sm12 m12">
+          <input  placeholder="Ingrese un titulo para su discusion" formControlName="titulo">
       </div>
-        <mat-tab-group class="cuerpo-discusion">
-          <mat-tab label="Cuerpo de la discusion">
-            <div class="tab-content">
-              <quill-editor [modules]="{formula: true, toolbar:[['bold', 'italic', 'underline', 'strike'],
-                                        ['blockquote','code-block'],
-                                        [{ 'header': 1 }, { 'header': 2 }],['formula'],
-                                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                        [{ 'color': [] }, { 'background': [] }]]}"
-                            placeholder= "Ingrese una descripcion de minimo 80 palabras y maximo 160 palabras" 
-                            formControlName="descripcion" 
-                            (onContentChanged)="setTexto($event)">
-              </quill-editor>
-            </div>
-          </mat-tab>
-          <mat-tab label="Vista Previa">
-            <div class="tab-content" [innerHtml]="vistaPrevia | saniarHtml">
-            </div>
-          </mat-tab>
-        </mat-tab-group>
-      <div class="col-8">
+      <div class="col sm12 m12">
         <label>Etiquetas</label>
         <mat-form-field class="opciones">
           <mat-select placeholder="categorias" formControlName="etiquetas" multiple>
             <mat-option *ngFor="let item of opcionesEtiqueta" [value]="item.value">
               {{ item.descripcion }}
             </mat-option>
-  
+      
           </mat-select>
         </mat-form-field>
   
       </div>
-      <div class="col-8 botonGuardar">
+        <mat-tab-group class="col sm12 m12">
+          <mat-tab label="Cuerpo de la discusion">
+            <div >
+              <quill-editor [modules]="{formula: true, toolbar:[['bold', 'italic', 'underline', 'strike'],
+                                        ['blockquote','code-block'],
+                                        [{ 'header': 1 }, { 'header': 2 }],['formula'],
+                                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                        [{ 'color': [] }, { 'background': [] }]]}"
+                            placeholder= "Ingrese una descripcion de minimo 80 palabras y maximo 160 palabras"
+                            formControlName="descripcion"
+                            (onContentChanged)="setTexto($event)">
+              </quill-editor>
+            </div>
+          </mat-tab>
+          <mat-tab label="Vista Previa">
+            <div  [innerHtml]="vistaPrevia | saniarHtml">
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      
+      <div class="col sm12 m12">
           <button type="submit" mat-raised-button color="primary" [disabled]="!formularioDiscusion.valid">Actualizar Discusion</button>
       </div>
     </form>
